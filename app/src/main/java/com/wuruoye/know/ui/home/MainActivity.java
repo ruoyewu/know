@@ -8,7 +8,6 @@ import com.wuruoye.know.R;
 import com.wuruoye.know.base.ToolbarActivity;
 import com.wuruoye.library.adapter.FragmentVPAdapter;
 import com.wuruoye.library.adapter.OnPageChangeListenerAdapter;
-import com.wuruoye.library.ui.WBaseActivity;
 import com.wuruoye.library.widget.changetab.ChangeTabLayout;
 
 import java.util.Arrays;
@@ -49,7 +48,7 @@ public class MainActivity extends ToolbarActivity {
             }
         });
         vp.setAdapter(adapter);
-        vp.setCurrentItem(1);
         ctl.attachViewPager(vp);
+        vp.setCurrentItem(1);
     }
 }
