@@ -5,7 +5,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 
 import com.wuruoye.know.R;
+import com.wuruoye.know.base.ToolbarActivity;
 import com.wuruoye.library.adapter.FragmentVPAdapter;
+import com.wuruoye.library.adapter.OnPageChangeListenerAdapter;
 import com.wuruoye.library.ui.WBaseActivity;
 import com.wuruoye.library.widget.changetab.ChangeTabLayout;
 
@@ -16,7 +18,8 @@ import java.util.Arrays;
  * Date : 2019/3/6 23:19.
  * Description :
  */
-public class MainActivity extends WBaseActivity {
+public class MainActivity extends ToolbarActivity {
+    private static final String[] TITLE = {"复习", "记录", "用户"};
     private ViewPager vp;
     private ChangeTabLayout ctl;
 
@@ -32,14 +35,21 @@ public class MainActivity extends WBaseActivity {
 
     @Override
     protected void initView() {
+        super.initView();
         vp = findViewById(R.id.vp_main);
         ctl = findViewById(R.id.ctl_main);
 
         FragmentVPAdapter adapter = new FragmentVPAdapter(getSupportFragmentManager(),
-                Arrays.asList("复习", "知识", "用户"), Arrays.<Fragment>asList(new ReviewFragment(),
-                new KnowledgeFragment(), new UserFragment()));
-
+                Arrays.asList(TITLE), Arrays.<Fragment>asList(new ReviewFragment(),
+                new RecordFragment(), new UserFragment()));
+        vp.addOnPageChangeListener(new OnPageChangeListenerAdapter() {
+            @Override
+            public void onPageSelected(int position) {
+                setToolbarTitle(TITLE[position]);
+            }
+        });
         vp.setAdapter(adapter);
+        vp.setCurrentItem(1);
         ctl.attachViewPager(vp);
     }
 }

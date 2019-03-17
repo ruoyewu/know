@@ -3,6 +3,8 @@ package com.wuruoye.know.ui.home;
 import android.os.Bundle;
 import android.view.View;
 
+import com.wuruoye.know.R;
+import com.wuruoye.know.base.ToolbarFragment;
 import com.wuruoye.library.ui.WBaseFragment;
 
 /**
@@ -10,10 +12,10 @@ import com.wuruoye.library.ui.WBaseFragment;
  * Date : 2019/3/6 23:24.
  * Description :
  */
-public class KnowledgeFragment extends WBaseFragment {
+public class RecordFragment extends WBaseFragment {
     @Override
     protected int getContentView() {
-        return 0;
+        return R.layout.fragment_record;
     }
 
     @Override

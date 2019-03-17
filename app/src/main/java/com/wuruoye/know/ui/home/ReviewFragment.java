@@ -3,6 +3,7 @@ package com.wuruoye.know.ui.home;
 import android.os.Bundle;
 import android.view.View;
 
+import com.wuruoye.know.R;
 import com.wuruoye.library.ui.WBaseFragment;
 
 /**
@@ -13,7 +14,7 @@ import com.wuruoye.library.ui.WBaseFragment;
 public class ReviewFragment extends WBaseFragment {
     @Override
     protected int getContentView() {
-        return 0;
+        return R.layout.fragment_review;
     }
 
     @Override

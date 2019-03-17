@@ -1,3 +1,7 @@
 <resources>
     <string name="app_name">知我</string>
+    <string name="review">复习</string>
+    <string name="record">记录</string>
+    <string name="user">用户</string>
+    <string name="back">返回</string>
 </resources>
