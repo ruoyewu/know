@@ -6,9 +6,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.wuruoye.know.R;
+import com.wuruoye.library.contract.WIPresenter;
 import com.wuruoye.library.ui.WBaseFragment;
 
-public abstract class ToolbarFragment extends WBaseFragment implements IToolbarView{
+public abstract class ToolbarFragment<T extends WIPresenter> extends WBaseFragment<T>
+        implements IToolbarView{
     private Toolbar toolbar;
     private ImageView ivBack;
     private TextView tvBack;

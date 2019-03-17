@@ -6,9 +6,12 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.wuruoye.know.R;
+import com.wuruoye.library.contract.WIPresenter;
+import com.wuruoye.library.contract.WPresenter;
 import com.wuruoye.library.ui.WBaseActivity;
 
-public abstract class ToolbarActivity extends WBaseActivity implements IToolbarView{
+public abstract class ToolbarActivity<T extends WIPresenter> extends WBaseActivity<T>
+        implements IToolbarView{
     private Toolbar toolbar;
     private ImageView ivBack;
     private TextView tvBack;
@@ -30,6 +33,7 @@ public abstract class ToolbarActivity extends WBaseActivity implements IToolbarV
                 }
             }
         });
+        setSupportActionBar(toolbar);
     }
 
     @Override

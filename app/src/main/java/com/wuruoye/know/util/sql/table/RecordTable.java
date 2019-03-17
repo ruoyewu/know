@@ -1,4 +1,4 @@
-package com.wuruoye.know.util.sql;
+package com.wuruoye.know.util.sql.table;
 
 import android.database.sqlite.SQLiteDatabase;
 
@@ -91,7 +91,7 @@ public class RecordTable implements Table {
         this.updateTime = updateTime;
     }
 
-    static void create(SQLiteDatabase db) {
+    public static void create(SQLiteDatabase db) {
         db.execSQL("create table " + NAME + " (" +
                 "id integer primary key autoincrement, " +
                 TYPE + " integer, " +

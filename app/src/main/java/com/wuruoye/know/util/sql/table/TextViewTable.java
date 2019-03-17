@@ -1,17 +1,19 @@
-package com.wuruoye.know.util.sql;
+package com.wuruoye.know.util.sql.table;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.text.InputType;
 import android.view.Gravity;
 
-import com.wuruoye.library.contract.WIView;
-
-public class TextViewTable implements Table {
+public class TextViewTable implements ViewTable {
     public static final String NAME = "text_view";
     public static final String TEXT = "text";
     public static final String TEXT_SIZE = "text_size";
     public static final String TEXT_COLOR = "text_color";
+    public static final String HINT = "hint";
+    public static final String HINT_SIZE = "hint_size";
+    public static final String HINT_COLOR = "hint_color";
     public static final String WIDTH = "width";
     public static final String HEIGHT = "height";
     public static final String BG_COLOR = "bg_color";
@@ -26,6 +28,8 @@ public class TextViewTable implements Table {
     public static final String PADDING_BOTTOM = "padding_bottom";
     public static final String GRAVITY = "gravity";
     public static final String TEXT_STYLE = "text_style";
+    public static final String INPUT_TYPE = "input_type";
+    public static final String EDITABLE = "editable";
     public static final String CREATE_TIME = "create_time";
     public static final String UPDATE_TIME = "update_time";
 
@@ -33,6 +37,9 @@ public class TextViewTable implements Table {
         private String text;
         private int textSize;
         private int textColor;
+        private String hint;
+        private int hintSize;
+        private int hintColor;
         private int width;
         private int height;
         private int bgColor;
@@ -47,14 +54,18 @@ public class TextViewTable implements Table {
         private int paddingRight;
         private int gravity;
         private int textStyle;
+        private int inputType;
+        private boolean editable;
         private long createTime;
         private long updateTime;
-
 
         public Builder() {
             text = "";
             textSize = 15;
             textColor = Color.BLACK;
+            hint = "";
+            hintSize = 14;
+            hintColor = Color.GRAY;
             width = -1;
             height = -2;
             bgColor = 0;
@@ -63,6 +74,8 @@ public class TextViewTable implements Table {
             paddingTop = paddingBottom = paddingLeft = paddingRight = 0;
             gravity = Gravity.START;
             textStyle = Typeface.NORMAL;
+            inputType = InputType.TYPE_CLASS_TEXT;
+            editable = true;
             createTime = System.currentTimeMillis();
             updateTime = System.currentTimeMillis();
         }
@@ -79,6 +92,21 @@ public class TextViewTable implements Table {
 
         public Builder textColor(int color) {
             textColor = color;
+            return this;
+        }
+
+        public Builder hint(String hint) {
+            this.hint = hint;
+            return this;
+        }
+
+        public Builder hintColor(int hintColor) {
+            this.hintColor = hintColor;
+            return this;
+        }
+
+        public Builder hintSize(int hintSize) {
+            this.hintSize = hintSize;
             return this;
         }
 
@@ -152,8 +180,23 @@ public class TextViewTable implements Table {
             return this;
         }
 
+        public Builder inputType(int inputType) {
+            this.inputType = inputType;
+            return this;
+        }
+
+        public Builder editable(boolean editable) {
+            this.editable = editable;
+            return this;
+        }
+
         public Builder createTime(long time) {
             createTime = time;
+            return this;
+        }
+
+        public Builder updateTime(long time) {
+            this.updateTime = time;
             return this;
         }
 
@@ -162,6 +205,9 @@ public class TextViewTable implements Table {
             table.text = text;
             table.textSize = textSize;
             table.textColor = textColor;
+            table.hint = hint;
+            table.hintSize = hintSize;
+            table.hintColor = hintColor;
             table.bgColor = bgColor;
             table.fgColor = fgColor;
             table.width = width;
@@ -176,6 +222,8 @@ public class TextViewTable implements Table {
             table.paddingRight = paddingRight;
             table.gravity = gravity;
             table.textStyle = textStyle;
+            table.inputType = inputType;
+            table.editable = editable;
             table.createTime = createTime;
             table.updateTime = updateTime;
             return table;
@@ -185,6 +233,9 @@ public class TextViewTable implements Table {
     private String text;
     private int textSize;
     private int textColor;
+    private String hint;
+    private int hintSize;
+    private int hintColor;
     private int width;
     private int height;
     private int bgColor;
@@ -199,6 +250,8 @@ public class TextViewTable implements Table {
     private int paddingRight;
     private int gravity;
     private int textStyle;
+    private int inputType;
+    private boolean editable;
     private long createTime;
     private long updateTime;
 
@@ -214,6 +267,18 @@ public class TextViewTable implements Table {
 
     public int getTextColor() {
         return textColor;
+    }
+
+    public String getHint() {
+        return hint;
+    }
+
+    public int getHintSize() {
+        return hintSize;
+    }
+
+    public int getHintColor() {
+        return hintColor;
     }
 
     public int getWidth() {
@@ -272,6 +337,14 @@ public class TextViewTable implements Table {
         return textStyle;
     }
 
+    public int getInputType() {
+        return inputType;
+    }
+
+    public boolean isEditable() {
+        return editable;
+    }
+
     public long getCreateTime() {
         return createTime;
     }
@@ -285,6 +358,9 @@ public class TextViewTable implements Table {
         builder.text = text;
         builder.textSize = textSize;
         builder.textColor = textColor;
+        builder.hint = hint;
+        builder.hintSize = hintSize;
+        builder.hintColor = hintColor;
         builder.width = width;
         builder.height = height;
         builder.bgColor = bgColor;
@@ -299,17 +375,22 @@ public class TextViewTable implements Table {
         builder.paddingRight = paddingRight;
         builder.gravity = gravity;
         builder.textStyle = textStyle;
+        builder.inputType = inputType;
+        builder.editable = editable;
         builder.createTime = createTime;
         builder.updateTime = updateTime;
         return builder;
     }
 
-    static void create(SQLiteDatabase db) {
+    public static void create(SQLiteDatabase db) {
         db.execSQL("create table " + NAME + " (" +
                 "id integer primary key autoincrement, " +
                 TEXT + " text, " +
                 TEXT_SIZE + " integer, " +
                 TEXT_COLOR + " integer, " +
+                HINT + " text, " +
+                HINT_COLOR + " integer, " +
+                HINT_SIZE + " integer, " +
                 WIDTH + " integer, " +
                 HEIGHT + " integer, " +
                 BG_COLOR + " integer, " +
@@ -324,6 +405,8 @@ public class TextViewTable implements Table {
                 PADDING_RIGHT + " integer, " +
                 GRAVITY + " integer, " +
                 TEXT_STYLE + " integer, " +
+                INPUT_TYPE + " integer, " +
+                EDITABLE + " integer ," +
                 CREATE_TIME + " integer, " +
                 UPDATE_TIME + " integer" +
                 ")");

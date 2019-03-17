@@ -1,4 +1,4 @@
-package com.wuruoye.know.util.sql;
+package com.wuruoye.know.util.sql.table;
 
 import android.database.sqlite.SQLiteDatabase;
 
@@ -7,12 +7,18 @@ public class RecordTypeTable implements Table {
     public static final String TITLE = "title";
     public static final String ITEMS = "items";
 
+    private int id;
     private String title;
     private String items;
 
-    private RecordTypeTable(String title, String items) {
+    public RecordTypeTable(int id, String title, String items) {
+        this.id = id;
         this.title = title;
         this.items = items;
+    }
+
+    public int getId() {
+        return id;
     }
 
     public String getTitle() {
@@ -31,7 +37,7 @@ public class RecordTypeTable implements Table {
         this.items = items;
     }
 
-    static void create(SQLiteDatabase db) {
+    public static void create(SQLiteDatabase db) {
         db.execSQL("create table " + NAME + " (" +
                 "id integer primary key autoincrement, " +
                 TITLE + " text, " +
