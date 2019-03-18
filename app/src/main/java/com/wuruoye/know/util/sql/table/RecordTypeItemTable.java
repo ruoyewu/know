@@ -21,27 +21,26 @@ public class RecordTypeItemTable implements Table {
         this.viewId = viewId;
     }
 
-    public int getViewType() {
-        return viewType;
-    }
-
-    public void setViewType(int viewType) {
-        this.viewType = viewType;
-    }
-
-    public int getViewId() {
-        return viewId;
-    }
-
-    public void setViewId(int viewId) {
-        this.viewId = viewId;
-    }
-
     public static void create(SQLiteDatabase db) {
         db.execSQL("create table " + NAME + " (" +
                 "id integer primary key autoincrement, " +
                 VIEW_TYPE + " integer, " +
                 VIEW_ID + " integer " +
                 ")");
+    }
+
+    @Override
+    public boolean save(SQLiteDatabase db) {
+        return false;
+    }
+
+    @Override
+    public boolean delete(SQLiteDatabase db) {
+        return false;
+    }
+
+    @Override
+    public boolean update(SQLiteDatabase db) {
+        return false;
     }
 }

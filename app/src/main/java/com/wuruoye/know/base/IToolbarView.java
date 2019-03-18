@@ -4,12 +4,18 @@ import android.support.annotation.DrawableRes;
 import android.support.v7.widget.Toolbar;
 
 public interface IToolbarView {
-    public interface ToolbarClickListener {
+    interface OnToolbarBackListener {
         void onBackClick();
     }
 
+    interface OnToolbarMoreListener {
+        void onMoreClick();
+    }
+
     Toolbar getToolbar();
-    void setToolbarClickListener(ToolbarClickListener listener);
+    void setToolbarBackListener(OnToolbarBackListener listener);
+    void setToolbarMoreListener(OnToolbarMoreListener listener);
     void setToolbarBack(@DrawableRes int resource, String title);
+    void setToolbarMore(@DrawableRes int resource, String title);
     void setToolbarTitle(String title);
 }

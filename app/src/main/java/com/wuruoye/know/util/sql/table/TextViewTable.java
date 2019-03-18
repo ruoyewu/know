@@ -3,6 +3,8 @@ package com.wuruoye.know.util.sql.table;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.Typeface;
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.text.InputType;
 import android.view.Gravity;
 
@@ -33,203 +35,7 @@ public class TextViewTable implements ViewTable {
     public static final String CREATE_TIME = "create_time";
     public static final String UPDATE_TIME = "update_time";
 
-    public static class Builder {
-        private String text;
-        private int textSize;
-        private int textColor;
-        private String hint;
-        private int hintSize;
-        private int hintColor;
-        private int width;
-        private int height;
-        private int bgColor;
-        private int fgColor;
-        private int marginTop;
-        private int marginBottom;
-        private int marginLeft;
-        private int marginRight;
-        private int paddingTop;
-        private int paddingBottom;
-        private int paddingLeft;
-        private int paddingRight;
-        private int gravity;
-        private int textStyle;
-        private int inputType;
-        private boolean editable;
-        private long createTime;
-        private long updateTime;
-
-        public Builder() {
-            text = "";
-            textSize = 15;
-            textColor = Color.BLACK;
-            hint = "";
-            hintSize = 14;
-            hintColor = Color.GRAY;
-            width = -1;
-            height = -2;
-            bgColor = 0;
-            fgColor = 0;
-            marginTop = marginBottom = marginLeft = marginRight = 0;
-            paddingTop = paddingBottom = paddingLeft = paddingRight = 0;
-            gravity = Gravity.START;
-            textStyle = Typeface.NORMAL;
-            inputType = InputType.TYPE_CLASS_TEXT;
-            editable = true;
-            createTime = System.currentTimeMillis();
-            updateTime = System.currentTimeMillis();
-        }
-
-        public Builder text(String text) {
-            this.text = text;
-            return this;
-        }
-
-        public Builder textSize(int textSize) {
-            this.textSize = textSize;
-            return this;
-        }
-
-        public Builder textColor(int color) {
-            textColor = color;
-            return this;
-        }
-
-        public Builder hint(String hint) {
-            this.hint = hint;
-            return this;
-        }
-
-        public Builder hintColor(int hintColor) {
-            this.hintColor = hintColor;
-            return this;
-        }
-
-        public Builder hintSize(int hintSize) {
-            this.hintSize = hintSize;
-            return this;
-        }
-
-        public Builder width(int width) {
-            this.width = width;
-            return this;
-        }
-
-        public Builder height(int height) {
-            this.height = height;
-            return this;
-        }
-
-        public Builder bgColor(int color) {
-            bgColor = color;
-            return this;
-        }
-
-        public Builder fgColor(int color) {
-            fgColor = color;
-            return this;
-        }
-
-        public Builder marginTop(int margin) {
-            marginTop = margin;
-            return this;
-        }
-
-        public Builder marginBottom(int margin) {
-            marginBottom = margin;
-            return this;
-        }
-
-        public Builder marginLeft(int margin) {
-            marginLeft = margin;
-            return this;
-        }
-
-        public Builder marginRight(int margin) {
-            marginRight = margin;
-            return this;
-        }
-
-        public Builder paddingLeft(int padding) {
-            paddingLeft = padding;
-            return this;
-        }
-
-        public Builder paddingRight(int padding) {
-            paddingRight = padding;
-            return this;
-        }
-
-        public Builder paddingTop(int padding) {
-            paddingTop = padding;
-            return this;
-        }
-
-        public Builder paddingBottom(int padding) {
-            paddingBottom = padding;
-            return this;
-        }
-
-        public Builder gravity(int gravity) {
-            this.gravity = gravity;
-            return this;
-        }
-
-        public Builder textStyle(int style) {
-            textStyle = style;
-            return this;
-        }
-
-        public Builder inputType(int inputType) {
-            this.inputType = inputType;
-            return this;
-        }
-
-        public Builder editable(boolean editable) {
-            this.editable = editable;
-            return this;
-        }
-
-        public Builder createTime(long time) {
-            createTime = time;
-            return this;
-        }
-
-        public Builder updateTime(long time) {
-            this.updateTime = time;
-            return this;
-        }
-
-        public TextViewTable build() {
-            TextViewTable table = new TextViewTable();
-            table.text = text;
-            table.textSize = textSize;
-            table.textColor = textColor;
-            table.hint = hint;
-            table.hintSize = hintSize;
-            table.hintColor = hintColor;
-            table.bgColor = bgColor;
-            table.fgColor = fgColor;
-            table.width = width;
-            table.height = height;
-            table.marginTop = marginTop;
-            table.marginBottom = marginBottom;
-            table.marginLeft = marginLeft;
-            table.marginRight = marginRight;
-            table.paddingTop = paddingTop;
-            table.paddingBottom = paddingBottom;
-            table.paddingLeft = paddingLeft;
-            table.paddingRight = paddingRight;
-            table.gravity = gravity;
-            table.textStyle = textStyle;
-            table.inputType = inputType;
-            table.editable = editable;
-            table.createTime = createTime;
-            table.updateTime = updateTime;
-            return table;
-        }
-    }
-
+    private int id;
     private String text;
     private int textSize;
     private int textColor;
@@ -255,131 +61,38 @@ public class TextViewTable implements ViewTable {
     private long createTime;
     private long updateTime;
 
-    private TextViewTable() { }
-
-    public String getText() {
-        return text;
-    }
-
-    public int getTextSize() {
-        return textSize;
-    }
-
-    public int getTextColor() {
-        return textColor;
-    }
-
-    public String getHint() {
-        return hint;
-    }
-
-    public int getHintSize() {
-        return hintSize;
-    }
-
-    public int getHintColor() {
-        return hintColor;
-    }
-
-    public int getWidth() {
-        return width;
-    }
-
-    public int getHeight() {
-        return height;
-    }
-
-    public int getBgColor() {
-        return bgColor;
-    }
-
-    public int getFgColor() {
-        return fgColor;
-    }
-
-    public int getMarginTop() {
-        return marginTop;
-    }
-
-    public int getMarginBottom() {
-        return marginBottom;
-    }
-
-    public int getMarginLeft() {
-        return marginLeft;
-    }
-
-    public int getMarginRight() {
-        return marginRight;
-    }
-
-    public int getPaddingTop() {
-        return paddingTop;
-    }
-
-    public int getPaddingBottom() {
-        return paddingBottom;
-    }
-
-    public int getPaddingLeft() {
-        return paddingLeft;
-    }
-
-    public int getPaddingRight() {
-        return paddingRight;
-    }
-
-    public int getGravity() {
-        return gravity;
-    }
-
-    public int getTextStyle() {
-        return textStyle;
-    }
-
-    public int getInputType() {
-        return inputType;
-    }
-
-    public boolean isEditable() {
-        return editable;
-    }
-
-    public long getCreateTime() {
-        return createTime;
-    }
-
-    public long getUpdateTime() {
-        return updateTime;
-    }
-
-    public Builder builder() {
-        Builder builder = new Builder();
-        builder.text = text;
-        builder.textSize = textSize;
-        builder.textColor = textColor;
-        builder.hint = hint;
-        builder.hintSize = hintSize;
-        builder.hintColor = hintColor;
-        builder.width = width;
-        builder.height = height;
-        builder.bgColor = bgColor;
-        builder.fgColor = fgColor;
-        builder.marginTop = marginTop;
-        builder.marginBottom = marginBottom;
-        builder.marginLeft = marginLeft;
-        builder.marginRight = marginRight;
-        builder.paddingTop = paddingTop;
-        builder.paddingBottom = paddingBottom;
-        builder.paddingLeft = paddingLeft;
-        builder.paddingRight = paddingRight;
-        builder.gravity = gravity;
-        builder.textStyle = textStyle;
-        builder.inputType = inputType;
-        builder.editable = editable;
-        builder.createTime = createTime;
-        builder.updateTime = updateTime;
-        return builder;
+    public TextViewTable(int id, String text, int textSize, int textColor, String hint,
+                         int hintSize, int hintColor, int width, int height,
+                         int bgColor, int fgColor, int marginTop, int marginBottom,
+                         int marginLeft, int marginRight, int paddingTop,
+                         int paddingBottom, int paddingLeft, int paddingRight,
+                         int gravity, int textStyle, int inputType, boolean editable,
+                         long createTime, long updateTime) {
+        this.id = id;
+        this.text = text;
+        this.textSize = textSize;
+        this.textColor = textColor;
+        this.hint = hint;
+        this.hintSize = hintSize;
+        this.hintColor = hintColor;
+        this.width = width;
+        this.height = height;
+        this.bgColor = bgColor;
+        this.fgColor = fgColor;
+        this.marginTop = marginTop;
+        this.marginBottom = marginBottom;
+        this.marginLeft = marginLeft;
+        this.marginRight = marginRight;
+        this.paddingTop = paddingTop;
+        this.paddingBottom = paddingBottom;
+        this.paddingLeft = paddingLeft;
+        this.paddingRight = paddingRight;
+        this.gravity = gravity;
+        this.textStyle = textStyle;
+        this.inputType = inputType;
+        this.editable = editable;
+        this.createTime = createTime;
+        this.updateTime = updateTime;
     }
 
     public static void create(SQLiteDatabase db) {
@@ -410,5 +123,20 @@ public class TextViewTable implements ViewTable {
                 CREATE_TIME + " integer, " +
                 UPDATE_TIME + " integer" +
                 ")");
+    }
+
+    @Override
+    public boolean save(SQLiteDatabase db) {
+        return false;
+    }
+
+    @Override
+    public boolean delete(SQLiteDatabase db) {
+        return false;
+    }
+
+    @Override
+    public boolean update(SQLiteDatabase db) {
+        return false;
     }
 }

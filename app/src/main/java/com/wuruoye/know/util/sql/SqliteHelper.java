@@ -11,7 +11,7 @@ import com.wuruoye.know.util.sql.table.TextViewTable;
 
 public class SqliteHelper extends SQLiteOpenHelper {
     public static final int VERSION = 1;
-    public static final String DB_NAME = "know.db";
+    public static final String DB_NAME = "con.wuruoye.know.db";
 
     public SqliteHelper(Context context) {
         super(context, DB_NAME, null, VERSION);

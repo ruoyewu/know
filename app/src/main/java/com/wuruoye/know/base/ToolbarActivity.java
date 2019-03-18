@@ -7,7 +7,6 @@ import android.widget.TextView;
 
 import com.wuruoye.know.R;
 import com.wuruoye.library.contract.WIPresenter;
-import com.wuruoye.library.contract.WPresenter;
 import com.wuruoye.library.ui.WBaseActivity;
 
 public abstract class ToolbarActivity<T extends WIPresenter> extends WBaseActivity<T>
@@ -15,24 +14,19 @@ public abstract class ToolbarActivity<T extends WIPresenter> extends WBaseActivi
     private Toolbar toolbar;
     private ImageView ivBack;
     private TextView tvBack;
+    private ImageView ivMore;
+    private TextView tvMore;
     private TextView tvTitle;
-    private ToolbarClickListener mListener;
 
     @Override
     protected void initView() {
         toolbar = findViewById(R.id.toolbar);
         ivBack = toolbar.findViewById(R.id.iv_back_toolbar);
         tvBack = toolbar.findViewById(R.id.tv_back_toolbar);
+        ivMore = toolbar.findViewById(R.id.iv_more_toolbar);
+        tvMore = toolbar.findViewById(R.id.tv_more_toolbar);
         tvTitle = toolbar.findViewById(R.id.tv_title_toolbar);
 
-        ivBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (mListener != null) {
-                    mListener.onBackClick();
-                }
-            }
-        });
         setSupportActionBar(toolbar);
     }
 
@@ -42,8 +36,23 @@ public abstract class ToolbarActivity<T extends WIPresenter> extends WBaseActivi
     }
 
     @Override
-    public void setToolbarClickListener(ToolbarClickListener listener) {
-        mListener = listener;
+    public void setToolbarBackListener(final OnToolbarBackListener listener) {
+        ivBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onBackClick();
+            }
+        });
+    }
+
+    @Override
+    public void setToolbarMoreListener(final OnToolbarMoreListener listener) {
+        ivMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onMoreClick();
+            }
+        });
     }
 
     @Override
@@ -53,13 +62,13 @@ public abstract class ToolbarActivity<T extends WIPresenter> extends WBaseActivi
     }
 
     @Override
-    public void setToolbarTitle(String title) {
-        tvTitle.setText(title);
+    public void setToolbarMore(int resource, String title) {
+        ivMore.setImageResource(resource);
+        tvMore.setText(title);
     }
 
     @Override
-    protected void onDestroy() {
-        super.onDestroy();
-        mListener = null;
+    public void setToolbarTitle(String title) {
+        tvTitle.setText(title);
     }
 }

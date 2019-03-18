@@ -7,4 +7,5 @@ import com.wuruoye.know.util.sql.table.Table;
  * Description:
  */
 public interface ViewTable extends Table {
+
 }

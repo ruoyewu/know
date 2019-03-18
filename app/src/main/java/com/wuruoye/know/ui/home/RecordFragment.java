@@ -11,11 +11,11 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.wuruoye.know.R;
+import com.wuruoye.know.model.beans.RecordType;
 import com.wuruoye.know.ui.edit.RecordTypeEditActivity;
 import com.wuruoye.know.ui.home.adapter.SelectTypeRVAdapter;
 import com.wuruoye.know.ui.home.contract.RecordContract;
 import com.wuruoye.know.ui.home.presenter.RecordPresenter;
-import com.wuruoye.know.util.sql.table.RecordTypeTable;
 import com.wuruoye.library.adapter.WBaseRVAdapter;
 import com.wuruoye.library.ui.WBaseFragment;
 
@@ -26,7 +26,7 @@ import com.wuruoye.library.ui.WBaseFragment;
  */
 public class RecordFragment extends WBaseFragment<RecordContract.Presenter>
         implements RecordContract.View, View.OnClickListener,
-        WBaseRVAdapter.OnItemClickListener<RecordTypeTable> {
+        WBaseRVAdapter.OnItemClickListener<RecordType> {
     private BottomSheetDialog dlgSelectType;
     private RecyclerView rvSelectType;
 
@@ -56,7 +56,7 @@ public class RecordFragment extends WBaseFragment<RecordContract.Presenter>
         SelectTypeRVAdapter adapter = new SelectTypeRVAdapter();
         adapter.setOnItemClickListener(this);
         rvSelectType.setAdapter(adapter);
-        adapter.setData(mPresenter.getSelectType());
+        adapter.setData(mPresenter.getSelectType(getContext()));
         rvSelectType.setLayoutManager(new LinearLayoutManager(getContext()));
         dlgSelectType = new BottomSheetDialog(getContext());
         dlgSelectType.setContentView(rvSelectType);
@@ -79,14 +79,14 @@ public class RecordFragment extends WBaseFragment<RecordContract.Presenter>
     }
 
     @Override
-    public void onItemClick(RecordTypeTable recordTypeTable) {
-        if (recordTypeTable.getId() < 0) {
+    public void onItemClick(RecordType recordType) {
+        if (recordType.getId() < 0) {
             // add
             Intent intent = new Intent(getContext(), RecordTypeEditActivity.class);
             startActivity(intent);
         } else {
             // normal
-            Toast.makeText(getContext(), recordTypeTable.getTitle(), Toast.LENGTH_SHORT).show();
+            Toast.makeText(getContext(), recordType.getTitle(), Toast.LENGTH_SHORT).show();
         }
     }
 }

@@ -12,6 +12,7 @@ public class RecordTable implements Table {
     public static final String CREATE_TIME = "create_time";
     public static final String UPDATE_TIME = "update_time";
 
+    private int id;
     private int type;
     private String items;
     private int reviewNum;
@@ -20,74 +21,15 @@ public class RecordTable implements Table {
     private long createTime;
     private long updateTime;
 
-    public RecordTable(int type, String items) {
-        this.type = type;
-        this.items = items;
-    }
-
-    public RecordTable(int type, String items, int reviewNum, int failNum,
+    public RecordTable(int id, int type, String items, int reviewNum, int failNum,
                        long lastReview, long createTime, long updateTime) {
-        this(type, items);
-        this.reviewNum = reviewNum;
-        this.failNum = failNum;
-        this.lastReview = lastReview;
-        this.createTime = createTime;
-        this.updateTime = updateTime;
-    }
-
-    public int getType() {
-        return type;
-    }
-
-    public void setType(int type) {
+        this.id = id;
         this.type = type;
-    }
-
-    public String getItems() {
-        return items;
-    }
-
-    public void setItems(String items) {
         this.items = items;
-    }
-
-    public int getReviewNum() {
-        return reviewNum;
-    }
-
-    public void setReviewNum(int reviewNum) {
         this.reviewNum = reviewNum;
-    }
-
-    public int getFailNum() {
-        return failNum;
-    }
-
-    public void setFailNum(int failNum) {
         this.failNum = failNum;
-    }
-
-    public long getLastReview() {
-        return lastReview;
-    }
-
-    public void setLastReview(long lastReview) {
         this.lastReview = lastReview;
-    }
-
-    public long getCreateTime() {
-        return createTime;
-    }
-
-    public void setCreateTime(long createTime) {
         this.createTime = createTime;
-    }
-
-    public long getUpdateTime() {
-        return updateTime;
-    }
-
-    public void setUpdateTime(long updateTime) {
         this.updateTime = updateTime;
     }
 
@@ -102,5 +44,21 @@ public class RecordTable implements Table {
                 CREATE_TIME + " integer, " +
                 UPDATE_TIME + " integer" +
                 ")");
+    }
+
+
+    @Override
+    public boolean save(SQLiteDatabase db) {
+        return false;
+    }
+
+    @Override
+    public boolean delete(SQLiteDatabase db) {
+        return false;
+    }
+
+    @Override
+    public boolean update(SQLiteDatabase db) {
+        return false;
     }
 }

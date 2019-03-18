@@ -11,6 +11,15 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <TextView
+            android:id="@+id/tv_title_toolbar"
+            android:text="@string/app_name"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            android:layout_centerInParent="true"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
         <ImageView
             android:id="@+id/iv_back_toolbar"
             android:padding="12dp"
@@ -26,12 +35,17 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
 
+        <ImageView
+            android:id="@+id/iv_more_toolbar"
+            android:padding="12dp"
+            android:layout_centerVertical="true"
+            android:layout_width="50dp"
+            android:layout_height="50dp" />
+
         <TextView
-            android:id="@+id/tv_title_toolbar"
-            android:text="@string/app_name"
-            android:textSize="20sp"
-            android:textStyle="bold"
-            android:layout_centerInParent="true"
+            android:id="@+id/tv_more_toolbar"
+            android:textSize="14sp"
+            android:layout_toStartOf="@id/iv_more_toolbar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </RelativeLayout>
