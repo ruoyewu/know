@@ -54,6 +54,16 @@ public abstract class ToolbarFragment<T extends WIPresenter> extends WBaseFragme
     }
 
     @Override
+    public void setToolbarTitleListener(final OnToolbarTitleListener listener) {
+        tvTitle.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                listener.onTitleClick();
+            }
+        });
+    }
+
+    @Override
     public void setToolbarBack(int resource, String title) {
         ivBack.setImageResource(resource);
         tvBack.setText(title);

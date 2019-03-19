@@ -4,4 +4,21 @@
     <string name="record">记录</string>
     <string name="user">用户</string>
     <string name="back">返回</string>
+
+    <string name="text">文本内容</string>
+    <string name="text_size">文本大小</string>
+    <string name="text_color">文本颜色</string>
+    <string name="hint">提示内容</string>
+    <string name="hint_size">提示内容大小</string>
+    <string name="hint_color">提示内容颜色</string>
+    <string name="width">宽度</string>
+    <string name="height">高度</string>
+    <string name="bg_color">背景颜色</string>
+    <string name="fg_color">前景颜色</string>
+    <string name="margin">外边距</string>
+    <string name="padding">内边距</string>
+    <string name="gravity">文本位置</string>
+    <string name="text_style">文本样式</string>
+    <string name="input_type">输入格式</string>
+    <string name="editable">是否可编辑</string>
 </resources>

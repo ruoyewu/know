@@ -12,9 +12,14 @@ public interface IToolbarView {
         void onMoreClick();
     }
 
+    interface OnToolbarTitleListener {
+        void onTitleClick();
+    }
+
     Toolbar getToolbar();
     void setToolbarBackListener(OnToolbarBackListener listener);
     void setToolbarMoreListener(OnToolbarMoreListener listener);
+    void setToolbarTitleListener(OnToolbarTitleListener listener);
     void setToolbarBack(@DrawableRes int resource, String title);
     void setToolbarMore(@DrawableRes int resource, String title);
     void setToolbarTitle(String title);

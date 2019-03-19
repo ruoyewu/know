@@ -89,4 +89,10 @@ public class RecordFragment extends WBaseFragment<RecordContract.Presenter>
             Toast.makeText(getContext(), recordType.getTitle(), Toast.LENGTH_SHORT).show();
         }
     }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        dlgSelectType.dismiss();
+    }
 }
