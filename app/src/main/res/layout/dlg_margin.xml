@@ -5,8 +5,25 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
+    <Button
+        android:id="@+id/btn_dlg_margin"
+        android:text="@string/confirm"
+        android:textStyle="bold"
+        android:layout_gravity="end"
+        android:background="@color/transparent"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+
     <com.wuruoye.know.widget.TouchMarginView
         android:id="@+id/tmv_dlg_margin"
         android:layout_width="match_parent"
         android:layout_height="250dp" />
+
+    <TextView
+        android:id="@+id/tv_dlg_margin"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
 </LinearLayout>

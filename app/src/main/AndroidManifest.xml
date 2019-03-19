@@ -18,5 +18,6 @@
         </activity>
         <activity android:name=".ui.edit.RecordTypeEditActivity" />
         <activity android:name=".ui.edit.TypeItemEditActivity" />
+        <activity android:name=".ui.edit.RecordEditActivity" />
     </application>
 </manifest>
