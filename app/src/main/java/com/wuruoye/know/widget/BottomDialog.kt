@@ -11,7 +11,7 @@ import com.wuruoye.know.R
  * Created at 2019/3/18 23:02 by wuruoye
  * Description:
  */
-class BottomDialog(context: Context, view: View) : Dialog(context, R.style.BottomDlg) {
+open class BottomDialog(context: Context, view: View) : Dialog(context, R.style.BottomDlg) {
     init {
         setContentView(view)
         val window = window

@@ -23,7 +23,7 @@ class SelectTypeRVAdapter : WBaseRVAdapter<RecordType>() {
             type = getData(i)
         } else {
             type = RecordType(-1, "点击增加更多类型",
-                    null, 0, 0)
+                    arrayListOf(), 0, 0)
         }
         val vh = viewHolder as ViewHolder
         vh.tv.text = type.title

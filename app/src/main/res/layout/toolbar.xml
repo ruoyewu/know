@@ -22,7 +22,7 @@
 
         <ImageView
             android:id="@+id/iv_back_toolbar"
-            android:padding="12dp"
+            android:padding="15dp"
             android:layout_centerVertical="true"
             android:layout_width="50dp"
             android:layout_height="50dp" />
@@ -37,8 +37,9 @@
 
         <ImageView
             android:id="@+id/iv_more_toolbar"
-            android:padding="12dp"
+            android:padding="15dp"
             android:layout_centerVertical="true"
+            android:layout_alignParentEnd="true"
             android:layout_width="50dp"
             android:layout_height="50dp" />
 
@@ -46,6 +47,7 @@
             android:id="@+id/tv_more_toolbar"
             android:textSize="14sp"
             android:layout_toStartOf="@id/iv_more_toolbar"
+            android:layout_centerVertical="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content" />
     </RelativeLayout>

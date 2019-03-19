@@ -6,13 +6,14 @@
     android:layout_height="match_parent">
 
     <LinearLayout
+        android:orientation="vertical"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
         <include
             layout="@layout/toolbar"/>
 
-        <android.support.v4.widget.NestedScrollView
+        <ScrollView
             android:layout_width="match_parent"
             android:layout_height="match_parent">
 
@@ -24,14 +25,13 @@
                 android:layout_marginTop="10dp"
                 android:layout_marginBottom="10dp"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-            </LinearLayout>
-        </android.support.v4.widget.NestedScrollView>
+                android:layout_height="wrap_content" />
+        </ScrollView>
     </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab_record_type_edit"
+        android:src="@drawable/ic_add"
         android:layout_margin="16dp"
         android:layout_gravity="end|bottom"
         android:layout_width="wrap_content"

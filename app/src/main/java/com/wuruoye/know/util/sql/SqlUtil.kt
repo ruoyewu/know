@@ -11,7 +11,7 @@ import java.util.*
  */
 class SqlUtil private constructor(context: Context) {
 
-    private val sh: SqliteHelper
+    private val sh: SqliteHelper = SqliteHelper(context)
 
     val recordTypeWithoutItems: List<RecordType>
         get() {
@@ -21,7 +21,7 @@ class SqlUtil private constructor(context: Context) {
                 val typeTables = RecordTypeTable.queryAll(db)
 
                 for (table in typeTables) {
-                    result.add(RecordType(table.id, table.title, null,
+                    result.add(RecordType(table.id, table.title, arrayListOf(),
                             table.createTime, table.updateTime))
                 }
             } finally {
@@ -29,10 +29,6 @@ class SqlUtil private constructor(context: Context) {
             }
             return result
         }
-
-    init {
-        sh = SqliteHelper(context)
-    }
 
     companion object {
         @Volatile

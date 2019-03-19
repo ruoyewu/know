@@ -2,7 +2,6 @@ package com.wuruoye.know.model.beans
 
 import android.os.Parcel
 import android.os.Parcelable
-import java.util.*
 
 /**
  * Created at 2019/3/18 12:31 by wuruoye
@@ -10,7 +9,7 @@ import java.util.*
  */
 class RecordType(var id: Int,
                  var title: String?,
-                 var views: List<RecordView>?,
+                 var views: ArrayList<RecordView>,
                  var createTime: Long,
                  var updateTime: Long
 ) : Parcelable {

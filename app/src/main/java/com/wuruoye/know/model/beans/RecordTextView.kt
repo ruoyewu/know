@@ -31,7 +31,7 @@ data class RecordTextView(
         var paddingBottom: Int = 0,
         var paddingLeft: Int = 0,
         var paddingRight: Int = 0,
-        var gravity: Int = Gravity.START and Gravity.TOP,
+        var gravity: Int = Gravity.CENTER,
         var textStyle: Int = Typeface.NORMAL,
         var inputType: Int = InputType.TYPE_CLASS_TEXT,
         var minLine: Int = 1,
@@ -39,7 +39,7 @@ data class RecordTextView(
         var isEditable: Boolean = false,
         var createTime: Long = 0,
         var updateTime: Long = 0
-) : RecordView, Parcelable {
+) : RecordView(), Parcelable {
     constructor(source: Parcel) : this(
             source.readInt(),
             source.readString(),

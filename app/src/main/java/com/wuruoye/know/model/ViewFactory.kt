@@ -1,6 +1,7 @@
 package com.wuruoye.know.model
 
 import android.content.Context
+import android.text.method.ScrollingMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,6 +42,7 @@ object ViewFactory {
         view.layoutParams = params
         view.gravity = textView.gravity
         view.setTypeface(view.typeface, textView.textStyle)
+        view.movementMethod = ScrollingMovementMethod.getInstance()
         return view
     }
 }

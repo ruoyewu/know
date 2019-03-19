@@ -48,6 +48,8 @@ class TypeItemEditActivity : ToolbarActivity<TypeItemEditContract.Presenter>(),
         mController!!.attach(this, flContent!!, svOptions!!)
 
         setToolbarMoreListener(this)
+        setToolbarBack(R.drawable.ic_left, "")
+        setToolbarMore(R.drawable.ic_check, "")
     }
 
     override fun onMoreClick() {

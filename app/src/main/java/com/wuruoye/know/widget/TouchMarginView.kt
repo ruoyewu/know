@@ -12,7 +12,6 @@ import android.view.MotionEvent.*
 import android.view.VelocityTracker
 import android.view.View
 import com.wuruoye.know.R
-import com.wuruoye.library.util.DensityUtil
 import com.wuruoye.library.util.log.WLog
 
 /**
@@ -20,7 +19,6 @@ import com.wuruoye.library.util.log.WLog
  * Description:
  */
 class TouchMarginView(context: Context, attrs: AttributeSet) : View(context, attrs) {
-
     private var mTop: Float = 0.toFloat()
     private var mBottom: Float = 0.toFloat()
     private var mLeft: Float = 0.toFloat()
@@ -59,8 +57,6 @@ class TouchMarginView(context: Context, attrs: AttributeSet) : View(context, att
             }
             marginChanged()
         }
-        MAX_TOP = DensityUtil.dp2px(getContext(), 50f).toInt()
-        MAX_LEFT = DensityUtil.dp2px(getContext(), 30f).toInt()
     }
 
     fun setMargin(left: Int, top: Int, right: Int, bottom: Int) {
@@ -217,20 +213,20 @@ class TouchMarginView(context: Context, attrs: AttributeSet) : View(context, att
         initSize(w, h)
     }
 
-    override fun onDetachedFromWindow() {
-        mVelocityTracker.recycle()
-        mAnimation.cancel()
-        mListener = null
-        super.onDetachedFromWindow()
-    }
+//    override fun onDetachedFromWindow() {
+//        mVelocityTracker.recycle()
+//        mAnimation.cancel()
+//        mListener = null
+//        super.onDetachedFromWindow()
+//    }
 
     interface OnMarginChangedListener {
         fun onMarginChanged(left: Int, top: Int, right: Int, bottom: Int)
     }
 
     companion object {
-        var MAX_TOP = 50
-        var MAX_LEFT = 30
+        var MAX_TOP = 60
+        var MAX_LEFT = 50
         val TYPE_NONE = 0
         val TYPE_TOP = 1
         val TYPE_BOTTOM = 2

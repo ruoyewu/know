@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
     android:background="@color/romance"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    tools:ignore="NewApi">
 
     <include
         layout="@layout/toolbar"/>
@@ -34,18 +36,21 @@
 
             <com.wuruoye.library.widget.changetab.ChangeTabItem
                 app:text="@string/review"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content" />
 
             <com.wuruoye.library.widget.changetab.ChangeTabItem
                 app:text="@string/record"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content" />
 
             <com.wuruoye.library.widget.changetab.ChangeTabItem
                 app:text="@string/user"
+                android:foreground="?android:attr/selectableItemBackgroundBorderless"
                 android:layout_width="0dp"
                 android:layout_weight="1"
                 android:layout_height="wrap_content" />
