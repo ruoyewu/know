@@ -31,11 +31,14 @@
             android:id="@+id/ctl_main"
             app:normalTextColor="@color/mountain_mist"
             app:selectTextColor="@color/onyx"
+            app:normalBorderColor="@color/mountain_mist"
+            app:selectBorderColor="@color/onyx"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
             <com.wuruoye.library.widget.changetab.ChangeTabItem
                 app:text="@string/review"
+                app:icon="@drawable/ic_eye"
                 android:foreground="?android:attr/selectableItemBackgroundBorderless"
                 android:layout_width="0dp"
                 android:layout_weight="1"
@@ -43,6 +46,7 @@
 
             <com.wuruoye.library.widget.changetab.ChangeTabItem
                 app:text="@string/record"
+                app:icon="@drawable/ic_record"
                 android:foreground="?android:attr/selectableItemBackgroundBorderless"
                 android:layout_width="0dp"
                 android:layout_weight="1"
@@ -50,6 +54,7 @@
 
             <com.wuruoye.library.widget.changetab.ChangeTabItem
                 app:text="@string/user"
+                app:icon="@drawable/ic_user"
                 android:foreground="?android:attr/selectableItemBackgroundBorderless"
                 android:layout_width="0dp"
                 android:layout_weight="1"
