@@ -153,4 +153,8 @@ abstract class AbstractEditorController : EditorController,
     protected abstract fun onEditSubmit(text: String)
 
     protected abstract fun onItemSelect(value: Int)
+
+    override fun recycler() {
+        tmv.recycler()
+    }
 }

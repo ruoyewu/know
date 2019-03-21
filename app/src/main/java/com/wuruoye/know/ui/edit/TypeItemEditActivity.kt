@@ -22,8 +22,8 @@ class TypeItemEditActivity : ToolbarActivity<TypeItemEditContract.Presenter>(),
     private var mType: Int = 0
     private var mController: EditorController? = null
 
-    private var flContent: FrameLayout? = null
-    private var svOptions: ScrollView? = null
+    private lateinit var flContent: FrameLayout
+    private lateinit var svOptions: ScrollView
 
     override fun getContentView(): Int {
         return R.layout.activity_type_item_edit
@@ -45,7 +45,7 @@ class TypeItemEditActivity : ToolbarActivity<TypeItemEditContract.Presenter>(),
         mController = mPresenter.generateController(mType, mView)
         flContent = findViewById(R.id.fl_type_item_edit)
         svOptions = findViewById(R.id.sv_type_item_edit)
-        mController!!.attach(this, flContent!!, svOptions!!)
+        mController?.attach(this, flContent, svOptions)
 
         setToolbarMoreListener(this)
         setToolbarBack(R.drawable.ic_left, "")
@@ -58,6 +58,11 @@ class TypeItemEditActivity : ToolbarActivity<TypeItemEditContract.Presenter>(),
         intent.putExtra(RECORD_VIEW, view as Parcelable)
         setResult(Activity.RESULT_OK, intent)
         finish()
+    }
+
+    override fun onDestroy() {
+        mController?.recycler()
+        super.onDestroy()
     }
 
     companion object {

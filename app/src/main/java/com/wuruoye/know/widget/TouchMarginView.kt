@@ -213,6 +213,12 @@ class TouchMarginView(context: Context, attrs: AttributeSet) : View(context, att
         initSize(w, h)
     }
 
+    fun recycler() {
+        mVelocityTracker.recycle()
+        mAnimation.cancel()
+        mListener = null
+    }
+
 //    override fun onDetachedFromWindow() {
 //        mVelocityTracker.recycle()
 //        mAnimation.cancel()

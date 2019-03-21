@@ -12,4 +12,5 @@ import com.wuruoye.know.model.beans.RecordView
 interface EditorController {
     val result: RecordView
     fun attach(context: Context, fl: FrameLayout, sv: ScrollView)
+    fun recycler()
 }

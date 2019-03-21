@@ -23,26 +23,27 @@ object ViewFactory {
     }
 
     private fun generateTextView(context: Context, textView: RecordTextView, parent: ViewGroup): View {
-        val editable = textView.isEditable
-        val view = LayoutInflater.from(context)
-                .inflate(if (editable)
-                    R.layout.view_edit
-                else
-                    R.layout.view_text, parent, false) as TextView
-        view.text = textView.text
-        view.setTextColor(textView.textColor)
-        view.textSize = textView.textSize.toFloat()
-        view.setPadding(textView.paddingLeft, textView.paddingTop,
-                textView.paddingRight, textView.paddingBottom)
-        val params = ViewGroup.MarginLayoutParams(view.layoutParams)
-        params.setMargins(textView.marginLeft, textView.marginTop,
-                textView.marginRight, textView.marginBottom)
-        params.width = textView.width
-        params.height = textView.height
-        view.layoutParams = params
-        view.gravity = textView.gravity
-        view.setTypeface(view.typeface, textView.textStyle)
-        view.movementMethod = ScrollingMovementMethod.getInstance()
-        return view
+        with(textView) {
+            val view = LayoutInflater.from(context)
+                    .inflate(if (isEditable)
+                        R.layout.view_edit
+                    else
+                        R.layout.view_text, parent, false) as TextView
+            view.text = text
+            view.setTextColor(textColor)
+            view.textSize = textSize.toFloat()
+            view.setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom)
+            val params = ViewGroup.MarginLayoutParams(view.layoutParams)
+            params.setMargins(marginLeft, marginTop, marginRight, marginBottom)
+            params.width = width
+            params.height = height
+            view.layoutParams = params
+            view.gravity = gravity
+            view.setTypeface(view.typeface, textStyle)
+            view.minLines = minLine
+            view.maxLines = maxLine
+            view.movementMethod = ScrollingMovementMethod.getInstance()
+            return view
+        }
     }
 }
