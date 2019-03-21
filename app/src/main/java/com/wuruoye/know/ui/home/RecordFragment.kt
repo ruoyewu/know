@@ -4,13 +4,11 @@ import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomSheetDialog
-import android.support.design.widget.FloatingActionButton
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.Toast
-
 import com.wuruoye.know.R
 import com.wuruoye.know.model.beans.RecordType
 import com.wuruoye.know.ui.edit.RecordTypeEditActivity
@@ -19,6 +17,7 @@ import com.wuruoye.know.ui.home.contract.RecordContract
 import com.wuruoye.know.ui.home.presenter.RecordPresenter
 import com.wuruoye.library.adapter.WBaseRVAdapter
 import com.wuruoye.library.ui.WBaseFragment
+import kotlinx.android.synthetic.main.fragment_record.*
 
 /**
  * Created : wuruoye
@@ -31,7 +30,6 @@ class RecordFragment : WBaseFragment<RecordContract.Presenter>(),
     private var dlgSelectType: BottomSheetDialog? = null
     private var rvSelectType: RecyclerView? = null
 
-    private var fab: FloatingActionButton? = null
 
     override fun getContentView(): Int {
         return R.layout.fragment_record
@@ -42,8 +40,7 @@ class RecordFragment : WBaseFragment<RecordContract.Presenter>(),
     }
 
     override fun initView(view: View) {
-        fab = view.findViewById(R.id.fab_record)
-        fab!!.setOnClickListener(this)
+        fab_record.setOnClickListener(this)
 
         initDlg()
     }

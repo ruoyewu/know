@@ -5,7 +5,6 @@ import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomSheetDialog
-import android.support.design.widget.FloatingActionButton
 import android.support.design.widget.TextInputLayout
 import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
@@ -13,7 +12,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
-import android.widget.LinearLayout
 import com.wuruoye.know.R
 import com.wuruoye.know.base.IToolbarView
 import com.wuruoye.know.base.ToolbarActivity
@@ -26,14 +24,12 @@ import com.wuruoye.know.ui.edit.contract.RecordTypeEditContract
 import com.wuruoye.know.ui.edit.presenter.RecordTypeEditPresenter
 import com.wuruoye.know.widget.BottomAlertDialog
 import com.wuruoye.library.adapter.WBaseRVAdapter
+import kotlinx.android.synthetic.main.activity_record_type_edit.*
 
 class RecordTypeEditActivity : ToolbarActivity<RecordTypeEditContract.Presenter>(),
         RecordTypeEditContract.View, IToolbarView.OnToolbarBackListener,
         View.OnClickListener, WBaseRVAdapter.OnItemClickListener<RecordTypeItem>,
         IToolbarView.OnToolbarTitleListener {
-
-    private lateinit var ll: LinearLayout
-    private lateinit var fabAdd: FloatingActionButton
 
     private lateinit var dlgTitle: BottomAlertDialog
     private lateinit var tilTitle: TextInputLayout
@@ -64,9 +60,7 @@ class RecordTypeEditActivity : ToolbarActivity<RecordTypeEditContract.Presenter>
         super.initView()
         setToolbarBackListener(this)
 
-        ll = findViewById(R.id.ll_record_type_edit)
-        fabAdd = findViewById(R.id.fab_record_type_edit)
-        fabAdd.setOnClickListener(this)
+        fab_record_type_edit.setOnClickListener(this)
 
         setToolbarTitleListener(this)
         setToolbarBack(R.drawable.ic_left, "")
@@ -109,10 +103,10 @@ class RecordTypeEditActivity : ToolbarActivity<RecordTypeEditContract.Presenter>
     }
 
     private fun initItems() {
-        ll.removeAllViews()
+        ll_record_type_edit.removeAllViews()
         for (view in mType.views) {
-            val v = mPresenter.generateView(this, view, ll)
-            ll.addView(v)
+            val v = mPresenter.generateView(this, view, ll_record_type_edit)
+            ll_record_type_edit.addView(v)
             v!!.setOnClickListener { }
         }
     }
@@ -175,7 +169,8 @@ class RecordTypeEditActivity : ToolbarActivity<RecordTypeEditContract.Presenter>
         if (requestCode == FOR_RESULT && resultCode == Activity.RESULT_OK) {
             val view = data!!.getParcelableExtra<RecordView>(TypeItemEditActivity.RECORD_VIEW)
             mType.views.add(view)
-            ll.addView(ViewFactory.generateView(this, view, ll))
+            ll_record_type_edit.addView(ViewFactory.generateView(this, view,
+                    ll_record_type_edit))
         }
     }
 
