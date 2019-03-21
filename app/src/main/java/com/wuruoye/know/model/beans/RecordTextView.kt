@@ -11,8 +11,8 @@ import android.view.Gravity
  * Created at 2019/3/18 13:12 by wuruoye
  * Description:
  */
-data class RecordTextView(
-        var id: Int = -1,
+class RecordTextView(
+        id: Int = -1,
         var text: String = "",
         var textSize: Int = 15,
         var textColor: Int = Color.BLACK,
@@ -37,9 +37,9 @@ data class RecordTextView(
         var minLine: Int = 1,
         var maxLine: Int = 1,
         var isEditable: Boolean = false,
-        var createTime: Long = 0,
-        var updateTime: Long = 0
-) : RecordView(), Parcelable {
+        createTime: Long = -1,
+        updateTime: Long = -1
+) : RecordView(id, createTime, updateTime), Parcelable {
     constructor(source: Parcel) : this(
             source.readInt(),
             source.readString(),

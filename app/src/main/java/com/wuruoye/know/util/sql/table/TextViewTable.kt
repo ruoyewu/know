@@ -1,8 +1,10 @@
 package com.wuruoye.know.util.sql.table
 
+import android.content.ContentValues
 import android.database.sqlite.SQLiteDatabase
+import com.wuruoye.know.model.beans.RecordTextView
 
-class TextViewTable(private val id: Int,
+class TextViewTable(id: Int,
                     private val text: String,
                     private val textSize: Int,
                     private val textColor: Int,
@@ -28,18 +30,57 @@ class TextViewTable(private val id: Int,
                     private val maxLine: Int,
                     private val editable: Boolean,
                     private val createTime: Long,
-                    private val updateTime: Long) : ViewTable {
+                    private val updateTime: Long) : ViewTable(id) {
 
-    override fun save(db: SQLiteDatabase): Boolean {
-        return false
+    constructor(view: RecordTextView) : this(view.id, view.text, view.textSize, view.textColor,
+            view.hint, view.hintSize, view.hintColor, view.width, view.height, view.bgColor,
+            view.fgColor, view.marginTop, view.marginBottom, view.marginLeft, view.marginRight,
+            view.paddingTop, view.paddingBottom, view.paddingLeft, view.paddingRight, view.gravity,
+            view.textStyle, view.inputType, view.minLine, view.maxLine, view.isEditable,
+            view.createTime, view.updateTime)
+
+    override fun save(db: SQLiteDatabase): Int {
+        id = db.insert(NAME, null, contentValues()).toInt()
+        return id
     }
 
-    override fun delete(db: SQLiteDatabase): Boolean {
-        return false
+    override fun delete(db: SQLiteDatabase): Int {
+        return db.delete(NAME, "id=?", arrayOf(id.toString()))
     }
 
-    override fun update(db: SQLiteDatabase): Boolean {
-        return false
+    override fun update(db: SQLiteDatabase): Int {
+        return db.update(NAME, contentValues(), "id=?", arrayOf(id.toString()))
+    }
+
+    override fun contentValues(): ContentValues {
+        val values = ContentValues()
+        values.put(TEXT, text)
+        values.put(TEXT_SIZE, textSize)
+        values.put(TEXT_COLOR, textColor)
+        values.put(HINT, hint)
+        values.put(HINT_SIZE, hintSize)
+        values.put(HINT_COLOR, hintColor)
+        values.put(WIDTH, width)
+        values.put(HEIGHT, height)
+        values.put(BG_COLOR, bgColor)
+        values.put(FG_COLOR, fgColor)
+        values.put(MARGIN_LEFT, marginLeft)
+        values.put(MARGIN_RIGHT, marginRight)
+        values.put(MARGIN_TOP, marginTop)
+        values.put(MARGIN_BOTTOM, marginBottom)
+        values.put(PADDING_LEFT, paddingLeft)
+        values.put(PADDING_RIGHT, paddingRight)
+        values.put(PADDING_TOP, paddingTop)
+        values.put(PADDING_BOTTOM, paddingBottom)
+        values.put(GRAVITY, gravity)
+        values.put(TEXT_STYLE, textStyle)
+        values.put(INPUT_TYPE, inputType)
+        values.put(MIN_LINE, minLine)
+        values.put(MAX_LINE, maxLine)
+        values.put(EDITABLE, editable)
+        values.put(CREATE_TIME, createTime)
+        values.put(UPDATE_TIME, updateTime)
+        return values
     }
 
     companion object {

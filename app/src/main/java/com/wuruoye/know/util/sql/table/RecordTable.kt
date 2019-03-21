@@ -1,26 +1,32 @@
 package com.wuruoye.know.util.sql.table
 
+import android.content.ContentValues
 import android.database.sqlite.SQLiteDatabase
 
-class RecordTable(private val id: Int,
+class RecordTable(id: Int,
                   private val type: Int,
                   private val items: String,
                   private val reviewNum: Int,
                   private val failNum: Int,
                   private val lastReview: Long,
                   private val createTime: Long,
-                  private val updateTime: Long) : Table {
+                  private val updateTime: Long) : Table(id) {
 
-    override fun save(db: SQLiteDatabase): Boolean {
-        return false
+    override fun save(db: SQLiteDatabase): Int {
+        return -1
     }
 
-    override fun delete(db: SQLiteDatabase): Boolean {
-        return false
+    override fun delete(db: SQLiteDatabase): Int {
+        return -1
     }
 
-    override fun update(db: SQLiteDatabase): Boolean {
-        return false
+    override fun update(db: SQLiteDatabase): Int {
+        return -1
+    }
+
+    override fun contentValues(): ContentValues {
+        val values = ContentValues()
+        return values
     }
 
     companion object {

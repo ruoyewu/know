@@ -5,7 +5,6 @@ import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
 
 import com.wuruoye.know.util.sql.table.RecordTable
-import com.wuruoye.know.util.sql.table.RecordTypeItemTable
 import com.wuruoye.know.util.sql.table.RecordTypeTable
 import com.wuruoye.know.util.sql.table.TextViewTable
 
@@ -15,7 +14,6 @@ class SqliteHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, 
         TextViewTable.create(db)
         RecordTypeTable.create(db)
         RecordTable.create(db)
-        RecordTypeItemTable.create(db)
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {

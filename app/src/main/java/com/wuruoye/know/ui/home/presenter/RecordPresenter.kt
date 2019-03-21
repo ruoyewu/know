@@ -8,6 +8,6 @@ import com.wuruoye.know.util.sql.SqlUtil
 
 class RecordPresenter : RecordContract.Presenter() {
     override fun getSelectType(context: Context): List<RecordType> {
-        return SqlUtil.getInstance(context)!!.recordTypeWithoutItems
+        return SqlUtil.getInstance(context).getRecordTypeWithoutItems()
     }
 }

@@ -29,7 +29,7 @@ import kotlinx.android.synthetic.main.activity_record_type_edit.*
 class RecordTypeEditActivity : ToolbarActivity<RecordTypeEditContract.Presenter>(),
         RecordTypeEditContract.View, IToolbarView.OnToolbarBackListener,
         View.OnClickListener, WBaseRVAdapter.OnItemClickListener<RecordTypeItem>,
-        IToolbarView.OnToolbarTitleListener {
+        IToolbarView.OnToolbarTitleListener, IToolbarView.OnToolbarMoreListener {
 
     private lateinit var dlgTitle: BottomAlertDialog
     private lateinit var tilTitle: TextInputLayout
@@ -52,7 +52,6 @@ class RecordTypeEditActivity : ToolbarActivity<RecordTypeEditContract.Presenter>
         }
         mType = type ?: RecordType(-1, "", arrayListOf(), -1, -1)
 
-
         setPresenter(RecordTypeEditPresenter())
     }
 
@@ -63,6 +62,8 @@ class RecordTypeEditActivity : ToolbarActivity<RecordTypeEditContract.Presenter>
         fab_record_type_edit.setOnClickListener(this)
 
         setToolbarTitleListener(this)
+        setToolbarBackListener(this)
+        setToolbarMoreListener(this)
         setToolbarBack(R.drawable.ic_left, "")
         setToolbarMore(R.drawable.ic_check, "")
 
@@ -106,16 +107,15 @@ class RecordTypeEditActivity : ToolbarActivity<RecordTypeEditContract.Presenter>
         ll_record_type_edit.removeAllViews()
         for (view in mType.views) {
             val v = mPresenter.generateView(this, view, ll_record_type_edit)
-            ll_record_type_edit.addView(v)
-            v!!.setOnClickListener { }
+            v!!.setOnClickListener { onViewClick(view) }
         }
     }
 
     private fun initTitle() {
-        if (mType.title!!.isEmpty()) {
+        if (mType.title.isEmpty()) {
             dlgTitle.show()
         } else {
-            setToolbarTitle(mType.title!!)
+            setToolbarTitle(mType.title)
         }
     }
 
@@ -132,9 +132,16 @@ class RecordTypeEditActivity : ToolbarActivity<RecordTypeEditContract.Presenter>
         onBackPressed()
     }
 
+    override fun onMoreClick() {
+        if (mType.createTime > 0) mType.updateTime = System.currentTimeMillis()
+        else mType.createTime = System.currentTimeMillis()
+        mPresenter.saveRecordType(this, mType)
+        finish()
+    }
+
     override fun onTitleClick() {
         etTitle.setText(mType.title)
-        etTitle.setSelection(mType.title!!.length)
+        etTitle.setSelection(mType.title.length)
         dlgTitle.show()
     }
 
@@ -151,6 +158,14 @@ class RecordTypeEditActivity : ToolbarActivity<RecordTypeEditContract.Presenter>
         }
     }
 
+    override fun onViewClick(view: RecordView) {
+        val intent = Intent(this, TypeItemEditActivity::class.java)
+        val bundle = Bundle()
+        bundle.putParcelable(TypeItemEditActivity.RECORD_VIEW, view)
+        intent.putExtras(bundle)
+        startActivityForResult(intent, FOR_RESULT)
+    }
+
     override fun onItemClick(recordTypeItem: RecordTypeItem) {
         dlgSelectItem.dismiss()
         when (recordTypeItem.type) {
@@ -164,13 +179,15 @@ class RecordTypeEditActivity : ToolbarActivity<RecordTypeEditContract.Presenter>
         }
     }
 
+    override fun onViewBack(view: RecordView) {
+        mType.views.add(view)
+        ViewFactory.generateView(this, view, ll_record_type_edit)
+    }
+
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == FOR_RESULT && resultCode == Activity.RESULT_OK) {
-            val view = data!!.getParcelableExtra<RecordView>(TypeItemEditActivity.RECORD_VIEW)
-            mType.views.add(view)
-            ll_record_type_edit.addView(ViewFactory.generateView(this, view,
-                    ll_record_type_edit))
+            onViewBack(data!!.getParcelableExtra<RecordView>(TypeItemEditActivity.RECORD_VIEW))
         }
     }
 

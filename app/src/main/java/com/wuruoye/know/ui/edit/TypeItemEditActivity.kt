@@ -47,6 +47,8 @@ class TypeItemEditActivity : ToolbarActivity<TypeItemEditContract.Presenter>(),
 
     override fun onMoreClick() {
         val view = mController!!.result
+        if (view.createTime > 0) view.updateTime = System.currentTimeMillis()
+        else view.createTime = System.currentTimeMillis()
         val intent = Intent()
         intent.putExtra(RECORD_VIEW, view as Parcelable)
         setResult(Activity.RESULT_OK, intent)

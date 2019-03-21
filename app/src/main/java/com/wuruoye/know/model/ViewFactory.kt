@@ -20,12 +20,17 @@ import com.wuruoye.library.util.DensityUtil
  */
 object ViewFactory {
     fun generateView(context: Context, view: RecordView, parent: ViewGroup): View? {
+        return ViewFactory.generateView(context, view, parent, true)
+    }
+
+    fun generateView(context: Context, view: RecordView, parent: ViewGroup, attach: Boolean): View? {
         return if (view is RecordTextView) {
-            generateTextView(context, view, parent)
+            generateTextView(context, view, parent, attach)
         } else null
     }
 
-    private fun generateTextView(context: Context, textView: RecordTextView, parent: ViewGroup): View {
+    private fun generateTextView(context: Context, textView: RecordTextView, parent: ViewGroup,
+                                 attach: Boolean): View {
         with(textView) {
             val view = LayoutInflater.from(context)
                     .inflate(if (isEditable)
@@ -56,6 +61,10 @@ object ViewFactory {
             view.minLines = minLine
             view.maxLines = maxLine
             view.movementMethod = ScrollingMovementMethod.getInstance()
+
+            if (attach) {
+                parent.addView(view)
+            }
             return view
         }
     }

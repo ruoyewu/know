@@ -7,15 +7,24 @@ import android.os.Parcelable
  * Created at 2019/3/18 13:11 by wuruoye
  * Description:
  */
-open class RecordView() : Parcelable {
-
-
+open class RecordView(
+        var id: Int = -1,
+        var createTime: Long = -1,
+        var updateTime: Long = -1
+) : Parcelable {
     constructor(source: Parcel) : this(
+            source.readInt(),
+            source.readLong(),
+            source.readLong()
     )
 
     override fun describeContents() = 0
 
-    override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {}
+    override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
+        writeInt(id)
+        writeLong(createTime)
+        writeLong(updateTime)
+    }
 
     companion object {
         @JvmField

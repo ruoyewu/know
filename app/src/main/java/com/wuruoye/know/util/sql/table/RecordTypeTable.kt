@@ -1,24 +1,39 @@
 package com.wuruoye.know.util.sql.table
 
+import android.content.ContentValues
 import android.database.sqlite.SQLiteDatabase
+import com.wuruoye.know.model.beans.RecordType
 import java.util.*
 
-class RecordTypeTable(val id: Int,
+class RecordTypeTable(id: Int,
                       val title: String,
                       val items: String,
                       val createTime: Long,
-                      val updateTime: Long) : Table {
+                      val updateTime: Long) : Table(id) {
 
-    override fun save(db: SQLiteDatabase): Boolean {
-        return false
+    constructor(recordType: RecordType, items: String): this(recordType.id, recordType.title,
+            items, recordType.createTime, recordType.updateTime)
+
+    override fun save(db: SQLiteDatabase): Int {
+        id = db.insert(NAME, null, contentValues()).toInt()
+        return id
     }
 
-    override fun delete(db: SQLiteDatabase): Boolean {
-        return false
+    override fun delete(db: SQLiteDatabase): Int {
+        return db.delete(NAME, "id=?", arrayOf(id.toString()))
     }
 
-    override fun update(db: SQLiteDatabase): Boolean {
-        return false
+    override fun update(db: SQLiteDatabase): Int {
+        return db.update(NAME, contentValues(), "id=?", arrayOf(id.toString()))
+    }
+
+    override fun contentValues(): ContentValues {
+        val values = ContentValues()
+        values.put(TITLE, title)
+        values.put(ITEMS, items)
+        values.put(CREATE_TIME, createTime)
+        values.put(UPDATE_TIME, updateTime)
+        return values
     }
 
     companion object {
@@ -40,7 +55,8 @@ class RecordTypeTable(val id: Int,
 
         fun queryAll(db: SQLiteDatabase): List<RecordTypeTable> {
             val result = ArrayList<RecordTypeTable>()
-            val cursor = db.query(NAME, null, null, null, null, null, CREATE_TIME)
+            val cursor = db.query(NAME, null, null, null,
+                    null, null, CREATE_TIME)
 
             try {
                 cursor.moveToFirst()
@@ -51,6 +67,7 @@ class RecordTypeTable(val id: Int,
                     val createTime = cursor.getLong(3)
                     val updateTime = cursor.getLong(4)
                     result.add(RecordTypeTable(id, title, items, createTime, updateTime))
+                    cursor.moveToNext()
                 }
             } finally {
                 cursor.close()

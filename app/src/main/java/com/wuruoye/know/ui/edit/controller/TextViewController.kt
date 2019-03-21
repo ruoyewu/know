@@ -66,7 +66,6 @@ class TextViewController(mView: RecordView) : AbstractEditorController(), View.O
     @SuppressLint("SetTextI18n")
     private fun initView() {
         mShowView = ViewFactory.generateView(mContext, mView, flContent as ViewGroup) as TextView
-        flContent.addView(mShowView)
         LayoutInflater.from(mContext)
                 .inflate(R.layout.layout_text_view, svOptions)
 

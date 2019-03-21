@@ -1,9 +1,13 @@
 package com.wuruoye.know.util.sql.table
 
+import android.content.ContentValues
 import android.database.sqlite.SQLiteDatabase
 
-interface Table {
-    fun save(db: SQLiteDatabase): Boolean
-    fun delete(db: SQLiteDatabase): Boolean
-    fun update(db: SQLiteDatabase): Boolean
+abstract class Table(
+        var id: Int = -1
+) {
+    abstract fun save(db: SQLiteDatabase): Int
+    abstract fun delete(db: SQLiteDatabase): Int
+    abstract fun update(db: SQLiteDatabase): Int
+    abstract fun contentValues(): ContentValues
 }

@@ -8,7 +8,7 @@ import android.os.Parcelable
  * Description:
  */
 class RecordType(var id: Int,
-                 var title: String?,
+                 var title: String,
                  var views: ArrayList<RecordView>,
                  var createTime: Long,
                  var updateTime: Long
