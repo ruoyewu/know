@@ -9,20 +9,20 @@ import android.support.v4.app.ActivityCompat
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.Button
 import android.widget.EditText
 import android.widget.NumberPicker
 import android.widget.TextView
 import com.wuruoye.know.R
 import com.wuruoye.know.widget.BottomAlertDialog
-import com.wuruoye.know.widget.TouchMarginView
+import com.wuruoye.know.widget.ColorPickerView
+import com.wuruoye.know.widget.MarginPickerView
 
 /**
  * Created at 2019/3/18 17:16 by wuruoye
  * Description:
  */
 abstract class AbstractEditorController : EditorController,
-        TouchMarginView.OnMarginChangedListener {
+        MarginPickerView.OnMarginChangedListener {
     protected lateinit var mContext: Context
 
     private lateinit var dlgEdit: Dialog
@@ -30,12 +30,14 @@ abstract class AbstractEditorController : EditorController,
     private lateinit var etEdit: EditText
 
     private lateinit var dlgMargin: Dialog
-    private lateinit var btnMargin: Button
     private lateinit var tvMargin: TextView
-    private lateinit var tmv: TouchMarginView
+    private lateinit var tmv: MarginPickerView
 
     private lateinit var dlgSelect: Dialog
     private lateinit var npSelect: NumberPicker
+
+    private lateinit var dlgColor: Dialog
+    private lateinit var cpvColor: ColorPickerView
 
     internal fun attach(context: Context) {
         mContext = context
@@ -84,7 +86,7 @@ abstract class AbstractEditorController : EditorController,
                 .build()
 
         npSelect = LayoutInflater.from(mContext)
-                .inflate(R.layout.dlg_picker, null) as NumberPicker
+                .inflate(R.layout.dlg_number_picker, null) as NumberPicker
         // change divider color
         changePickerDivider(npSelect)
         dlgSelect = BottomAlertDialog.Builder(mContext)
@@ -92,6 +94,16 @@ abstract class AbstractEditorController : EditorController,
                 .setConfirmListener(View.OnClickListener {
                     dlgSelect.dismiss()
                     onItemSelect(npSelect.value)
+                }, Gravity.TOP)
+                .build()
+
+        // color view
+        cpvColor = ColorPickerView(mContext)
+        dlgColor = BottomAlertDialog.Builder(mContext)
+                .setContentView(cpvColor)
+                .setConfirmListener(View.OnClickListener {
+                    dlgColor.dismiss()
+                    onColorSubmit(cpvColor.getColor())
                 }, Gravity.TOP)
                 .build()
     }
@@ -148,11 +160,18 @@ abstract class AbstractEditorController : EditorController,
         dlgSelect.show()
     }
 
+    protected fun showColorDlg(color: Int) {
+        cpvColor.setColor(color)
+        dlgColor.show()
+    }
+
     protected abstract fun onMarginSubmit(left: Int, top: Int, right: Int, bottom: Int)
 
     protected abstract fun onEditSubmit(text: String)
 
     protected abstract fun onItemSelect(value: Int)
+
+    protected abstract fun onColorSubmit(color: Int)
 
     override fun recycler() {
         tmv.recycler()

@@ -3,6 +3,8 @@ package com.wuruoye.know.ui.edit.controller
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Typeface
+import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -106,10 +108,10 @@ class TextViewController(mView: RecordView) : AbstractEditorController(), View.O
         with(mView) {
             tvText.text = text
             tvTextSize.text = textSize.toString()
-            tvTextColor.text = ColorUtil.code2Hex(textColor)
+            tvTextColor.text = ColorUtil.color2hex(textColor)
             tvTextColor.setTextColor(textColor)
-            tvBgColor.text = ColorUtil.code2Hex(bgColor)
-            tvFgColor.text = ColorUtil.code2Hex(fgColor)
+            tvBgColor.text = ColorUtil.color2hex(bgColor)
+            tvFgColor.text = ColorUtil.color2hex(fgColor)
             tvMargin.text = "" + marginLeft + " | " + marginTop +
                     " | " + marginRight + " | " + marginBottom
             tvPadding.text = "" + paddingLeft + " | " + paddingTop +
@@ -197,6 +199,31 @@ class TextViewController(mView: RecordView) : AbstractEditorController(), View.O
         }
     }
 
+    override fun onColorSubmit(color: Int) {
+        when (mCurType) {
+            TYPE_TEXT_COLOR -> {
+                mView.textColor = color
+                mShowView.setTextColor(color)
+                tvTextColor.setTextColor(color)
+                tvTextColor.text = ColorUtil.color2hex(color)
+            }
+            TYPE_BG_COLOR -> {
+                mView.bgColor = color
+                mShowView.setBackgroundColor(color)
+                tvBgColor.setTextColor(color)
+                tvBgColor.text = ColorUtil.color2hex(color)
+            }
+            TYPE_FG_COLOR -> {
+                mView.fgColor = color
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    mShowView.foreground = ColorDrawable(color)
+                }
+                tvFgColor.setTextColor(color)
+                tvFgColor.text = ColorUtil.color2hex(color)
+            }
+        }
+    }
+
     override fun onClick(v: View) {
         when (v.id) {
             R.id.ll_text_layout_text -> {
@@ -209,12 +236,15 @@ class TextViewController(mView: RecordView) : AbstractEditorController(), View.O
             }
             R.id.ll_text_color_layout_text -> {
                 mCurType = TYPE_TEXT_COLOR
+                showColorDlg(mView.textColor)
             }
             R.id.ll_bg_color_layout_text -> {
                 mCurType = TYPE_BG_COLOR
+                showColorDlg(mView.bgColor)
             }
             R.id.ll_fg_color_layout_text -> {
                 mCurType = TYPE_FG_COLOR
+                showColorDlg(mView.fgColor)
             }
             R.id.ll_margin_layout_text -> {
                 mCurType = TYPE_MARGIN

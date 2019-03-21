@@ -39,6 +39,7 @@
             <com.wuruoye.library.widget.changetab.ChangeTabItem
                 app:text="@string/review"
                 app:icon="@drawable/ic_eye"
+                app:imgLength="28dp"
                 android:foreground="?android:attr/selectableItemBackgroundBorderless"
                 android:layout_width="0dp"
                 android:layout_weight="1"
@@ -47,6 +48,7 @@
             <com.wuruoye.library.widget.changetab.ChangeTabItem
                 app:text="@string/record"
                 app:icon="@drawable/ic_record"
+                app:imgLength="28dp"
                 android:foreground="?android:attr/selectableItemBackgroundBorderless"
                 android:layout_width="0dp"
                 android:layout_weight="1"
@@ -55,6 +57,7 @@
             <com.wuruoye.library.widget.changetab.ChangeTabItem
                 app:text="@string/user"
                 app:icon="@drawable/ic_user"
+                app:imgLength="28dp"
                 android:foreground="?android:attr/selectableItemBackgroundBorderless"
                 android:layout_width="0dp"
                 android:layout_weight="1"

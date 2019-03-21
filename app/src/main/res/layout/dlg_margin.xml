@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
-    <com.wuruoye.know.widget.TouchMarginView
+    <com.wuruoye.know.widget.MarginPickerView
         android:id="@+id/tmv_dlg_margin"
         android:layout_width="match_parent"
         android:layout_height="250dp" />

@@ -18,7 +18,7 @@ import com.wuruoye.library.util.log.WLog
  * Created at 2019/3/18 18:30 by wuruoye
  * Description:
  */
-class TouchMarginView(context: Context, attrs: AttributeSet) : View(context, attrs) {
+class MarginPickerView(context: Context, attrs: AttributeSet) : View(context, attrs) {
     private var mTop: Float = 0.toFloat()
     private var mBottom: Float = 0.toFloat()
     private var mLeft: Float = 0.toFloat()

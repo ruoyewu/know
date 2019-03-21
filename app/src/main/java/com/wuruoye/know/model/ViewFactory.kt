@@ -1,6 +1,8 @@
 package com.wuruoye.know.model
 
 import android.content.Context
+import android.graphics.drawable.ColorDrawable
+import android.os.Build
 import android.text.method.ScrollingMovementMethod
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +12,7 @@ import android.widget.TextView
 import com.wuruoye.know.R
 import com.wuruoye.know.model.beans.RecordTextView
 import com.wuruoye.know.model.beans.RecordView
+import com.wuruoye.library.util.DensityUtil
 
 /**
  * Created at 2019/3/17 21:52 by wuruoye
@@ -32,9 +35,19 @@ object ViewFactory {
             view.text = text
             view.setTextColor(textColor)
             view.textSize = textSize.toFloat()
-            view.setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom)
+            view.setBackgroundColor(bgColor)
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                view.foreground = ColorDrawable(fgColor)
+            }
+            view.setPadding(DensityUtil.dp2px(context, paddingLeft.toFloat()).toInt(),
+                    DensityUtil.dp2px(context, paddingTop.toFloat()).toInt(),
+                    DensityUtil.dp2px(context, paddingRight.toFloat()).toInt(),
+                    DensityUtil.dp2px(context, paddingBottom.toFloat()).toInt())
             val params = ViewGroup.MarginLayoutParams(view.layoutParams)
-            params.setMargins(marginLeft, marginTop, marginRight, marginBottom)
+            params.setMargins(DensityUtil.dp2px(context, marginLeft.toFloat()).toInt(),
+                    DensityUtil.dp2px(context, marginTop.toFloat()).toInt(),
+                    DensityUtil.dp2px(context, marginRight.toFloat()).toInt(),
+                    DensityUtil.dp2px(context, marginBottom.toFloat()).toInt())
             params.width = width
             params.height = height
             view.layoutParams = params
