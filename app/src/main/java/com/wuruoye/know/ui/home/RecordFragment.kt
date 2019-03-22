@@ -26,7 +26,8 @@ import kotlinx.android.synthetic.main.fragment_record.*
  */
 class RecordFragment : WBaseFragment<RecordContract.Presenter>(),
         RecordContract.View, View.OnClickListener,
-        WBaseRVAdapter.OnItemClickListener<RecordType> {
+        WBaseRVAdapter.OnItemClickListener<RecordType>,
+        WBaseRVAdapter.OnItemLongClickListener<RecordType> {
     private var dlgSelectType: BottomSheetDialog? = null
     private var rvSelectType: RecyclerView? = null
 
@@ -51,6 +52,7 @@ class RecordFragment : WBaseFragment<RecordContract.Presenter>(),
                 .inflate(R.layout.dlg_select_type, null) as RecyclerView
         val adapter = SelectTypeRVAdapter()
         adapter.setOnItemClickListener(this)
+        adapter.setOnItemLongClickListener(this)
         rvSelectType!!.adapter = adapter
         adapter.data = mPresenter.getSelectType(context!!)
         rvSelectType!!.layoutManager = LinearLayoutManager(context)
@@ -78,6 +80,16 @@ class RecordFragment : WBaseFragment<RecordContract.Presenter>(),
         } else {
             // normal
             Toast.makeText(context, recordType.title, Toast.LENGTH_SHORT).show()
+        }
+    }
+
+    override fun onItemLongClick(recordType: RecordType) {
+        if (recordType.id >= 0) {
+            val intent = Intent(context, RecordTypeEditActivity::class.java)
+            val bundle = Bundle()
+            bundle.putParcelable(RecordTypeEditActivity.RECORD_TYPE, recordType)
+            intent.putExtras(bundle)
+            startActivity(intent)
         }
     }
 

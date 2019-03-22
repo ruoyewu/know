@@ -2,6 +2,7 @@ package com.wuruoye.know.model.beans
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.wuruoye.know.util.sql.table.RecordTypeTable
 
 /**
  * Created at 2019/3/18 12:31 by wuruoye
@@ -13,6 +14,11 @@ class RecordType(var id: Int,
                  var createTime: Long,
                  var updateTime: Long
 ) : Parcelable {
+    constructor(table: RecordTypeTable, views: ArrayList<RecordView>): this(table.id,
+            table.title, views, table.createTime, table.updateTime)
+
+    constructor(title: String): this(-1, title, arrayListOf(), -1, -1)
+
     constructor(source: Parcel) : this(
             source.readInt(),
             source.readString(),

@@ -8,6 +8,10 @@ import com.wuruoye.know.util.sql.SqlUtil
 
 class RecordPresenter : RecordContract.Presenter() {
     override fun getSelectType(context: Context): List<RecordType> {
-        return SqlUtil.getInstance(context).getRecordTypeWithoutItems()
+        val types: List<RecordType> = SqlUtil.getInstance(context).getRecordTypeWithoutItems()
+        val add = RecordType("点击增加更多类型")
+        val result = ArrayList<RecordType>(types)
+        result.add(add)
+        return result
     }
 }

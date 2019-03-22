@@ -15,7 +15,6 @@ import android.widget.EditText
 import com.wuruoye.know.R
 import com.wuruoye.know.base.IToolbarView
 import com.wuruoye.know.base.ToolbarActivity
-import com.wuruoye.know.model.ViewFactory
 import com.wuruoye.know.model.beans.RecordType
 import com.wuruoye.know.model.beans.RecordTypeItem
 import com.wuruoye.know.model.beans.RecordView
@@ -39,20 +38,21 @@ class RecordTypeEditActivity : ToolbarActivity<RecordTypeEditContract.Presenter>
     private lateinit var rvSelectItem: RecyclerView
 
     private lateinit var mType: RecordType
+    private lateinit var mUpdateRecordView: RecordView
 
     override fun getContentView(): Int {
         return R.layout.activity_record_type_edit
     }
 
     override fun initData(bundle: Bundle?) {
+        setPresenter(RecordTypeEditPresenter())
+
         val type = try {
             bundle!!.getParcelable<RecordType>(RECORD_TYPE)
         } catch (ignore: Exception) {
-            null
+            mPresenter.getDefaultRecordType()
         }
-        mType = type ?: RecordType(-1, "", arrayListOf(), -1, -1)
-
-        setPresenter(RecordTypeEditPresenter())
+        mType = if (type.id < 0) type else mPresenter.getRecordType(this, type.id)
     }
 
     override fun initView() {
@@ -112,7 +112,7 @@ class RecordTypeEditActivity : ToolbarActivity<RecordTypeEditContract.Presenter>
     }
 
     private fun initTitle() {
-        if (mType.title.isEmpty()) {
+        if (mType.id < 0) {
             dlgTitle.show()
         } else {
             setToolbarTitle(mType.title)
@@ -158,12 +158,13 @@ class RecordTypeEditActivity : ToolbarActivity<RecordTypeEditContract.Presenter>
         }
     }
 
-    override fun onViewClick(view: RecordView) {
+    override fun onViewClick(recordView: RecordView) {
+        mUpdateRecordView = recordView
         val intent = Intent(this, TypeItemEditActivity::class.java)
         val bundle = Bundle()
-        bundle.putParcelable(TypeItemEditActivity.RECORD_VIEW, view)
+        bundle.putParcelable(TypeItemEditActivity.RECORD_VIEW, recordView)
         intent.putExtras(bundle)
-        startActivityForResult(intent, FOR_RESULT)
+        startActivityForResult(intent, FOR_UPDATE_RESULT)
     }
 
     override fun onItemClick(recordTypeItem: RecordTypeItem) {
@@ -174,25 +175,41 @@ class RecordTypeEditActivity : ToolbarActivity<RecordTypeEditContract.Presenter>
                 val bundle = Bundle()
                 bundle.putInt(TypeItemEditActivity.RECORD_TYPE, RecordTypeItem.TYPE_TEXT)
                 intent.putExtras(bundle)
-                startActivityForResult(intent, FOR_RESULT)
+                startActivityForResult(intent, FOR_ADD_RESULT)
             }
         }
     }
 
-    override fun onViewBack(view: RecordView) {
-        mType.views.add(view)
-        ViewFactory.generateView(this, view, ll_record_type_edit)
+    override fun onViewBack(view: RecordView, type: Int) {
+        var v: View? = null
+        when (type) {
+            FOR_ADD_RESULT -> {
+                v = mPresenter.generateView(this, view, ll_record_type_edit)
+                mType.views.add(view)
+            }
+            FOR_UPDATE_RESULT -> {
+                val index = mType.views.indexOf(mUpdateRecordView)
+                mType.views.removeAt(index)
+                ll_record_type_edit.removeViewAt(index)
+                mType.views.add(index, view)
+                v = mPresenter.generateView(this, view, ll_record_type_edit, false)
+                ll_record_type_edit.addView(v, index)
+            }
+        }
+        v?.setOnClickListener { onViewClick(view) }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        if (requestCode == FOR_RESULT && resultCode == Activity.RESULT_OK) {
-            onViewBack(data!!.getParcelableExtra<RecordView>(TypeItemEditActivity.RECORD_VIEW))
+        if (resultCode == Activity.RESULT_OK) {
+            val view = data!!.getParcelableExtra<RecordView>(TypeItemEditActivity.RECORD_VIEW)
+            onViewBack(view, requestCode)
         }
     }
 
     companion object {
         const val RECORD_TYPE = "type"
-        const val FOR_RESULT = 1
+        const val FOR_ADD_RESULT = 1
+        const val FOR_UPDATE_RESULT = 2
     }
 }

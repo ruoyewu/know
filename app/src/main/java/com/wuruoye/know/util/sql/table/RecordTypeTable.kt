@@ -1,6 +1,7 @@
 package com.wuruoye.know.util.sql.table
 
 import android.content.ContentValues
+import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import com.wuruoye.know.model.beans.RecordType
 import java.util.*
@@ -61,19 +62,37 @@ class RecordTypeTable(id: Int,
             try {
                 cursor.moveToFirst()
                 while (!cursor.isAfterLast) {
-                    val id = cursor.getInt(0)
-                    val title = cursor.getString(1)
-                    val items = cursor.getString(2)
-                    val createTime = cursor.getLong(3)
-                    val updateTime = cursor.getLong(4)
-                    result.add(RecordTypeTable(id, title, items, createTime, updateTime))
-                    cursor.moveToNext()
+                    result.add(fromCursor(cursor))
                 }
             } finally {
                 cursor.close()
             }
 
             return result
+        }
+
+        fun query(db: SQLiteDatabase, id: Int): RecordTypeTable? {
+            val cursor = db.query(NAME, null, "id=?", arrayOf(id.toString()),
+                    null, null, CREATE_TIME)
+            try {
+                cursor.moveToFirst()
+                if (!cursor.isAfterLast) {
+                    return fromCursor(cursor)
+                }
+            } finally {
+                cursor.close()
+            }
+            return null
+        }
+
+        private fun fromCursor(cursor: Cursor): RecordTypeTable {
+            val id = cursor.getInt(0)
+            val title = cursor.getString(1)
+            val items = cursor.getString(2)
+            val createTime = cursor.getLong(3)
+            val updateTime = cursor.getLong(4)
+            cursor.moveToNext()
+            return RecordTypeTable(id, title, items, createTime, updateTime)
         }
     }
 }

@@ -1,36 +1,37 @@
 package com.wuruoye.know.util.sql.table
 
 import android.content.ContentValues
+import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import com.wuruoye.know.model.beans.RecordTextView
 
 class TextViewTable(id: Int,
-                    private val text: String,
-                    private val textSize: Int,
-                    private val textColor: Int,
-                    private val hint: String,
-                    private val hintSize: Int,
-                    private val hintColor: Int,
-                    private val width: Int,
-                    private val height: Int,
-                    private val bgColor: Int,
-                    private val fgColor: Int,
-                    private val marginTop: Int,
-                    private val marginBottom: Int,
-                    private val marginLeft: Int,
-                    private val marginRight: Int,
-                    private val paddingTop: Int,
-                    private val paddingBottom: Int,
-                    private val paddingLeft: Int,
-                    private val paddingRight: Int,
-                    private val gravity: Int,
-                    private val textStyle: Int,
-                    private val inputType: Int,
-                    private val minLine: Int,
-                    private val maxLine: Int,
-                    private val editable: Boolean,
-                    private val createTime: Long,
-                    private val updateTime: Long) : ViewTable(id) {
+                    val text: String,
+                    val textSize: Int,
+                    val textColor: Int,
+                    val hint: String,
+                    val hintSize: Int,
+                    val hintColor: Int,
+                    val width: Int,
+                    val height: Int,
+                    val bgColor: Int,
+                    val fgColor: Int,
+                    val marginTop: Int,
+                    val marginBottom: Int,
+                    val marginLeft: Int,
+                    val marginRight: Int,
+                    val paddingTop: Int,
+                    val paddingBottom: Int,
+                    val paddingLeft: Int,
+                    val paddingRight: Int,
+                    val gravity: Int,
+                    val textStyle: Int,
+                    val inputType: Int,
+                    val minLine: Int,
+                    val maxLine: Int,
+                    val editable: Boolean,
+                    val createTime: Long,
+                    val updateTime: Long) : ViewTable(id) {
 
     constructor(view: RecordTextView) : this(view.id, view.text, view.textSize, view.textColor,
             view.hint, view.hintSize, view.hintColor, view.width, view.height, view.bgColor,
@@ -142,6 +143,58 @@ class TextViewTable(id: Int,
                     CREATE_TIME + " integer, " +
                     UPDATE_TIME + " integer" +
                     ")")
+        }
+
+        fun query(db: SQLiteDatabase, id: Int): TextViewTable? {
+            val cursor = db.query(NAME, null, "id=?", arrayOf(id.toString()),
+                    null, null, null, null)
+            try {
+                if (cursor.moveToFirst()) {
+                    return fromCursor(cursor)
+                }
+            } finally {
+                cursor.close()
+            }
+            return null
+        }
+
+        private fun fromCursor(cursor: Cursor): TextViewTable {
+            with(cursor) {
+                val id = getInt(0)
+                val text = getString(1)
+                val textSize = getInt(2)
+                val textColor = getInt(3)
+                val hint = getString(4)
+                val hintColor = getInt(5)
+                val hintSize = getInt(6)
+                val width = getInt(7)
+                val height = getInt(8)
+                val bgColor = getInt(9)
+                val fgColor = getInt(10)
+                val marginTop = getInt(11)
+                val marginBottom = getInt(12)
+                val marginLeft = getInt(13)
+                val marginRight = getInt(14)
+                val paddingTop = getInt(15)
+                val paddingBottom = getInt(16)
+                val paddingLeft = getInt(17)
+                val paddingRight = getInt(18)
+                val gravity = getInt(19)
+                val textStyle = getInt(20)
+                val inputType = getInt(21)
+                val minLine = getInt(22)
+                val maxLine = getInt(23)
+                val editable = getInt(24) == 1
+                val createTime = getLong(25)
+                val updateTime = getLong(26)
+                moveToNext()
+                return TextViewTable(id, text, textSize, textColor, hint,
+                        hintSize, hintColor, width, height, bgColor, fgColor,
+                        marginTop, marginBottom, marginLeft, marginRight,
+                        paddingTop, paddingBottom, paddingLeft, paddingRight,
+                        gravity, textStyle, inputType, minLine, maxLine, editable,
+                        createTime, updateTime)
+            }
         }
     }
 }

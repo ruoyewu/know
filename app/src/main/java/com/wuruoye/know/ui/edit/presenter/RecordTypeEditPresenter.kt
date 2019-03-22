@@ -18,8 +18,21 @@ class RecordTypeEditPresenter : RecordTypeEditContract.Presenter() {
             return listOf(item)
         }
 
+    override fun getRecordType(context: Context, id: Int): RecordType {
+        return SqlUtil.getInstance(context).queryRecordType(id)!!
+    }
+
+    override fun getDefaultRecordType(): RecordType {
+        return RecordType("未设置")
+    }
+
     override fun generateView(context: Context, view: RecordView, parent: ViewGroup): View? {
         return ViewFactory.generateView(context, view, parent)
+    }
+
+    override fun generateView(context: Context, view: RecordView,
+                              parent: ViewGroup, attach: Boolean): View? {
+        return ViewFactory.generateView(context, view, parent, attach)
     }
 
     override fun saveRecordType(context: Context, recordType: RecordType) {

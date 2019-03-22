@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase
 import com.wuruoye.know.model.beans.RecordTextView
 import com.wuruoye.know.model.beans.RecordType
 import com.wuruoye.know.model.beans.RecordView
+import com.wuruoye.know.util.sql.SqlUtil.ViewTableItem.Companion.TEXT_VIEW
 import com.wuruoye.know.util.sql.table.RecordTypeTable
 import com.wuruoye.know.util.sql.table.TextViewTable
 import com.wuruoye.know.util.sql.table.ViewTable
@@ -68,10 +69,51 @@ class SqlUtil private constructor(context: Context) {
         return true
     }
 
+    fun queryRecordType(id: Int): RecordType? {
+        val db = sh.readableDatabase
+        try {
+            val table = RecordTypeTable.query(db, id)
+            val views = ArrayList<RecordView>()
+            if (table != null) {
+                val items = table.items.subSequence(1, table.items.length-1)
+                        .split(',')
+                if (items.size > 1) {
+                    var pos = 0
+                    while (pos < items.size) {
+                        val type = items[pos++].toInt()
+                        val tableId = items[pos++].toInt()
+                        views.add(findRecordView(type, tableId, db))
+                    }
+                }
+
+                return RecordType(table, views)
+            }
+        } finally {
+            db.close()
+        }
+        return null
+    }
+
     private fun generateTable(view: RecordView): ViewTableItem {
 //        if (view is RecordTextView) {
-            return ViewTableItem(ViewTableItem.TEXT_VIEW, TextViewTable(view as RecordTextView))
+            return ViewTableItem(TEXT_VIEW, TextViewTable(view as RecordTextView))
 //        }
+    }
+
+    private fun findRecordView(type: Int, id: Int, db: SQLiteDatabase): RecordView {
+        if (type == TEXT_VIEW) {
+            return RecordTextView(TextViewTable.query(db, id)!!)
+        } else {
+            return RecordTextView(TextViewTable.query(db, id)!!)
+        }
+    }
+
+    private fun findViewTableByType(type: Int, id: Int, db: SQLiteDatabase): ViewTable {
+        if (type == TEXT_VIEW) {
+            return TextViewTable.query(db, id)!!
+        } else {
+            return TextViewTable.query(db, id)!!
+        }
     }
 
     private class ViewTableItem (
