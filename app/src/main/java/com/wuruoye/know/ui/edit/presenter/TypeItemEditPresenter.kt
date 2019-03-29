@@ -4,6 +4,7 @@ import com.wuruoye.know.model.beans.RecordTextView
 import com.wuruoye.know.model.beans.RecordTypeItem
 import com.wuruoye.know.model.beans.RecordView
 import com.wuruoye.know.ui.edit.contract.TypeItemEditContract
+import com.wuruoye.know.ui.edit.controller.EditTextController
 import com.wuruoye.know.ui.edit.controller.EditorController
 import com.wuruoye.know.ui.edit.controller.TextViewController
 
@@ -14,13 +15,16 @@ import com.wuruoye.know.ui.edit.controller.TextViewController
 class TypeItemEditPresenter : TypeItemEditContract.Presenter() {
 
     override fun generateController(type: Int, view: RecordView?): EditorController? {
-        var view = view
-        if (view is RecordTextView || type == RecordTypeItem.TYPE_TEXT) {
-            if (view == null) {
-                view = RecordTextView()
-            }
-            return TextViewController(view)
+        return if ((view is RecordTextView && view.isEditable) || type == RecordTypeItem.TYPE_EDIT) {
+            EditTextController(if (view == null) {
+                RecordTextView(true)
+            } else view as RecordTextView)
+        } else if ((view is RecordTextView && !view.isEditable) || type == RecordTypeItem.TYPE_TEXT) {
+            TextViewController(if (view == null) {
+                RecordTextView()
+            } else view as RecordTextView)
+        } else {
+            null
         }
-        return null
     }
 }

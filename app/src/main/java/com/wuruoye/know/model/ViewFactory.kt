@@ -3,10 +3,12 @@ package com.wuruoye.know.model
 import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
+import android.support.design.widget.TextInputLayout
 import android.text.method.ScrollingMovementMethod
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.EditText
 import android.widget.TextView
 
 import com.wuruoye.know.R
@@ -32,40 +34,52 @@ object ViewFactory {
     private fun generateTextView(context: Context, textView: RecordTextView, parent: ViewGroup,
                                  attach: Boolean): View {
         with(textView) {
-            val view = LayoutInflater.from(context)
+            val viewLayout = LayoutInflater.from(context)
                     .inflate(if (isEditable)
                         R.layout.view_edit
                     else
-                        R.layout.view_text, parent, false) as TextView
+                        R.layout.view_text, parent, false)
+
+            if (isEditable) {
+                val layout = viewLayout as TextInputLayout
+                layout.hint = hint
+                // TODO set hint size and color using reflect
+            }
+
+            val view = if (isEditable)
+                viewLayout.findViewById<EditText>(R.id.et_view_edit)
+                    else
+                viewLayout as TextView
             view.text = text
             view.setTextColor(textColor)
             view.textSize = textSize.toFloat()
-            view.setBackgroundColor(bgColor)
+            viewLayout.setBackgroundColor(bgColor)
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                view.foreground = ColorDrawable(fgColor)
+                viewLayout.foreground = ColorDrawable(fgColor)
             }
-            view.setPadding(DensityUtil.dp2px(context, paddingLeft.toFloat()).toInt(),
+            viewLayout.setPadding(DensityUtil.dp2px(context, paddingLeft.toFloat()).toInt(),
                     DensityUtil.dp2px(context, paddingTop.toFloat()).toInt(),
                     DensityUtil.dp2px(context, paddingRight.toFloat()).toInt(),
                     DensityUtil.dp2px(context, paddingBottom.toFloat()).toInt())
-            val params = ViewGroup.MarginLayoutParams(view.layoutParams)
+            val params = ViewGroup.MarginLayoutParams(viewLayout.layoutParams)
             params.setMargins(DensityUtil.dp2px(context, marginLeft.toFloat()).toInt(),
                     DensityUtil.dp2px(context, marginTop.toFloat()).toInt(),
                     DensityUtil.dp2px(context, marginRight.toFloat()).toInt(),
                     DensityUtil.dp2px(context, marginBottom.toFloat()).toInt())
             params.width = width
             params.height = height
-            view.layoutParams = params
+            viewLayout.layoutParams = params
             view.gravity = gravity
             view.setTypeface(view.typeface, textStyle)
+            view.inputType = inputType
             view.minLines = minLine
             view.maxLines = maxLine
             view.movementMethod = ScrollingMovementMethod.getInstance()
 
             if (attach) {
-                parent.addView(view)
+                parent.addView(viewLayout)
             }
-            return view
+            return viewLayout
         }
     }
 }

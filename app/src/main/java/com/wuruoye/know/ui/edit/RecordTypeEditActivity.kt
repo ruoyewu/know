@@ -169,15 +169,9 @@ class RecordTypeEditActivity : ToolbarActivity<RecordTypeEditContract.Presenter>
 
     override fun onItemClick(recordTypeItem: RecordTypeItem) {
         dlgSelectItem.dismiss()
-        when (recordTypeItem.type) {
-            RecordTypeItem.TYPE_TEXT -> {
-                val intent = Intent(this, TypeItemEditActivity::class.java)
-                val bundle = Bundle()
-                bundle.putInt(TypeItemEditActivity.RECORD_TYPE, RecordTypeItem.TYPE_TEXT)
-                intent.putExtras(bundle)
-                startActivityForResult(intent, FOR_ADD_RESULT)
-            }
-        }
+        val intent = Intent(this, TypeItemEditActivity::class.java)
+        intent.putExtra(TypeItemEditActivity.RECORD_TYPE, recordTypeItem.type)
+        startActivityForResult(intent, FOR_ADD_RESULT)
     }
 
     override fun onViewBack(view: RecordView, type: Int) {

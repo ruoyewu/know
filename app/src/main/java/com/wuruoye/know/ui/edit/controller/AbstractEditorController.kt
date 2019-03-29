@@ -3,9 +3,11 @@ package com.wuruoye.know.ui.edit.controller
 import android.annotation.SuppressLint
 import android.app.Dialog
 import android.content.Context
+import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
 import android.support.design.widget.TextInputLayout
 import android.support.v4.app.ActivityCompat
+import android.text.InputType
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +18,7 @@ import com.wuruoye.know.R
 import com.wuruoye.know.widget.BottomAlertDialog
 import com.wuruoye.know.widget.ColorPickerView
 import com.wuruoye.know.widget.MarginPickerView
+import com.wuruoye.library.util.DensityUtil
 
 /**
  * Created at 2019/3/18 17:16 by wuruoye
@@ -145,7 +148,7 @@ abstract class AbstractEditorController : EditorController,
 
     protected fun showSelectDlg(name: Array<String>, select: Int) {
         npSelect.displayedValues = null
-        npSelect.minValue = 0;
+        npSelect.minValue = 0
         npSelect.maxValue = name.size-1
         npSelect.displayedValues = name
         npSelect.value = select
@@ -154,15 +157,19 @@ abstract class AbstractEditorController : EditorController,
 
     protected fun showSelectDlg(min: Int, max: Int, select: Int) {
         npSelect.displayedValues = null
-        npSelect.minValue = min;
-        npSelect.maxValue = max;
-        npSelect.value = select;
+        npSelect.minValue = min
+        npSelect.maxValue = max
+        npSelect.value = select
         dlgSelect.show()
     }
 
     protected fun showColorDlg(color: Int) {
         cpvColor.setColor(color)
         dlgColor.show()
+    }
+
+    protected fun toPx(dp: Int): Int {
+        return DensityUtil.dp2px(mContext, dp.toFloat()).toInt()
     }
 
     protected abstract fun onMarginSubmit(left: Int, top: Int, right: Int, bottom: Int)
@@ -175,5 +182,45 @@ abstract class AbstractEditorController : EditorController,
 
     override fun recycler() {
         tmv.recycler()
+    }
+
+    companion object {
+        val TEXT_STYLE_VALUE = intArrayOf(Typeface.NORMAL, Typeface.BOLD, Typeface.ITALIC,
+                Typeface.BOLD_ITALIC)
+        val TEXT_STYLE_NAME = arrayOf("正常", "粗体", "斜体", "粗斜体")
+
+        const val TEXT_SIZE_MIN = 8
+        const val TEXT_SIZE_MAX = 30
+
+        val GRAVITY_VALUE = intArrayOf(Gravity.TOP or Gravity.START,
+                Gravity.TOP or Gravity.CENTER_HORIZONTAL,
+                Gravity.TOP or Gravity.END, Gravity.CENTER or Gravity.START,
+                Gravity.CENTER, Gravity.CENTER or Gravity.END,
+                Gravity.BOTTOM or Gravity.START, Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL,
+                Gravity.BOTTOM or Gravity.END)
+        val GRAVITY_NAME = arrayOf("上左", "上中", "上右", "中左", "中", "中右", "下左", "下中", "下右")
+
+        val INPUT_TYPE_VALUE = intArrayOf(InputType.TYPE_NULL, InputType.TYPE_CLASS_NUMBER,
+                InputType.TYPE_CLASS_PHONE, InputType.TYPE_CLASS_DATETIME)
+        val INPUT_TYPE_NAME = arrayOf("文本", "数字", "电话", "日期")
+
+        const val TEXT_LINE_MIN = 1
+        const val TEXT_LINE_MAX = 5
+
+        const val TYPE_TEXT = 1
+        const val TYPE_TEXT_SIZE = 2
+        const val TYPE_TEXT_COLOR = 3
+        const val TYPE_BG_COLOR = 4
+        const val TYPE_FG_COLOR = 5
+        const val TYPE_MARGIN = 6
+        const val TYPE_PADDING = 7
+        const val TYPE_TEXT_STYLE = 8
+        const val TYPE_GRAVITY = 9
+        const val TYPE_LINE_MIN = 10
+        const val TYPE_LINE_MAX = 11
+        const val TYPE_HINT = 12
+        const val TYPE_HINT_SIZE = 13
+        const val TYPE_HINT_COLOR = 14
+        const val TYPE_INPUT_TYPE = 15
     }
 }

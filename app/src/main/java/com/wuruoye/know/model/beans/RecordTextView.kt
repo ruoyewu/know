@@ -48,6 +48,10 @@ class RecordTextView(
             table.gravity, table.textStyle, table.inputType, table.minLine, table.maxLine,
             table.editable, table.createTime, table.updateTime)
 
+    constructor(editable: Boolean): this() {
+        isEditable = editable
+    }
+
     constructor(source: Parcel) : this(
             source.readInt(),
             source.readString(),

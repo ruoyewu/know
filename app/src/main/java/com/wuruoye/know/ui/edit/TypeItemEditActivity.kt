@@ -14,7 +14,7 @@ import com.wuruoye.know.ui.edit.presenter.TypeItemEditPresenter
 import kotlinx.android.synthetic.main.activity_type_item_edit.*
 
 class TypeItemEditActivity : ToolbarActivity<TypeItemEditContract.Presenter>(),
-        TypeItemEditContract.View, IToolbarView.OnToolbarMoreListener {
+        TypeItemEditContract.View, IToolbarView.OnToolbarMoreListener, IToolbarView.OnToolbarBackListener {
 
     private var mView: RecordView? = null
     private var mType: Int = 0
@@ -41,8 +41,13 @@ class TypeItemEditActivity : ToolbarActivity<TypeItemEditContract.Presenter>(),
         mController?.attach(this, fl_type_item_edit, sv_type_item_edit)
 
         setToolbarMoreListener(this)
+        setToolbarBackListener(this)
         setToolbarBack(R.drawable.ic_left, "")
         setToolbarMore(R.drawable.ic_check, "")
+    }
+
+    override fun onBackClick() {
+        onBackPressed()
     }
 
     override fun onMoreClick() {

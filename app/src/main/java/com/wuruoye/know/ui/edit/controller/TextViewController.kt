@@ -5,7 +5,6 @@ import android.content.Context
 import android.graphics.Typeface
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
-import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -18,14 +17,13 @@ import com.wuruoye.know.model.ViewFactory
 import com.wuruoye.know.model.beans.RecordTextView
 import com.wuruoye.know.model.beans.RecordView
 import com.wuruoye.know.util.ColorUtil
-import com.wuruoye.library.util.DensityUtil
 
 /**
  * Created at 2019/3/18 16:52 by wuruoye
  * Description:
  */
-class TextViewController(mView: RecordView) : AbstractEditorController(), View.OnClickListener {
-    private val mView: RecordTextView = mView as RecordTextView
+class TextViewController(private val mView: RecordTextView) :
+        AbstractEditorController(), View.OnClickListener {
     private lateinit var flContent: FrameLayout
     private lateinit var svOptions: ScrollView
 
@@ -274,39 +272,4 @@ class TextViewController(mView: RecordView) : AbstractEditorController(), View.O
         }
     }
 
-    private fun toPx(dp: Int): Int {
-        return DensityUtil.dp2px(mContext, dp.toFloat()).toInt()
-    }
-
-    companion object {
-        val TEXT_STYLE_VALUE = intArrayOf(Typeface.NORMAL, Typeface.BOLD, Typeface.ITALIC,
-                Typeface.BOLD_ITALIC)
-        val TEXT_STYLE_NAME = arrayOf("正常", "粗体", "斜体", "粗斜体")
-
-        val TEXT_SIZE_MIN = 8
-        val TEXT_SIZE_MAX = 30
-
-        val GRAVITY_VALUE = intArrayOf(Gravity.TOP or Gravity.START,
-                Gravity.TOP or Gravity.CENTER_HORIZONTAL,
-                Gravity.TOP or Gravity.END, Gravity.CENTER or Gravity.START,
-                Gravity.CENTER, Gravity.CENTER or Gravity.END,
-                Gravity.BOTTOM or Gravity.START, Gravity.BOTTOM or Gravity.CENTER_HORIZONTAL,
-                Gravity.BOTTOM or Gravity.END)
-        val GRAVITY_NAME = arrayOf("上左", "上中", "上右", "中左", "中", "中右", "下左", "下中", "下右")
-
-        val TEXT_LINE_MIN = 1
-        val TEXT_LINE_MAX = 5
-
-        val TYPE_TEXT = 1
-        val TYPE_TEXT_SIZE = 2
-        val TYPE_TEXT_COLOR = 3
-        val TYPE_BG_COLOR = 4
-        val TYPE_FG_COLOR = 5
-        val TYPE_MARGIN = 6
-        val TYPE_PADDING = 7
-        val TYPE_TEXT_STYLE = 8
-        val TYPE_GRAVITY = 9
-        val TYPE_LINE_MIN = 10
-        val TYPE_LINE_MAX = 11
-    }
 }

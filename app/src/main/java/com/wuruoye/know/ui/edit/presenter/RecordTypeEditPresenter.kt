@@ -14,8 +14,8 @@ class RecordTypeEditPresenter : RecordTypeEditContract.Presenter() {
 
     override val selectItems: List<RecordTypeItem>
         get() {
-            val item = RecordTypeItem(RecordTypeItem.TYPE_TEXT, "文本")
-            return listOf(item)
+            return listOf(RecordTypeItem(RecordTypeItem.TYPE_TEXT, "标签"),
+                    RecordTypeItem(RecordTypeItem.TYPE_EDIT, "编辑框"))
         }
 
     override fun getRecordType(context: Context, id: Int): RecordType {
