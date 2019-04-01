@@ -19,7 +19,7 @@ class RecordTypeEditPresenter : RecordTypeEditContract.Presenter() {
         }
 
     override fun getRecordType(context: Context, id: Int): RecordType {
-        return SqlUtil.getInstance(context).queryRecordType(id)!!
+        return SqlUtil.getInstance(context).queryRecordType(id)
     }
 
     override fun getDefaultRecordType(): RecordType {

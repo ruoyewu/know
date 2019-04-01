@@ -107,7 +107,12 @@ class RecordTypeEditActivity : ToolbarActivity<RecordTypeEditContract.Presenter>
         ll_record_type_edit.removeAllViews()
         for (view in mType.views) {
             val v = mPresenter.generateView(this, view, ll_record_type_edit)
-            v!!.setOnClickListener { onViewClick(view) }
+            if (v is TextInputLayout) v.findViewById<EditText>(R.id.et_view_edit)
+                    .setOnLongClickListener { onViewClick(view)
+                    true }
+            else
+                v?.setOnLongClickListener { onViewClick(view)
+                true }
         }
     }
 
@@ -153,7 +158,9 @@ class RecordTypeEditActivity : ToolbarActivity<RecordTypeEditContract.Presenter>
             }
             R.id.btn_confirm_dlg_bottom_alert -> {
                 dlgTitle.dismiss()
-                setTitle(etTitle.text.toString())
+                if (!etTitle.text.isEmpty()) {
+                    setTitle(etTitle.text.toString())
+                }
             }
         }
     }

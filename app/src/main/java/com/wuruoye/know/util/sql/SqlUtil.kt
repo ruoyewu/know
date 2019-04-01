@@ -2,10 +2,12 @@ package com.wuruoye.know.util.sql
 
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
+import com.wuruoye.know.model.beans.Record
 import com.wuruoye.know.model.beans.RecordTextView
 import com.wuruoye.know.model.beans.RecordType
 import com.wuruoye.know.model.beans.RecordView
 import com.wuruoye.know.util.sql.SqlUtil.ViewTableItem.Companion.TEXT_VIEW
+import com.wuruoye.know.util.sql.table.RecordTable
 import com.wuruoye.know.util.sql.table.RecordTypeTable
 import com.wuruoye.know.util.sql.table.TextViewTable
 import com.wuruoye.know.util.sql.table.ViewTable
@@ -69,29 +71,46 @@ class SqlUtil private constructor(context: Context) {
         return true
     }
 
-    fun queryRecordType(id: Int): RecordType? {
-        val db = sh.readableDatabase
-        try {
-            val table = RecordTypeTable.query(db, id)
+    fun queryRecordType(id: Int): RecordType {
+        sh.readableDatabase.use {
+            val table = RecordTypeTable.query(it, id)
             val views = ArrayList<RecordView>()
-            if (table != null) {
-                val items = table.items.subSequence(1, table.items.length-1)
-                        .split(',')
-                if (items.size > 1) {
-                    var pos = 0
-                    while (pos < items.size) {
-                        val type = items[pos++].toInt()
-                        val tableId = items[pos++].toInt()
-                        views.add(findRecordView(type, tableId, db))
-                    }
+            val items = table.items.subSequence(1, table.items.length-1)
+                    .split(',')
+            if (items.size > 1) {
+                var pos = 0
+                while (pos < items.size) {
+                    val type = items[pos++].toInt()
+                    val tableId = items[pos++].toInt()
+                    views.add(findRecordView(type, tableId, it))
                 }
-
-                return RecordType(table, views)
             }
-        } finally {
-            db.close()
+
+            return RecordType(table, views)
         }
-        return null
+    }
+
+    fun queryRecord(id: Int): Record {
+        sh.readableDatabase.use {
+            return RecordTable.query(it, id)
+        }
+    }
+
+    fun queryRecordWithType(type: Int): List<Record> {
+        sh.readableDatabase.use {
+            return RecordTable.queryAll(it, type)
+        }
+    }
+
+    fun saveRecord(record: Record): Boolean {
+        sh.writableDatabase.use {
+            val table = RecordTable(record)
+            return if (table.id >= 0) {
+                table.update(it) > 0
+            } else {
+                table.save(it) >= 0
+            }
+        }
     }
 
     private fun generateTable(view: RecordView): ViewTableItem {

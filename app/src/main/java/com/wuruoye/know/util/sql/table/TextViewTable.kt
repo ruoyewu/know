@@ -187,7 +187,6 @@ class TextViewTable(id: Int,
                 val editable = getInt(24) == 1
                 val createTime = getLong(25)
                 val updateTime = getLong(26)
-                moveToNext()
                 return TextViewTable(id, text, textSize, textColor, hint,
                         hintSize, hintColor, width, height, bgColor, fgColor,
                         marginTop, marginBottom, marginLeft, marginRight,

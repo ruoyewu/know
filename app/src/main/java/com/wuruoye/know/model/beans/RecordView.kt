@@ -5,7 +5,8 @@ import android.os.Parcelable
 
 /**
  * Created at 2019/3/18 13:11 by wuruoye
- * Description:
+ * Description: shouldn't use its instance
+ * the parent of RecordTextView
  */
 open class RecordView(
         var id: Int = -1,

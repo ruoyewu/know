@@ -48,7 +48,8 @@ class MarginPickerView(context: Context, attrs: AttributeSet) : View(context, at
 
         mVelocityTracker = VelocityTracker.obtain()
         mAnimation = FlingAnimation(FloatValueHolder())
-        mAnimation.addUpdateListener { dynamicAnimation, v, v1 ->
+        mAnimation.addUpdateListener { _
+                                       , v, _ ->
             when (mCurType) {
                 TYPE_TOP -> mTop = v
                 TYPE_BOTTOM -> mBottom = v
@@ -213,18 +214,15 @@ class MarginPickerView(context: Context, attrs: AttributeSet) : View(context, at
         initSize(w, h)
     }
 
+    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
+    }
+
     fun recycler() {
         mVelocityTracker.recycle()
         mAnimation.cancel()
         mListener = null
     }
-
-//    override fun onDetachedFromWindow() {
-//        mVelocityTracker.recycle()
-//        mAnimation.cancel()
-//        mListener = null
-//        super.onDetachedFromWindow()
-//    }
 
     interface OnMarginChangedListener {
         fun onMarginChanged(left: Int, top: Int, right: Int, bottom: Int)

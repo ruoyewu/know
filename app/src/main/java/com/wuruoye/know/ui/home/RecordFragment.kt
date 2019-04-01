@@ -8,9 +8,9 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.Toast
 import com.wuruoye.know.R
 import com.wuruoye.know.model.beans.RecordType
+import com.wuruoye.know.ui.edit.RecordEditActivity
 import com.wuruoye.know.ui.edit.RecordTypeEditActivity
 import com.wuruoye.know.ui.home.adapter.SelectTypeRVAdapter
 import com.wuruoye.know.ui.home.contract.RecordContract
@@ -79,7 +79,9 @@ class RecordFragment : WBaseFragment<RecordContract.Presenter>(),
             startActivity(intent)
         } else {
             // normal
-            Toast.makeText(context, recordType.title, Toast.LENGTH_SHORT).show()
+            val intent = Intent(context, RecordEditActivity::class.java)
+            intent.putExtra(RecordEditActivity.RECORD_TYPE, recordType.id)
+            startActivity(intent)
         }
     }
 

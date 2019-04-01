@@ -59,30 +59,24 @@ class RecordTypeTable(id: Int,
             val cursor = db.query(NAME, null, null, null,
                     null, null, CREATE_TIME)
 
-            try {
-                cursor.moveToFirst()
-                while (!cursor.isAfterLast) {
-                    result.add(fromCursor(cursor))
+            cursor.use { c ->
+                c.moveToFirst()
+                while (!c.isAfterLast) {
+                    result.add(fromCursor(c))
+                    c.moveToNext()
                 }
-            } finally {
-                cursor.close()
             }
 
             return result
         }
 
-        fun query(db: SQLiteDatabase, id: Int): RecordTypeTable? {
+        fun query(db: SQLiteDatabase, id: Int): RecordTypeTable {
             val cursor = db.query(NAME, null, "id=?", arrayOf(id.toString()),
                     null, null, CREATE_TIME)
-            try {
-                cursor.moveToFirst()
-                if (!cursor.isAfterLast) {
-                    return fromCursor(cursor)
-                }
-            } finally {
-                cursor.close()
+            cursor.use { c ->
+                c.moveToFirst()
+                return fromCursor(c)
             }
-            return null
         }
 
         private fun fromCursor(cursor: Cursor): RecordTypeTable {
@@ -91,7 +85,6 @@ class RecordTypeTable(id: Int,
             val items = cursor.getString(2)
             val createTime = cursor.getLong(3)
             val updateTime = cursor.getLong(4)
-            cursor.moveToNext()
             return RecordTypeTable(id, title, items, createTime, updateTime)
         }
     }

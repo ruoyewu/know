@@ -34,52 +34,76 @@ object ViewFactory {
     private fun generateTextView(context: Context, textView: RecordTextView, parent: ViewGroup,
                                  attach: Boolean): View {
         with(textView) {
-            val viewLayout = LayoutInflater.from(context)
-                    .inflate(if (isEditable)
-                        R.layout.view_edit
-                    else
-                        R.layout.view_text, parent, false)
-
             if (isEditable) {
-                val layout = viewLayout as TextInputLayout
-                layout.hint = hint
+                val viewLayout = LayoutInflater.from(context)
+                        .inflate(R.layout.view_edit, parent, false) as TextInputLayout
+
+                viewLayout.hint = hint
                 // TODO set hint size and color using reflect
-            }
+                viewLayout.setBackgroundColor(bgColor)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    viewLayout.foreground = ColorDrawable(fgColor)
+                }
+                viewLayout.setPadding(DensityUtil.dp2px(context, paddingLeft.toFloat()).toInt(),
+                        DensityUtil.dp2px(context, paddingTop.toFloat()).toInt(),
+                        DensityUtil.dp2px(context, paddingRight.toFloat()).toInt(),
+                        DensityUtil.dp2px(context, paddingBottom.toFloat()).toInt())
+                val params = ViewGroup.MarginLayoutParams(viewLayout.layoutParams)
+                params.setMargins(DensityUtil.dp2px(context, marginLeft.toFloat()).toInt(),
+                        DensityUtil.dp2px(context, marginTop.toFloat()).toInt(),
+                        DensityUtil.dp2px(context, marginRight.toFloat()).toInt(),
+                        DensityUtil.dp2px(context, marginBottom.toFloat()).toInt())
+                params.width = width
+                params.height = height
+                viewLayout.layoutParams = params
 
-            val view = if (isEditable)
-                viewLayout.findViewById<EditText>(R.id.et_view_edit)
-                    else
-                viewLayout as TextView
-            view.text = text
-            view.setTextColor(textColor)
-            view.textSize = textSize.toFloat()
-            viewLayout.setBackgroundColor(bgColor)
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-                viewLayout.foreground = ColorDrawable(fgColor)
-            }
-            viewLayout.setPadding(DensityUtil.dp2px(context, paddingLeft.toFloat()).toInt(),
-                    DensityUtil.dp2px(context, paddingTop.toFloat()).toInt(),
-                    DensityUtil.dp2px(context, paddingRight.toFloat()).toInt(),
-                    DensityUtil.dp2px(context, paddingBottom.toFloat()).toInt())
-            val params = ViewGroup.MarginLayoutParams(viewLayout.layoutParams)
-            params.setMargins(DensityUtil.dp2px(context, marginLeft.toFloat()).toInt(),
-                    DensityUtil.dp2px(context, marginTop.toFloat()).toInt(),
-                    DensityUtil.dp2px(context, marginRight.toFloat()).toInt(),
-                    DensityUtil.dp2px(context, marginBottom.toFloat()).toInt())
-            params.width = width
-            params.height = height
-            viewLayout.layoutParams = params
-            view.gravity = gravity
-            view.setTypeface(view.typeface, textStyle)
-            view.inputType = inputType
-            view.minLines = minLine
-            view.maxLines = maxLine
-            view.movementMethod = ScrollingMovementMethod.getInstance()
+                val view = viewLayout.findViewById<EditText>(R.id.et_view_edit)
+                view.setTextColor(textColor)
+                view.textSize = textSize.toFloat()
+                view.gravity = gravity
+                view.setTypeface(view.typeface, textStyle)
+                view.inputType = inputType
+                view.minLines = minLine
+                view.maxLines = maxLine
+                view.movementMethod = ScrollingMovementMethod.getInstance()
 
-            if (attach) {
-                parent.addView(viewLayout)
+                if (attach) {
+                    parent.addView(viewLayout)
+                }
+                return viewLayout
+            } else {
+                val view = LayoutInflater.from(context)
+                        .inflate(R.layout.view_text, parent, false) as TextView
+                view.text = text
+                view.setTextColor(textColor)
+                view.textSize = textSize.toFloat()
+                view.setBackgroundColor(bgColor)
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    view.foreground = ColorDrawable(fgColor)
+                }
+                view.setPadding(DensityUtil.dp2px(context, paddingLeft.toFloat()).toInt(),
+                        DensityUtil.dp2px(context, paddingTop.toFloat()).toInt(),
+                        DensityUtil.dp2px(context, paddingRight.toFloat()).toInt(),
+                        DensityUtil.dp2px(context, paddingBottom.toFloat()).toInt())
+                val params = ViewGroup.MarginLayoutParams(view.layoutParams)
+                params.setMargins(DensityUtil.dp2px(context, marginLeft.toFloat()).toInt(),
+                        DensityUtil.dp2px(context, marginTop.toFloat()).toInt(),
+                        DensityUtil.dp2px(context, marginRight.toFloat()).toInt(),
+                        DensityUtil.dp2px(context, marginBottom.toFloat()).toInt())
+                params.width = width
+                params.height = height
+                view.layoutParams = params
+                view.gravity = gravity
+                view.setTypeface(view.typeface, textStyle)
+                view.minLines = minLine
+                view.maxLines = maxLine
+                view.movementMethod = ScrollingMovementMethod.getInstance()
+
+                if (attach) {
+                    parent.addView(view)
+                }
+                return view
             }
-            return viewLayout
         }
     }
 }
