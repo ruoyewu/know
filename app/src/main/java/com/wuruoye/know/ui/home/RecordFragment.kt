@@ -10,7 +10,6 @@ import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.TextView
-import android.widget.Toast
 import com.wuruoye.know.R
 import com.wuruoye.know.model.beans.Record
 import com.wuruoye.know.model.beans.RecordType
@@ -159,7 +158,10 @@ class RecordFragment : WBaseFragment<RecordContract.Presenter>(),
     }
 
     private fun onRecordItemClick(record: Record) {
-        Toast.makeText(context, record.items.find { !it.isEmpty() }, Toast.LENGTH_SHORT).show()
+//        Toast.makeText(context, record.items.find { !it.isEmpty() }, Toast.LENGTH_SHORT).show()
+        val intent = Intent(context, RecordEditActivity::class.java)
+        intent.putExtra(RecordEditActivity.RECORD, record)
+        startActivityForResult(intent, FOR_UPDATE_RECORD_RESULT)
     }
 
     private fun onRecordItemLongClick(record: Record) {
@@ -220,8 +222,10 @@ class RecordFragment : WBaseFragment<RecordContract.Presenter>(),
         if (requestCode == FOR_ADD_RESULT && resultCode == RESULT_OK) {
             val recordTypeList = mPresenter.getRecordType(context!!)
             (rvRecordType.adapter as RecordTypeRVAdapter).data = recordTypeList
-            (rvRecordTypeSelect.adapter as RecordTypeRVAdapter).data = recordTypeList
+            (rvRecordTypeSelect.adapter as RecordTypeSelectRVAdapter).data = recordTypeList
         } else if (requestCode == FOR_ADD_RECORD_RESULT && resultCode == RESULT_OK) {
+            refreshRecordList()
+        } else if (resultCode == RESULT_OK && requestCode == FOR_UPDATE_RECORD_RESULT) {
             refreshRecordList()
         }
     }
@@ -231,6 +235,7 @@ class RecordFragment : WBaseFragment<RecordContract.Presenter>(),
         const val TYPE_LIMIT = 2
         const val FOR_ADD_RESULT = 1
         const val FOR_ADD_RECORD_RESULT = 2
+        const val FOR_UPDATE_RECORD_RESULT = 3
 
         val ITEM_TIME_LIMIT = arrayListOf<TimeLimitItem>(
                 TimeLimitItem(1, "一天内"),

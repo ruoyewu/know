@@ -43,6 +43,7 @@ class RecordTypeTable(id: Int,
         val ITEMS = "items"
         val CREATE_TIME = "create_time"
         val UPDATE_TIME = "update_time"
+        val DESC = " desc"
 
         fun create(db: SQLiteDatabase) {
             db.execSQL("create table " + NAME + " (" +
@@ -57,7 +58,7 @@ class RecordTypeTable(id: Int,
         fun queryAll(db: SQLiteDatabase): List<RecordTypeTable> {
             val result = ArrayList<RecordTypeTable>()
             val cursor = db.query(NAME, null, null, null,
-                    null, null, CREATE_TIME)
+                    null, null, CREATE_TIME + DESC)
 
             cursor.use { c ->
                 c.moveToFirst()
@@ -72,7 +73,7 @@ class RecordTypeTable(id: Int,
 
         fun query(db: SQLiteDatabase, id: Int): RecordTypeTable {
             val cursor = db.query(NAME, null, "id=?", arrayOf(id.toString()),
-                    null, null, CREATE_TIME)
+                    null, null, CREATE_TIME + DESC)
             cursor.use { c ->
                 c.moveToFirst()
                 return fromCursor(c)

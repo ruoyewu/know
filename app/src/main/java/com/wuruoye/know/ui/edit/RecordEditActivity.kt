@@ -2,6 +2,7 @@ package com.wuruoye.know.ui.edit
 
 import android.app.Activity
 import android.os.Bundle
+import android.support.design.widget.TextInputLayout
 import android.view.View
 import android.widget.EditText
 import android.widget.LinearLayout
@@ -44,8 +45,7 @@ class RecordEditActivity : ToolbarActivity<RecordEditContract.Presenter>(),
             mRecordType = mPresenter.getRecordType(this, type)
             mRecord = mPresenter.generateRecord(this, type)
         } catch (e: Exception) {
-            val id = bundle.getInt(RECORD_ID)
-            mRecord = mPresenter.getRecord(this, id)
+            mRecord = bundle.getParcelable<Record>(RECORD)!!
             mRecordType = mPresenter.getRecordType(this, mRecord.type)
         }
     }
@@ -83,6 +83,7 @@ class RecordEditActivity : ToolbarActivity<RecordEditContract.Presenter>(),
 
     override fun onMoreClick() {
         val result = mRecord.items
+        result.clear()
         for (i in 0 until mRecordType.views.size) {
             val v = llContent.getChildAt(i)
             val view = mRecordType.views[i]
@@ -112,12 +113,15 @@ class RecordEditActivity : ToolbarActivity<RecordEditContract.Presenter>(),
 
     override fun setViewInfo(recordView: RecordView, view: View, info: String) {
         if (recordView is RecordTextView && recordView.isEditable) {
-            view.findViewById<EditText>(R.id.et_view_edit).setText(info)
+            val til = view as TextInputLayout
+            val et = til.editText!!
+            et.setText(info)
+            et.setSelection(info.length)
         }
     }
 
     companion object {
         const val RECORD_TYPE = "type"
-        const val RECORD_ID = "record"
+        const val RECORD = "record"
     }
 }

@@ -18,7 +18,7 @@ class App : Application() {
         WConfig.initThreadPool(DefaultThreadPool())
         WConfig.setLog(true)
 
-        catchThrowable()
+//        catchThrowable()
     }
 
     private fun catchThrowable() {

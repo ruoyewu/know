@@ -56,6 +56,7 @@ class RecordTable(id: Int,
         val LAST_REVIEW = "last_review"
         val CREATE_TIME = "create_time"
         val UPDATE_TIME = "update_time"
+        val DESC = " desc"
 
         fun create(db: SQLiteDatabase) {
             db.execSQL("create table " + NAME + " (" +
@@ -86,7 +87,7 @@ class RecordTable(id: Int,
 
         fun queryAll(db: SQLiteDatabase, type: Int): List<Record> {
             val cursor = db.query(NAME, null, "type=?",
-                    arrayOf(type.toString()), null, null, CREATE_TIME)
+                    arrayOf(type.toString()), null, null, CREATE_TIME + DESC)
 
             val result = ArrayList<Record>()
             cursor.use { c ->
@@ -108,7 +109,7 @@ class RecordTable(id: Int,
             val cursor = db.query(NAME, null, selection.toString(),
                     if (type >= 0) arrayOf(type.toString(), timeLimit.toString())
                     else arrayOf(timeLimit.toString()), null,
-                    null, CREATE_TIME)
+                    null, CREATE_TIME + DESC)
 
             val result = ArrayList<Record>()
             cursor.use {
@@ -133,10 +134,9 @@ class RecordTable(id: Int,
             val itemArray = items.split(",")
             val itemList = ArrayList<String>()
             for (item in itemArray) {
-                if (!item.isEmpty()) {
-                    itemList.add(CodeUtil.decodeBase64(item))
-                }
+                itemList.add(CodeUtil.decodeBase64(item))
             }
+            itemList.removeAt(itemList.size-1)
             return Record(id, type, itemList, reviewNum, failNum,
                     lastReview, createTime, updateTime)
         }

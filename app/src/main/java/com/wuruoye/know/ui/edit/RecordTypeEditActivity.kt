@@ -198,7 +198,7 @@ class RecordTypeEditActivity : ToolbarActivity<RecordTypeEditContract.Presenter>
                 ll_record_type_edit.addView(v, index)
             }
         }
-        v?.setOnClickListener { onViewClick(view) }
+        v?.setOnLongClickListener { onViewClick(view); true }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
