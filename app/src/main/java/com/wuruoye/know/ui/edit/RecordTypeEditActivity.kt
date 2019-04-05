@@ -93,7 +93,7 @@ class RecordTypeEditActivity : ToolbarActivity<RecordTypeEditContract.Presenter>
                 .build()
 
         rvSelectItem = LayoutInflater.from(this)
-                .inflate(R.layout.dlg_select_type, null) as RecyclerView
+                .inflate(R.layout.dlg_record_type, null) as RecyclerView
         val adapter = SelectItemAdapter()
         adapter.data = mPresenter.selectItems
         adapter.setOnItemClickListener(this)
@@ -141,6 +141,7 @@ class RecordTypeEditActivity : ToolbarActivity<RecordTypeEditContract.Presenter>
         if (mType.createTime > 0) mType.updateTime = System.currentTimeMillis()
         else mType.createTime = System.currentTimeMillis()
         mPresenter.saveRecordType(this, mType)
+        setResult(Activity.RESULT_OK)
         finish()
     }
 

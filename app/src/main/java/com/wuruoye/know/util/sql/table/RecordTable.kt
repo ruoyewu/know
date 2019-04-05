@@ -8,7 +8,7 @@ import com.wuruoye.know.util.CodeUtil
 
 class RecordTable(id: Int,
                   private val type: Int,
-                  private val items: String,
+                  private var items: String,
                   private val reviewNum: Int,
                   private val failNum: Int,
                   private val lastReview: Long,
@@ -20,6 +20,7 @@ class RecordTable(id: Int,
         for (item in record.items) {
             builder.append(CodeUtil.encodeBase64(item)).append(",")
         }
+        this.items = builder.toString()
     }
 
     override fun save(db: SQLiteDatabase): Int {
@@ -69,6 +70,10 @@ class RecordTable(id: Int,
                     ")")
         }
 
+        fun delete(db: SQLiteDatabase, id: Int): Boolean {
+            return db.delete(NAME, "id=?", arrayOf(id.toString())) != 0
+        }
+
         fun query(db: SQLiteDatabase, id: Int): Record {
             val cursor = db.query(NAME, null, "id=?",
                     arrayOf(id.toString()), null, null, CREATE_TIME)
@@ -95,6 +100,27 @@ class RecordTable(id: Int,
             return result
         }
 
+        fun queryWithTypeTime(db: SQLiteDatabase, type: Int, timeLimit: Long): List<Record> {
+            val selection = StringBuilder()
+            if (type >= 0) selection.append("type=? and ")
+            selection.append("create_time>?")
+
+            val cursor = db.query(NAME, null, selection.toString(),
+                    if (type >= 0) arrayOf(type.toString(), timeLimit.toString())
+                    else arrayOf(timeLimit.toString()), null,
+                    null, CREATE_TIME)
+
+            val result = ArrayList<Record>()
+            cursor.use {
+                it.moveToFirst()
+                while (!it.isAfterLast) {
+                    result.add(fromCursor(it))
+                    it.moveToNext()
+                }
+            }
+            return result
+        }
+
         private fun fromCursor(cursor: Cursor): Record {
             val id = cursor.getInt(0)
             val type = cursor.getInt(1)
@@ -111,7 +137,8 @@ class RecordTable(id: Int,
                     itemList.add(CodeUtil.decodeBase64(item))
                 }
             }
-            return Record(id, type, itemList, reviewNum, failNum, lastReview, createTime, updateTime)
+            return Record(id, type, itemList, reviewNum, failNum,
+                    lastReview, createTime, updateTime)
         }
     }
 }

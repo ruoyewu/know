@@ -20,7 +20,7 @@ class SqlUtil private constructor(context: Context) {
 
     private val sh: SqliteHelper = SqliteHelper(context)
 
-    fun getRecordTypeWithoutItems(): List<RecordType> {
+    fun queryRecordTypeWithoutItems(): List<RecordType> {
         val result = ArrayList<RecordType>()
         val db = sh.readableDatabase
         try {
@@ -102,6 +102,12 @@ class SqlUtil private constructor(context: Context) {
         }
     }
 
+    fun queryRecordWithTypeTime(type: Int, timeLimit: Long): List<Record> {
+        sh.readableDatabase.use {
+            return RecordTable.queryWithTypeTime(it, type, timeLimit)
+        }
+    }
+
     fun saveRecord(record: Record): Boolean {
         sh.writableDatabase.use {
             val table = RecordTable(record)
@@ -110,6 +116,12 @@ class SqlUtil private constructor(context: Context) {
             } else {
                 table.save(it) >= 0
             }
+        }
+    }
+
+    fun deleteRecord(id: Int): Boolean {
+        sh.writableDatabase.use {
+            return RecordTable.delete(it, id)
         }
     }
 

@@ -1,5 +1,6 @@
 package com.wuruoye.know.ui.edit
 
+import android.app.Activity
 import android.os.Bundle
 import android.view.View
 import android.widget.EditText
@@ -88,7 +89,14 @@ class RecordEditActivity : ToolbarActivity<RecordEditContract.Presenter>(),
             result.add(getViewInfo(view, v))
         }
 
+        if (mRecord.createTime > 0) {
+            mRecord.updateTime = System.currentTimeMillis()
+        } else {
+            mRecord.createTime = System.currentTimeMillis()
+        }
+
         if (SqlUtil.getInstance(this).saveRecord(mRecord)) {
+            setResult(Activity.RESULT_OK)
             finish()
         } else {
 
