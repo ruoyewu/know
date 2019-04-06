@@ -22,16 +22,13 @@ class RecordItemTable(
         return if (id < 0) {
             db.insert(NAME, null, contentValues()).toInt()
         } else {
-            update(db)
+            db.update(NAME, contentValues(), "id=?", arrayOf(id.toString()))
+            id
         }
     }
 
     override fun delete(db: SQLiteDatabase): Int {
         return db.delete(NAME, "id=?", arrayOf(id.toString()))
-    }
-
-    override fun update(db: SQLiteDatabase): Int {
-        return db.update(NAME, contentValues(), "id=?", arrayOf(id.toString()))
     }
 
     override fun contentValues(): ContentValues {
@@ -70,6 +67,10 @@ class RecordItemTable(
                 }
                 return null
             }
+        }
+
+        fun delete(db: SQLiteDatabase, recordId: Int) {
+            db.delete(NAME, "$RECORD_ID=?", arrayOf(recordId.toString()))
         }
 
         private fun fromCursor(cursor: Cursor): RecordItem {

@@ -16,15 +16,16 @@ class RecordTable(id: Int,
             record.failNum, record.lastReview, record.createTime, record.updateTime)
 
     override fun save(db: SQLiteDatabase): Int {
-        return db.insert(NAME, null, contentValues()).toInt()
+        return if (id < 0) {
+            db.insert(NAME, null, contentValues()).toInt()
+        } else {
+            db.update(NAME, contentValues(), "id=?", arrayOf(id.toString()))
+            id
+        }
     }
 
     override fun delete(db: SQLiteDatabase): Int {
         return db.delete(NAME, "id=?", arrayOf(id.toString()))
-    }
-
-    override fun update(db: SQLiteDatabase): Int {
-        return db.update(NAME, contentValues(), "id=?", arrayOf(id.toString()))
     }
 
     override fun contentValues(): ContentValues {

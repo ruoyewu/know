@@ -46,12 +46,7 @@ class SqlUtil private constructor(context: Context) {
             for (view in views) {
                 val item = generateTable(view, db)
                 val table = item.table
-                val id = if (view.id >= 0) {
-                    table.update(db)
-                    view.id
-                } else {
-                    table.save(db)
-                }
+                val id = table.save(db)
                 view.id = id
                 builder.append(item.type).append(',').append(id).append(',')
             }
@@ -60,8 +55,7 @@ class SqlUtil private constructor(context: Context) {
 
             // save record type
             val table = RecordTypeTable(recordType, builder.toString())
-            if (table.id >= 0) table.update(db)
-            else table.save(db)
+            table.save(db)
 
             db.setTransactionSuccessful()
         } finally {
@@ -113,17 +107,17 @@ class SqlUtil private constructor(context: Context) {
     fun saveRecord(record: Record): Boolean {
         sh.writableDatabase.use {
             val table = RecordTable(record)
-            return if (table.id >= 0) {
-                table.update(it) > 0
-            } else {
-                table.save(it) >= 0
-            }
+            return table.save(it) >= 0
         }
     }
 
     fun deleteRecord(id: Int): Boolean {
         sh.writableDatabase.use {
-            return RecordTable.delete(it, id)
+            if (RecordTable.delete(it, id)) {
+                RecordItemTable.delete(it, id)
+                return true
+            }
+            return false
         }
     }
 
@@ -139,12 +133,7 @@ class SqlUtil private constructor(context: Context) {
             db.beginTransaction()
 
             val table = RecordTable(record)
-            val id = if (table.id < 0) {
-                table.save(db)
-            } else {
-                table.update(db)
-                table.id
-            }
+            val id = table.save(db)
 
             val views = recordType.views
             val parent = view as ViewGroup
@@ -181,20 +170,13 @@ class SqlUtil private constructor(context: Context) {
         }
     }
 
-    // util
     private fun generateTable(view: RecordView, db: SQLiteDatabase): ViewTableItem {
         if (view is RecordLayoutView) {
             val views = view.views
             val builder = StringBuilder("[")
             for (v in views) {
                 val item = generateTable(v, db)
-                val table = item.table
-                val id = if (v.id >= 0) {
-                    table.update(db)
-                    v.id
-                } else {
-                    table.save(db)
-                }
+                val id = item.table.save(db)
                 v.id = id
                 builder.append(item.type).append(",").append(id).append(",")
             }
@@ -226,10 +208,6 @@ class SqlUtil private constructor(context: Context) {
         return RecordTextView(TextViewTable.query(db, id)!!)
     }
 
-    private fun findViewTableByType(type: Int, id: Int, db: SQLiteDatabase): ViewTable {
-        return TextViewTable.query(db, id)!!
-    }
-
     class ViewTableItem (
             val type: Int,
             val table: ViewTable
@@ -253,14 +231,6 @@ class SqlUtil private constructor(context: Context) {
                 }
             }
             return sInstance!!
-        }
-
-        fun lastInsertionId(db: SQLiteDatabase, tableName: String): Int {
-            val cursor = db.rawQuery("select last_insert_rowid_from $tableName",
-                    null)
-            val id = if (cursor.moveToFirst()) cursor.getInt(0) else -1;
-            cursor.close()
-            return id
         }
     }
 }

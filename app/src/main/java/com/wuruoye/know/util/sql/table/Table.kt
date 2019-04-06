@@ -8,6 +8,5 @@ abstract class Table(
 ) {
     abstract fun save(db: SQLiteDatabase): Int
     abstract fun delete(db: SQLiteDatabase): Int
-    abstract fun update(db: SQLiteDatabase): Int
     abstract fun contentValues(): ContentValues
 }
