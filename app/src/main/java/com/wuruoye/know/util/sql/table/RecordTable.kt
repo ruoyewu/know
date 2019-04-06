@@ -4,24 +4,16 @@ import android.content.ContentValues
 import android.database.Cursor
 import android.database.sqlite.SQLiteDatabase
 import com.wuruoye.know.model.beans.Record
-import com.wuruoye.know.util.CodeUtil
 
 class RecordTable(id: Int,
                   private val type: Int,
-                  private var items: String,
                   private val reviewNum: Int,
                   private val failNum: Int,
                   private val lastReview: Long,
                   private val createTime: Long,
                   private val updateTime: Long) : Table(id) {
-    constructor(record: Record): this(record.id, record.type, "", record.reviewNum,
-            record.failNum, record.lastReview, record.createTime, record.updateTime){
-        val builder = StringBuilder()
-        for (item in record.items) {
-            builder.append(CodeUtil.encodeBase64(item)).append(",")
-        }
-        this.items = builder.toString()
-    }
+    constructor(record: Record): this(record.id, record.type, record.reviewNum,
+            record.failNum, record.lastReview, record.createTime, record.updateTime)
 
     override fun save(db: SQLiteDatabase): Int {
         return db.insert(NAME, null, contentValues()).toInt()
@@ -38,7 +30,6 @@ class RecordTable(id: Int,
     override fun contentValues(): ContentValues {
         val values = ContentValues()
         values.put(TYPE, type)
-        values.put(ITEMS, items)
         values.put(REVIEW_NUM, reviewNum)
         values.put(FAIL_NUM, failNum)
         values.put(LAST_REVIEW, lastReview)
@@ -62,7 +53,6 @@ class RecordTable(id: Int,
             db.execSQL("create table " + NAME + " (" +
                     "id integer primary key autoincrement, " +
                     TYPE + " integer, " +
-                    ITEMS + " text, " +
                     REVIEW_NUM + " integer, " +
                     FAIL_NUM + " integer, " +
                     LAST_REVIEW + " integer, " +
@@ -125,19 +115,12 @@ class RecordTable(id: Int,
         private fun fromCursor(cursor: Cursor): Record {
             val id = cursor.getInt(0)
             val type = cursor.getInt(1)
-            val items = cursor.getString(2)
-            val reviewNum = cursor.getInt(3)
-            val failNum = cursor.getInt(4)
-            val lastReview = cursor.getLong(5)
-            val createTime = cursor.getLong(6)
-            val updateTime = cursor.getLong(7)
-            val itemArray = items.split(",")
-            val itemList = ArrayList<String>()
-            for (item in itemArray) {
-                itemList.add(CodeUtil.decodeBase64(item))
-            }
-            itemList.removeAt(itemList.size-1)
-            return Record(id, type, itemList, reviewNum, failNum,
+            val reviewNum = cursor.getInt(2)
+            val failNum = cursor.getInt(3)
+            val lastReview = cursor.getLong(4)
+            val createTime = cursor.getLong(5)
+            val updateTime = cursor.getLong(6)
+            return Record(id, type, reviewNum, failNum,
                     lastReview, createTime, updateTime)
         }
     }

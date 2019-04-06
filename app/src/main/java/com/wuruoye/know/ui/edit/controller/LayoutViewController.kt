@@ -3,6 +3,7 @@ package com.wuruoye.know.ui.edit.controller
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.widget.FrameLayout
 import android.widget.LinearLayout
 import android.widget.ScrollView
@@ -84,7 +85,8 @@ class LayoutViewController(private val mView: RecordLayoutView) :
             tvBgColor.text = ColorUtil.color2hex(bgColor)
             tvMargin.text = margin2String(marginLeft, marginTop, marginRight, marginBottom)
             tvPadding.text = margin2String(paddingLeft, paddingTop, paddingRight, paddingBottom)
-            tvGravity.text = GRAVITY_NAME[GRAVITY_VALUE.indexOf(gravity)]
+            tvGravity.text = GRAVITY_NAME[if (GRAVITY_VALUE.indexOf(gravity) < 0) 0
+                                            else GRAVITY_VALUE.indexOf(gravity)]
         }
     }
 
@@ -125,16 +127,79 @@ class LayoutViewController(private val mView: RecordLayoutView) :
         }
     }
 
+    override fun onItemSelect(value: Int) {
+        super.onItemSelect(value)
+        when (mCurType) {
+            TYPE_ORIENTATION -> {
+                mView.orientation = ORIENTATION_VALUE[value]
+                tvOrientation.text = ORIENTATION_NAME[value]
+
+                mShowView.orientation = ORIENTATION_VALUE[value]
+            }
+            TYPE_GRAVITY -> {
+                mView.gravity = GRAVITY_VALUE[value]
+                tvGravity.text = GRAVITY_NAME[value]
+
+                mShowView.gravity = GRAVITY_VALUE[value]
+            }
+        }
+    }
+
     override fun onMarginSubmit(left: Int, top: Int, right: Int, bottom: Int) {
-        TODO()
+        when (mCurType) {
+            TYPE_MARGIN -> {
+                mView.marginLeft = left
+                mView.marginTop = top
+                mView.marginRight = right
+                mView.marginBottom = bottom
+                tvMargin.text = margin2String(left, top, right, bottom)
+
+                val lp = mShowView.layoutParams as ViewGroup.MarginLayoutParams
+                lp.setMargins(toPx(left), toPx(top), toPx(right), toPx(bottom))
+                mShowView.layoutParams = lp
+            }
+            TYPE_PADDING -> {
+                mView.paddingLeft = left
+                mView.paddingTop = top
+                mView.paddingRight = right
+                mView.paddingBottom = bottom
+                tvPadding.text = margin2String(left, top, right, bottom)
+
+                mShowView.setPadding(toPx(left), toPx(top), toPx(right), toPx(bottom))
+            }
+        }
     }
 
     override fun onColorSubmit(color: Int) {
-        TODO()
+        when (mCurType) {
+            TYPE_BG_COLOR -> {
+                mView.bgColor = color
+                tvBgColor.text = ColorUtil.color2hex(color)
+
+                mShowView.setBackgroundColor(color)
+            }
+        }
     }
 
     override fun onLengthSubmit(length: Int) {
-        TODO()
+        when (mCurType) {
+            TYPE_WIDTH -> {
+                mView.width = length
+                tvWidth.text = length2String(length)
+
+                val lp = mShowView.layoutParams
+                lp.width = lengthToPx(length)
+                mShowView.layoutParams = lp
+            }
+            TYPE_HEIGHT -> {
+                mView.height = length
+                tvHeight.text = length2String(length)
+
+                val lp = mShowView.layoutParams
+                lp.height = lengthToPx(length)
+                mShowView.layoutParams = lp
+            }
+        }
     }
 
     override val result: RecordView

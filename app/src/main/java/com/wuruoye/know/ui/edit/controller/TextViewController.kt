@@ -239,15 +239,17 @@ class TextViewController(private val mView: RecordTextView) :
             TYPE_WIDTH -> {
                 mView.width = length
                 tvWidth.text = length2String(length)
+
                 val lp = mShowView.layoutParams
-                lp.width = length
+                lp.width = lengthToPx(length)
                 mShowView.layoutParams = lp
             }
             TYPE_HEIGHT -> {
                 mView.height = length
                 tvHeight.text = length2String(length)
+
                 val lp = mShowView.layoutParams
-                lp.height = length
+                lp.height = lengthToPx(length)
                 mShowView.layoutParams = lp
             }
         }

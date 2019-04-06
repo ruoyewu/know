@@ -94,8 +94,8 @@ class EditTextController(private val mView: RecordTextView) : AbstractEditorCont
             llInputType = findViewById(R.id.ll_input_type_layout_edit)
             llMinLine = findViewById(R.id.ll_min_line_layout_edit)
             llMaxLine = findViewById(R.id.ll_max_line_layout_edit)
-            llWidth = findViewById(R.id.ll_width_layout_text)
-            llHeight = findViewById(R.id.ll_height_layout_text)
+            llWidth = findViewById(R.id.ll_width_layout_edit)
+            llHeight = findViewById(R.id.ll_height_layout_edit)
 
             tvTextSize = findViewById(R.id.tv_text_size_layout_edit)
             tvTextColor = findViewById(R.id.tv_text_color_layout_edit)
@@ -111,8 +111,8 @@ class EditTextController(private val mView: RecordTextView) : AbstractEditorCont
             tvInputType = findViewById(R.id.tv_input_type_layout_edit)
             tvMinLine = findViewById(R.id.tv_min_line_layout_edit)
             tvMaxLine = findViewById(R.id.tv_max_line_layout_edit)
-            tvWidth = findViewById(R.id.tv_width_layout_text)
-            tvHeight = findViewById(R.id.tv_height_layout_text)
+            tvWidth = findViewById(R.id.tv_width_layout_edit)
+            tvHeight = findViewById(R.id.tv_height_layout_edit)
         }
 
         llTextSize.setOnClickListener(this)
@@ -215,11 +215,11 @@ class EditTextController(private val mView: RecordTextView) : AbstractEditorCont
                 mCurType = TYPE_LINE_MAX
                 showSelectDlg(Math.max(TEXT_LINE_MIN, mView.minLine), TEXT_LINE_MAX, mView.maxLine)
             }
-            R.id.ll_width_layout_text -> {
+            R.id.ll_width_layout_edit -> {
                 mCurType = TYPE_WIDTH
                 showLengthDlg(mView.width)
             }
-            R.id.ll_height_layout_text -> {
+            R.id.ll_height_layout_edit -> {
                 mCurType = TYPE_HEIGHT
                 showLengthDlg(mView.height)
             }
@@ -347,15 +347,17 @@ class EditTextController(private val mView: RecordTextView) : AbstractEditorCont
             TYPE_WIDTH -> {
                 mView.width = length
                 tvWidth.text = length2String(length)
+
                 val lp = mShowView.layoutParams
-                lp.width = length
+                lp.width = lengthToPx(length)
                 mShowView.layoutParams = lp
             }
             TYPE_HEIGHT -> {
                 mView.height = length
                 tvHeight.text = length2String(length)
+
                 val lp = mShowView.layoutParams
-                lp.height = length
+                lp.height = lengthToPx(length)
                 mShowView.layoutParams = lp
             }
         }

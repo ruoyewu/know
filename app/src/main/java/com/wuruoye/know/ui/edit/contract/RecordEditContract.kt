@@ -1,6 +1,7 @@
 package com.wuruoye.know.ui.edit.contract
 
 import android.content.Context
+import android.view.ViewGroup
 import com.wuruoye.know.model.beans.Record
 import com.wuruoye.know.model.beans.RecordType
 import com.wuruoye.know.model.beans.RecordView
@@ -21,5 +22,9 @@ interface RecordEditContract {
         abstract fun getRecordType(context: Context, id: Int): RecordType
         abstract fun getRecord(context: Context, id: Int): Record
         abstract fun generateRecord(context: Context, type: Int): Record
+        abstract fun saveRecord(context: Context, record: Record,
+                                recordType: RecordType, view: ViewGroup): Boolean
+        abstract fun loadRecord(context: Context, record: Record,
+                                recordType: RecordType, view: ViewGroup)
     }
 }

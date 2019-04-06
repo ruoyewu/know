@@ -21,7 +21,8 @@ interface RecordTypeEditContract {
         abstract fun getRecordType(context: Context, id: Int): RecordType
         abstract fun getDefaultRecordType(): RecordType
         abstract fun generateView(context: Context, view: RecordView,
-                                  parent: ViewGroup, attach: Boolean,
+                                  parent: ViewGroup, parentView: ArrayList<RecordView>,
+                                  attach: Boolean,
                                   listener: ViewFactory.OnLongClickListener): android.view.View?
         abstract fun saveRecordType(context: Context, recordType: RecordType)
     }

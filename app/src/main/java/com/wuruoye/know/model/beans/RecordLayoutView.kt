@@ -16,28 +16,28 @@ class RecordLayoutView(
         var height: Int = -2,
         var bgColor: Int = 0,
         var orientation: Int = LinearLayout.VERTICAL,
-        var views: ArrayList<RecordView>,
+        var views: ArrayList<RecordView> = arrayListOf(),
         var marginTop: Int = 0,
         var marginBottom: Int = 0,
         var marginLeft: Int = 0,
         var marginRight: Int = 0,
-        var paddingTop: Int = 0,
-        var paddingBottom: Int = 0,
-        var paddingLeft: Int = 0,
-        var paddingRight: Int = 0,
+        var paddingTop: Int = 10,
+        var paddingBottom: Int = 10,
+        var paddingLeft: Int = 16,
+        var paddingRight: Int = 16,
         var gravity: Int = Gravity.CENTER,
         createTime: Long = -1,
         updateTime: Long = -1
 ) : RecordView(id, createTime, updateTime), Parcelable {
-    constructor(): this(-1, -1, -2, 0, LinearLayout.VERTICAL, ArrayList(),
-            0, 0, 0, 0, 0, 0,
-            0, 0, Gravity.CENTER, -1, -1)
-
     constructor(table: LayoutViewTable, views: ArrayList<RecordView>) :
             this(table.id, table.width, table.height, table.bgColor, table.orientation,
                     views, table.marginTop, table.marginBottom, table.marginLeft,
                     table.marginRight, table.paddingTop, table.paddingBottom, table.paddingLeft,
                     table.paddingRight, table.gravity, table.createTime, table.updateTime)
+
+    constructor(v: RecordLayoutView): this(v.id, v.width, v.height, v.bgColor, v.orientation,
+            ArrayList(), v.marginTop, v.marginBottom, v.marginLeft, v.marginRight, v.paddingTop,
+            v.paddingBottom, v.paddingLeft, v.paddingRight, v.gravity, v.createTime, v.updateTime)
 
     constructor(source: Parcel) : this(
             source.readInt(),

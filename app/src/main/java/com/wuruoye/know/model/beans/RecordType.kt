@@ -8,16 +8,18 @@ import com.wuruoye.know.util.sql.table.RecordTypeTable
  * Created at 2019/3/18 12:31 by wuruoye
  * Description:
  */
-class RecordType(var id: Int,
-                 var title: String,
-                 var views: ArrayList<RecordView>,
-                 var createTime: Long,
-                 var updateTime: Long
+class RecordType(var id: Int = -1,
+                 var title: String = "",
+                 var views: ArrayList<RecordView> = arrayListOf(),
+                 var createTime: Long = -1,
+                 var updateTime: Long = -1
 ) : Parcelable {
     constructor(table: RecordTypeTable, views: ArrayList<RecordView>): this(table.id,
             table.title, views, table.createTime, table.updateTime)
 
-    constructor(title: String): this(-1, title, arrayListOf(), -1, -1)
+    constructor(title: String): this() {
+        this.title = title
+    }
 
     constructor(source: Parcel) : this(
             source.readInt(),

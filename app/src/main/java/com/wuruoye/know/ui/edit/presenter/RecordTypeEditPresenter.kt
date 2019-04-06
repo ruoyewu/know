@@ -28,12 +28,18 @@ class RecordTypeEditPresenter : RecordTypeEditContract.Presenter() {
     }
 
     override fun generateView(context: Context, view: RecordView,
-                              parent: ViewGroup, attach: Boolean,
+                              parent: ViewGroup, parentView: ArrayList<RecordView>,
+                              attach: Boolean,
                               listener: ViewFactory.OnLongClickListener): View? {
-        return ViewFactory.generateView(context, view, parent, attach, listener)
+        return ViewFactory.generateEditView(context, view, parent, parentView, attach, listener)
     }
 
     override fun saveRecordType(context: Context, recordType: RecordType) {
+        if (recordType.createTime < 0) {
+            recordType.createTime = System.currentTimeMillis()
+        } else {
+            recordType.updateTime = System.currentTimeMillis()
+        }
         SqlUtil.getInstance(context).saveRecordType(recordType)
     }
 }

@@ -2,6 +2,9 @@ package com.wuruoye.know.util.sql
 
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
+import android.support.design.widget.TextInputLayout
+import android.view.View
+import android.view.ViewGroup
 import com.wuruoye.know.model.beans.*
 import com.wuruoye.know.util.sql.SqlUtil.ViewTableItem.Companion.LAYOUT_VIEW
 import com.wuruoye.know.util.sql.SqlUtil.ViewTableItem.Companion.TEXT_VIEW
@@ -35,8 +38,8 @@ class SqlUtil private constructor(context: Context) {
 
     fun saveRecordType(recordType: RecordType): Boolean {
         val db = sh.writableDatabase
-        db.beginTransaction()
         try {
+            db.beginTransaction()
             // save record view
             val builder = StringBuilder("[")
             val views = recordType.views
@@ -124,6 +127,59 @@ class SqlUtil private constructor(context: Context) {
         }
     }
 
+    fun queryRecordItem(recordId: Int, type: Int, typeId: Int): RecordItem? {
+        sh.readableDatabase.use {
+            return RecordItemTable.query(it, recordId, type, typeId)
+        }
+    }
+
+    fun saveRecordWithItems(record: Record, recordType: RecordType, view: View): Boolean {
+        val db = sh.writableDatabase
+        try {
+            db.beginTransaction()
+
+            val table = RecordTable(record)
+            val id = if (table.id < 0) {
+                table.save(db)
+            } else {
+                table.update(db)
+                table.id
+            }
+
+            val views = recordType.views
+            val parent = view as ViewGroup
+
+            saveRecordItem(id, views, parent, db)
+
+            db.setTransactionSuccessful()
+            return true
+        } catch (ignore: Exception) {
+            return false
+        } finally {
+            db.endTransaction()
+            db.close()
+        }
+    }
+
+    private fun saveRecordItem(recordId: Int, views: ArrayList<RecordView>, parent: ViewGroup,
+                               db: SQLiteDatabase) {
+        for (i in 0 until views.size) {
+            val v = views[i]
+            val child = parent.getChildAt(i)
+            if (v is RecordTextView && v.isEditable) {
+                val item = child.tag
+                val itemTable = if (item != null) {
+                    RecordItemTable(item as RecordItem)
+                } else {
+                    RecordItemTable(-1, recordId, ViewTableItem.TEXT_VIEW, v.id, "")
+                }
+                itemTable.content = (child as TextInputLayout).editText!!.text.toString()
+                itemTable.save(db)
+            } else if (v is RecordLayoutView) {
+                saveRecordItem(recordId, v.views, child as ViewGroup, db)
+            }
+        }
+    }
 
     // util
     private fun generateTable(view: RecordView, db: SQLiteDatabase): ViewTableItem {
@@ -174,7 +230,7 @@ class SqlUtil private constructor(context: Context) {
         return TextViewTable.query(db, id)!!
     }
 
-    private class ViewTableItem (
+    class ViewTableItem (
             val type: Int,
             val table: ViewTable
     ) {

@@ -103,14 +103,16 @@ class LayoutViewTable(
                     PADDING_RIGHT + " integer, " +
                     GRAVITY + " integer, " +
                     CREATE_TIME + " integer, " +
-                    UPDATE_TIME + " integer")
+                    UPDATE_TIME + " integer)")
         }
 
         fun query(db: SQLiteDatabase, id: Int): LayoutViewTable {
             val cursor = db.query(NAME, null, "id=?", arrayOf(id.toString()),
                     null, null, null)
-            cursor.moveToFirst()
-            return fromCursor(cursor)
+            cursor.use {
+                it.moveToFirst()
+                return fromCursor(it)
+            }
         }
 
         private fun fromCursor(cursor: Cursor): LayoutViewTable {
@@ -125,7 +127,7 @@ class LayoutViewTable(
             val marginLeft = cursor.getInt(8)
             val marginRight = cursor.getInt(9)
             val paddingTop = cursor.getInt(10)
-            val paddingBottom = cursor.getInt(12)
+            val paddingBottom = cursor.getInt(11)
             val paddingLeft = cursor.getInt(12)
             val paddingRight = cursor.getInt(13)
             val gravity = cursor.getInt(14)

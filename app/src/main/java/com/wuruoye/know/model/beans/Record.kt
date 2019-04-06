@@ -8,22 +8,21 @@ import android.os.Parcelable
  * Description:
  */
 class Record(
-        var id: Int,
-        var type: Int,
-        var items: ArrayList<String>,
-        var reviewNum: Int,
-        var failNum: Int,
-        var lastReview: Long,
-        var createTime: Long,
-        var updateTime: Long
+        var id: Int = -1,
+        var type: Int = -1,
+        var reviewNum: Int = 0,
+        var failNum: Int = 0,
+        var lastReview: Long = -1,
+        var createTime: Long = -1,
+        var updateTime: Long = -1
 ) : Parcelable {
-    constructor(type: Int) : this(-1, type, arrayListOf(), 0, 0,
-            -1, -1, -1)
+    constructor(type: Int) : this() {
+        this.type = type
+    }
 
     constructor(source: Parcel) : this(
             source.readInt(),
             source.readInt(),
-            source.createStringArrayList(),
             source.readInt(),
             source.readInt(),
             source.readLong(),
@@ -36,7 +35,6 @@ class Record(
     override fun writeToParcel(dest: Parcel, flags: Int) = with(dest) {
         writeInt(id)
         writeInt(type)
-        writeStringList(items)
         writeInt(reviewNum)
         writeInt(failNum)
         writeLong(lastReview)

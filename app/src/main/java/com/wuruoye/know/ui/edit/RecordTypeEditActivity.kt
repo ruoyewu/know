@@ -2,6 +2,7 @@ package com.wuruoye.know.ui.edit
 
 import android.annotation.SuppressLint
 import android.app.Activity
+import android.app.AlertDialog
 import android.content.Intent
 import android.os.Bundle
 import android.support.design.widget.BottomSheetDialog
@@ -10,12 +11,14 @@ import android.support.v7.widget.LinearLayoutManager
 import android.support.v7.widget.RecyclerView
 import android.view.LayoutInflater
 import android.view.View
+import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.widget.EditText
 import com.wuruoye.know.R
 import com.wuruoye.know.base.IToolbarView
 import com.wuruoye.know.base.ToolbarActivity
 import com.wuruoye.know.model.ViewFactory
+import com.wuruoye.know.model.beans.RecordLayoutView
 import com.wuruoye.know.model.beans.RecordType
 import com.wuruoye.know.model.beans.RecordTypeItem
 import com.wuruoye.know.model.beans.RecordView
@@ -41,6 +44,9 @@ class RecordTypeEditActivity : ToolbarActivity<RecordTypeEditContract.Presenter>
 
     private lateinit var mType: RecordType
     private lateinit var mUpdateRecordView: RecordView
+
+    private lateinit var mParent: ViewGroup
+    private lateinit var mViews: ArrayList<RecordView>
 
     override fun getContentView(): Int {
         return R.layout.activity_record_type_edit
@@ -109,7 +115,7 @@ class RecordTypeEditActivity : ToolbarActivity<RecordTypeEditContract.Presenter>
         ll_record_type_edit.removeAllViews()
         for (view in mType.views) {
             mPresenter.generateView(this, view,
-                    ll_record_type_edit, true, this)
+                    ll_record_type_edit, mType.views, true, this)
         }
     }
 
@@ -135,8 +141,6 @@ class RecordTypeEditActivity : ToolbarActivity<RecordTypeEditContract.Presenter>
     }
 
     override fun onMoreClick() {
-        if (mType.createTime > 0) mType.updateTime = System.currentTimeMillis()
-        else mType.createTime = System.currentTimeMillis()
         mPresenter.saveRecordType(this, mType)
         setResult(Activity.RESULT_OK)
         finish()
@@ -150,7 +154,11 @@ class RecordTypeEditActivity : ToolbarActivity<RecordTypeEditContract.Presenter>
 
     override fun onClick(v: View) {
         when (v.id) {
-            R.id.fab_record_type_edit -> showSelectDlg()
+            R.id.fab_record_type_edit -> {
+                mParent = ll_record_type_edit
+                mViews = mType.views
+                showSelectDlg()
+            }
             R.id.btn_cancel_dlg_bottom_alert -> {
                 finish()
             }
@@ -163,12 +171,36 @@ class RecordTypeEditActivity : ToolbarActivity<RecordTypeEditContract.Presenter>
         }
     }
 
-    override fun onLongClick(recordView: RecordView) {
-        mUpdateRecordView = recordView
-        val intent = Intent(this, TypeItemEditActivity::class.java)
-        intent.putExtra(TypeItemEditActivity.RECORD_VIEW, recordView)
-        startActivityForResult(intent, FOR_UPDATE_RESULT)
-        TODO("修改成弹框选择操作")
+    override fun onLongClick(recordView: RecordView, view: View,
+                             parentView: ArrayList<RecordView>, parent: ViewGroup) {
+        AlertDialog.Builder(this)
+                .setTitle("选择操作")
+                .setItems(if (recordView is RecordLayoutView) ITEM_LAYOUT else ITEM_VIEW) {
+                    _, which ->
+                        when (which) {
+                            0 -> {      // update
+                                mUpdateRecordView = recordView
+                                mParent = parent
+                                mViews = parentView
+
+                                val intent = Intent(this,
+                                        TypeItemEditActivity::class.java)
+                                if (recordView is RecordLayoutView) {
+                                    intent.putExtra(TypeItemEditActivity.RECORD_VIEW,
+                                            RecordLayoutView(recordView))
+                                } else {
+                                    intent.putExtra(TypeItemEditActivity.RECORD_VIEW, recordView)
+                                }
+                                startActivityForResult(intent, FOR_UPDATE_RESULT)
+                            }
+                            1 -> {      // add
+                                mParent = view as ViewGroup
+                                mViews = (recordView as RecordLayoutView).views
+                                showSelectDlg()
+                            }
+                        }
+                }
+                .show()
     }
 
     override fun onItemClick(recordTypeItem: RecordTypeItem) {
@@ -182,18 +214,23 @@ class RecordTypeEditActivity : ToolbarActivity<RecordTypeEditContract.Presenter>
         val v: View?
         when (type) {
             FOR_ADD_RESULT -> {
-                mPresenter.generateView(this, view, ll_record_type_edit,
-                        true, this)
-                mType.views.add(view)
+                mPresenter.generateView(this, view, mParent,
+                        mViews, true, this)
+                mViews.add(view)
             }
             FOR_UPDATE_RESULT -> {
-                val index = mType.views.indexOf(mUpdateRecordView)
-                mType.views.removeAt(index)
-                ll_record_type_edit.removeViewAt(index)
-                mType.views.add(index, view)
-                v = mPresenter.generateView(this, view, ll_record_type_edit,
-                        false, this)
-                ll_record_type_edit.addView(v, index)
+                if (view is RecordLayoutView) {
+                    view.views = (mUpdateRecordView as RecordLayoutView).views
+                }
+                val index = mViews.indexOf(mUpdateRecordView)
+
+                mViews.removeAt(index)
+                mParent.removeViewAt(index)
+
+                v = mPresenter.generateView(this, view, mParent,
+                        mViews, false, this)
+                mParent.addView(v, index)
+                mViews.add(index, view)
             }
         }
     }
@@ -210,5 +247,8 @@ class RecordTypeEditActivity : ToolbarActivity<RecordTypeEditContract.Presenter>
         const val RECORD_TYPE = "type"
         const val FOR_ADD_RESULT = 1
         const val FOR_UPDATE_RESULT = 2
+
+        val ITEM_VIEW = arrayOf("修改控件")
+        val ITEM_LAYOUT = arrayOf("修改控件", "增加子控件")
     }
 }

@@ -5,8 +5,6 @@ package com.wuruoye.know.model.beans
  * Description:
  */
 class TimeLimitItem(
-        var id: Int,
-        var title: String
-) {
-    constructor(title: String): this(-1, title)
-}
+        var id: Int = -1,
+        var title: String = ""
+)

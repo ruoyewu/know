@@ -173,13 +173,17 @@ abstract class AbstractEditorController : EditorController,
     }
 
     protected fun showLengthDlg(length: Int) {
-        mCurType = TYPE_WIDTH
         showSelectDlg(LENGTH_NAME, if (length < 0) LENGTH_VALUE.indexOf(length)
                                     else LENGTH_VALUE.size-1)
     }
 
     protected fun toPx(dp: Int): Int {
         return DensityUtil.dp2px(mContext, dp.toFloat()).toInt()
+    }
+
+    protected fun lengthToPx(length: Int): Int {
+        return if (length < 0) length
+                else DensityUtil.dp2px(mContext, length.toFloat()).toInt()
     }
 
     protected abstract fun onMarginSubmit(left: Int, top: Int, right: Int, bottom: Int)
@@ -212,7 +216,7 @@ abstract class AbstractEditorController : EditorController,
 
     protected fun length2String(length: Int): String {
         return if (length < 0) {
-            LENGTH_NAME[length]
+            LENGTH_NAME[LENGTH_VALUE.indexOf(length)]
         } else {
             length.toString()
         }

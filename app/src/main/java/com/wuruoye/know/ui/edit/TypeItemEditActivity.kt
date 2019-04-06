@@ -14,7 +14,8 @@ import com.wuruoye.know.ui.edit.presenter.TypeItemEditPresenter
 import kotlinx.android.synthetic.main.activity_type_item_edit.*
 
 class TypeItemEditActivity : ToolbarActivity<TypeItemEditContract.Presenter>(),
-        TypeItemEditContract.View, IToolbarView.OnToolbarMoreListener, IToolbarView.OnToolbarBackListener {
+        TypeItemEditContract.View, IToolbarView.OnToolbarMoreListener,
+        IToolbarView.OnToolbarBackListener {
 
     private var mView: RecordView? = null
     private var mType: Int = 0

@@ -27,8 +27,11 @@ class RecordRVAdapter : WBaseRVAdapter<Record>() {
         val record = getData(i)
         val vh = viewHolder as ViewHolder
         with(vh) {
-            tvTitle.text = SqlUtil.getInstance(itemView.context).queryRecordType(record.type).title
-            tvContent.text = record.items.find { !it.isEmpty() }
+            val sql = SqlUtil.getInstance(itemView.context)
+            val type = sql.queryRecordType(record.type)
+            tvTitle.text = type.title
+            // TODO 根据记录获得记录内容
+
             tvDate.text = DateUtil.milli2Date(record.createTime)
             itemView.setOnClickListener {
                 onItemClick(record)

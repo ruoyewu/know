@@ -28,10 +28,6 @@ class SelectItemAdapter : WBaseRVAdapter<RecordTypeItem>() {
     }
 
     private class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        internal var tv: TextView
-
-        init {
-            tv = itemView.findViewById(R.id.tv_select_type)
-        }
+        internal var tv: TextView = itemView.findViewById(R.id.tv_select_type)
     }
 }

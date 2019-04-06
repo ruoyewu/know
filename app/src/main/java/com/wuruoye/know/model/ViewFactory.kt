@@ -4,7 +4,9 @@ import android.content.Context
 import android.graphics.drawable.ColorDrawable
 import android.os.Build
 import android.support.design.widget.TextInputLayout
+import android.support.v4.app.ActivityCompat
 import android.text.method.ScrollingMovementMethod
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,29 +26,24 @@ import com.wuruoye.library.util.DensityUtil
  */
 object ViewFactory {
     interface OnLongClickListener {
-        fun onLongClick(recordView: RecordView)
+        fun onLongClick(recordView: RecordView, view: View,
+                        parentView: ArrayList<RecordView>, parent: ViewGroup)
     }
 
     fun generateView(context: Context, view: RecordView, parent: ViewGroup): View? {
-        return generateView(context, view, parent, true, null)
+        return generateView(context, view, parent, true)
     }
 
-    fun generateView(context: Context, view: RecordView,
-                     parent: ViewGroup, attach: Boolean): View? {
-        return generateView(context, view, parent, attach, null)
-    }
-
-    fun generateView(context: Context, view: RecordView, parent: ViewGroup, attach: Boolean,
-                     listener: OnLongClickListener?): View? {
+    fun generateView(context: Context, view: RecordView, parent: ViewGroup, attach: Boolean): View? {
         return when (view) {
-            is RecordTextView -> generateTextView(context, view, parent, attach, listener)
-            is RecordLayoutView -> generateLayoutView(context, view, parent, attach, listener)
+            is RecordTextView -> generateTextView(context, view, parent, attach)
+            is RecordLayoutView -> generateLayoutView(context, view, parent, attach)
             else -> null
         }
     }
 
     private fun generateTextView(context: Context, textView: RecordTextView, parent: ViewGroup,
-                                 attach: Boolean, listener: OnLongClickListener?): View {
+                                 attach: Boolean): View {
         with(textView) {
             if (isEditable) {
                 val viewLayout = LayoutInflater.from(context)
@@ -67,8 +64,8 @@ object ViewFactory {
                         DensityUtil.dp2px(context, marginTop.toFloat()).toInt(),
                         DensityUtil.dp2px(context, marginRight.toFloat()).toInt(),
                         DensityUtil.dp2px(context, marginBottom.toFloat()).toInt())
-                params.width = width
-                params.height = height
+                params.width = lengthToPx(context, width)
+                params.height = lengthToPx(context, height)
                 viewLayout.layoutParams = params
 
                 val view = viewLayout.findViewById<EditText>(R.id.et_view_edit)
@@ -104,8 +101,8 @@ object ViewFactory {
                         DensityUtil.dp2px(context, marginTop.toFloat()).toInt(),
                         DensityUtil.dp2px(context, marginRight.toFloat()).toInt(),
                         DensityUtil.dp2px(context, marginBottom.toFloat()).toInt())
-                params.width = width
-                params.height = height
+                params.width = lengthToPx(context, width)
+                params.height = lengthToPx(context, height)
                 view.layoutParams = params
                 view.gravity = gravity
                 view.setTypeface(view.typeface, textStyle)
@@ -116,47 +113,137 @@ object ViewFactory {
                 if (attach) {
                     parent.addView(view)
                 }
-                if (listener != null) {
-                    view.setOnLongClickListener {
-                        listener.onLongClick(textView)
-                        true
-                    }
-                }
                 return view
             }
         }
     }
 
     private fun generateLayoutView(context: Context, layoutView: RecordLayoutView,
-                                   parent: ViewGroup, attach: Boolean,
-                                   listener: OnLongClickListener?): View {
+                                   parent: ViewGroup, attach: Boolean): View {
         with(layoutView) {
             val view = LayoutInflater.from(context).inflate(R.layout.view_layout,
                     parent, false) as LinearLayout
             view.orientation = orientation
             view.gravity = gravity
             view.setBackgroundColor(bgColor)
-            view.setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom)
+            view.setPadding(DensityUtil.dp2px(context, paddingLeft.toFloat()).toInt(),
+                    DensityUtil.dp2px(context, paddingTop.toFloat()).toInt(),
+                    DensityUtil.dp2px(context, paddingRight.toFloat()).toInt(),
+                    DensityUtil.dp2px(context, paddingBottom.toFloat()).toInt())
             val lp = view.layoutParams as ViewGroup.MarginLayoutParams
-            lp.height = height
-            lp.width = width
-            lp.setMargins(marginLeft, marginTop, marginRight, marginBottom)
+            lp.width = lengthToPx(context, width)
+            lp.height = lengthToPx(context, height)
+            lp.setMargins(DensityUtil.dp2px(context, marginLeft.toFloat()).toInt(),
+                    DensityUtil.dp2px(context, marginTop.toFloat()).toInt(),
+                    DensityUtil.dp2px(context, marginRight.toFloat()).toInt(),
+                    DensityUtil.dp2px(context, marginBottom.toFloat()).toInt())
             view.layoutParams = lp
 
             for (v in views) {
-                generateView(context, v, view, true, listener)
+                generateView(context, v, view, true)
             }
 
             if (attach) {
                 parent.addView(view)
             }
+            return view
+        }
+    }
+
+    fun generateEditView(context: Context, view: RecordView, parent: ViewGroup,
+                         parentView: ArrayList<RecordView>, attach: Boolean,
+                         listener: OnLongClickListener?): View? {
+        return when (view) {
+            is RecordTextView -> generateEditTextView(context, view,
+                    parent, parentView, attach, listener)
+            is RecordLayoutView -> generateEditLayoutView(context, view,
+                    parent, parentView, attach, listener)
+            else -> null
+        }
+    }
+
+    private fun generateEditTextView(context: Context, textView: RecordTextView, parent: ViewGroup,
+                                     parentView: ArrayList<RecordView>,
+                                     attach: Boolean, listener: OnLongClickListener?): View {
+        with(textView) {
+            val view = LayoutInflater.from(context)
+                    .inflate(R.layout.view_text, parent, false) as TextView
+            view.setBackgroundColor(ActivityCompat.getColor(context, R.color.transparent_platinum))
+            view.setPadding(DensityUtil.dp2px(context, paddingLeft.toFloat()).toInt(),
+                    DensityUtil.dp2px(context, paddingTop.toFloat()).toInt(),
+                    DensityUtil.dp2px(context, paddingRight.toFloat()).toInt(),
+                    DensityUtil.dp2px(context, paddingBottom.toFloat()).toInt())
+            view.text = if (isEditable) "编辑框" else "标签"
+            view.gravity = Gravity.CENTER
+
+            val lp = view.layoutParams as ViewGroup.MarginLayoutParams
+            lp.width = lengthToPx(context, width)
+            lp.height = lengthToPx(context, height)
+            lp.setMargins(DensityUtil.dp2px(context, marginLeft.toFloat()).toInt(),
+                    DensityUtil.dp2px(context, marginTop.toFloat()).toInt(),
+                    DensityUtil.dp2px(context, marginRight.toFloat()).toInt(),
+                    DensityUtil.dp2px(context, marginBottom.toFloat()).toInt())
+            view.layoutParams = lp
+
+            if (attach) {
+                parent.addView(view)
+            }
+
             if (listener != null) {
                 view.setOnLongClickListener {
-                    listener.onLongClick(layoutView)
+                    listener.onLongClick(textView, view, parentView, parent)
                     true
                 }
             }
+
             return view
         }
+    }
+
+    private fun generateEditLayoutView(context: Context, layoutView: RecordLayoutView,
+                                       parent: ViewGroup, parentView: ArrayList<RecordView>,
+                                       attach: Boolean, listener: OnLongClickListener?): View {
+        with(layoutView) {
+            val view = LayoutInflater.from(context)
+                    .inflate(R.layout.view_layout, parent, false) as LinearLayout
+            view.setBackgroundColor(ActivityCompat.getColor(context, R.color.transparent_platinum))
+            view.setPadding(DensityUtil.dp2px(context, paddingLeft.toFloat()).toInt(),
+                    DensityUtil.dp2px(context, paddingTop.toFloat()).toInt(),
+                    DensityUtil.dp2px(context, paddingRight.toFloat()).toInt(),
+                    DensityUtil.dp2px(context, paddingBottom.toFloat()).toInt())
+            view.gravity = gravity
+            view.orientation = orientation
+
+            val lp = view.layoutParams as ViewGroup.MarginLayoutParams
+            lp.width = lengthToPx(context, width)
+            lp.height = lengthToPx(context, height)
+            lp.setMargins(DensityUtil.dp2px(context, marginLeft.toFloat()).toInt(),
+                    DensityUtil.dp2px(context, marginTop.toFloat()).toInt(),
+                    DensityUtil.dp2px(context, marginRight.toFloat()).toInt(),
+                    DensityUtil.dp2px(context, marginBottom.toFloat()).toInt())
+            view.layoutParams = lp
+
+            for (v in views) {
+                generateEditView(context, v, view, layoutView.views, true, listener)
+            }
+
+            if (attach) {
+                parent.addView(view)
+            }
+
+            if (listener != null) {
+                view.setOnLongClickListener {
+                    listener.onLongClick(layoutView, view, parentView, parent)
+                    true
+                }
+            }
+
+            return view
+        }
+    }
+
+    private fun lengthToPx(context: Context, length: Int): Int {
+        return if (length < 0) length
+                else DensityUtil.dp2px(context, length.toFloat()).toInt()
     }
 }
