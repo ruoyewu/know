@@ -8,12 +8,10 @@ import android.os.Build
 import android.support.design.widget.TextInputLayout
 import android.view.LayoutInflater
 import android.view.View
-import android.view.ViewGroup
 import android.widget.*
 import com.wuruoye.know.R
 import com.wuruoye.know.model.ViewFactory
 import com.wuruoye.know.model.beans.RecordTextView
-
 import com.wuruoye.know.model.beans.RecordView
 import com.wuruoye.know.util.ColorUtil
 
@@ -38,10 +36,6 @@ class EditTextController(private val mView: RecordTextView) : AbstractEditorCont
     private lateinit var tvHintSize: TextView
     private lateinit var llHintColor: LinearLayout
     private lateinit var tvHintColor: TextView
-    private lateinit var llMargin: LinearLayout
-    private lateinit var tvMargin: TextView
-    private lateinit var llPadding: LinearLayout
-    private lateinit var tvPadding: TextView
     private lateinit var llTextStyle: LinearLayout
     private lateinit var tvTextStyle: TextView
     private lateinit var llBgColor: LinearLayout
@@ -56,10 +50,6 @@ class EditTextController(private val mView: RecordTextView) : AbstractEditorCont
     private lateinit var tvMaxLine: TextView
     private lateinit var llInputType: LinearLayout
     private lateinit var tvInputType: TextView
-    private lateinit var llWidth: LinearLayout
-    private lateinit var tvWidth: TextView
-    private lateinit var llHeight: LinearLayout
-    private lateinit var tvHeight: TextView
 
     override val result: RecordView
         get() = mView
@@ -122,15 +112,11 @@ class EditTextController(private val mView: RecordTextView) : AbstractEditorCont
         llHintSize.setOnClickListener(this)
         llBgColor.setOnClickListener(this)
         llFgColor.setOnClickListener(this)
-        llMargin.setOnClickListener(this)
-        llPadding.setOnClickListener(this)
         llTextStyle.setOnClickListener(this)
         llGravity.setOnClickListener(this)
         llInputType.setOnClickListener(this)
         llMinLine.setOnClickListener(this)
         llMaxLine.setOnClickListener(this)
-        llWidth.setOnClickListener(this)
-        llHeight.setOnClickListener(this)
 
         with(mView) {
             tvTextSize.text = textSize.toString()
@@ -142,17 +128,13 @@ class EditTextController(private val mView: RecordTextView) : AbstractEditorCont
             tvHintColor.setTextColor(hintColor)
             tvBgColor.text = ColorUtil.color2hex(bgColor)
             tvFgColor.text = ColorUtil.color2hex(fgColor)
-            tvMargin.text = "" + marginLeft + " | " + marginTop +
-                    " | " + marginRight + " | " + marginBottom
-            tvPadding.text = "" + paddingLeft + " | " + paddingTop +
-                    " | " + paddingRight + " | " + paddingBottom
             tvTextStyle.text = TEXT_STYLE_NAME[TEXT_STYLE_VALUE.indexOf(textStyle)]
             tvGravity.text = GRAVITY_NAME[GRAVITY_VALUE.indexOf(gravity)]
             tvMinLine.text = minLine.toString()
             tvMaxLine.text = maxLine.toString()
-            tvWidth.text = length2String(width)
-            tvHeight.text = length2String(height)
         }
+
+        super.initView(mView, mShowView)
     }
 
     override fun onClick(v: View?) {
@@ -167,7 +149,7 @@ class EditTextController(private val mView: RecordTextView) : AbstractEditorCont
             }
             R.id.ll_hint_layout_edit -> {
                 mCurType = TYPE_HINT
-                showEditDlg("输入提示内容", -1)
+                showEditDlg("输入提示内容", INPUT_TYPE_VALUE[0])
             }
             R.id.ll_hint_size_layout_edit -> {
                 mCurType = TYPE_HINT_SIZE
@@ -184,16 +166,6 @@ class EditTextController(private val mView: RecordTextView) : AbstractEditorCont
             R.id.ll_fg_color_layout_edit -> {
                 mCurType = TYPE_FG_COLOR
                 showColorDlg(mView.fgColor)
-            }
-            R.id.ll_margin_layout_edit -> {
-                mCurType = TYPE_MARGIN
-                showMarginDlg(mView.marginLeft, mView.marginTop,
-                        mView.marginRight, mView.marginBottom)
-            }
-            R.id.ll_padding_layout_edit -> {
-                mCurType = TYPE_PADDING
-                showMarginDlg(mView.paddingLeft, mView.paddingTop,
-                        mView.paddingRight, mView.paddingBottom)
             }
             R.id.ll_text_style_layout_edit -> {
                 mCurType = TYPE_TEXT_STYLE
@@ -214,44 +186,6 @@ class EditTextController(private val mView: RecordTextView) : AbstractEditorCont
             R.id.ll_max_line_layout_edit -> {
                 mCurType = TYPE_LINE_MAX
                 showSelectDlg(Math.max(TEXT_LINE_MIN, mView.minLine), TEXT_LINE_MAX, mView.maxLine)
-            }
-            R.id.ll_width_layout_edit -> {
-                mCurType = TYPE_WIDTH
-                showLengthDlg(mView.width)
-            }
-            R.id.ll_height_layout_edit -> {
-                mCurType = TYPE_HEIGHT
-                showLengthDlg(mView.height)
-            }
-        }
-    }
-
-    @SuppressLint("SetTextI18n")
-    override fun onMarginSubmit(left: Int, top: Int, right: Int, bottom: Int) {
-        when (mCurType) {
-            TYPE_MARGIN -> {
-                with(mView) {
-                    marginLeft = left
-                    marginRight = right
-                    marginTop = top
-                    marginBottom = bottom
-                }
-                tvMargin.text = "" + left + " | " + top +
-                        " | " + right + " | " + bottom
-                val lp = mShowLayout.layoutParams as ViewGroup.MarginLayoutParams
-                lp.setMargins(toPx(left), toPx(top), toPx(right), toPx(bottom))
-                mShowLayout.layoutParams = lp
-            }
-            TYPE_PADDING -> {
-                with(mView) {
-                    paddingLeft = left
-                    paddingRight = right
-                    paddingTop = top
-                    paddingBottom = bottom
-                }
-                tvPadding.text = "" + left + " | " + top +
-                        " | " + right + " | " + bottom
-                mShowLayout.setPadding(toPx(left), toPx(top), toPx(right), toPx(bottom))
             }
         }
     }
@@ -338,27 +272,6 @@ class EditTextController(private val mView: RecordTextView) : AbstractEditorCont
                 }
                 tvFgColor.setTextColor(color)
                 tvFgColor.text = ColorUtil.color2hex(color)
-            }
-        }
-    }
-
-    override fun onLengthSubmit(length: Int) {
-        when (mCurType) {
-            TYPE_WIDTH -> {
-                mView.width = length
-                tvWidth.text = length2String(length)
-
-                val lp = mShowView.layoutParams
-                lp.width = lengthToPx(length)
-                mShowView.layoutParams = lp
-            }
-            TYPE_HEIGHT -> {
-                mView.height = length
-                tvHeight.text = length2String(length)
-
-                val lp = mShowView.layoutParams
-                lp.height = lengthToPx(length)
-                mShowView.layoutParams = lp
             }
         }
     }

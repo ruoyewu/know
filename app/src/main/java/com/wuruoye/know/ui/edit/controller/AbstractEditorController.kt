@@ -11,11 +11,10 @@ import android.text.InputType
 import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
-import android.widget.EditText
-import android.widget.LinearLayout
-import android.widget.NumberPicker
-import android.widget.TextView
+import android.view.ViewGroup
+import android.widget.*
 import com.wuruoye.know.R
+import com.wuruoye.know.model.beans.RecordView
 import com.wuruoye.know.widget.BottomAlertDialog
 import com.wuruoye.know.widget.ColorPickerView
 import com.wuruoye.know.widget.MarginPickerView
@@ -34,7 +33,7 @@ abstract class AbstractEditorController : EditorController,
     private lateinit var etEdit: EditText
 
     private lateinit var dlgMargin: Dialog
-    private lateinit var tvMargin: TextView
+    private lateinit var tvDlgMargin: TextView
     private lateinit var tmv: MarginPickerView
 
     private lateinit var dlgSelect: Dialog
@@ -42,6 +41,17 @@ abstract class AbstractEditorController : EditorController,
 
     private lateinit var dlgColor: Dialog
     private lateinit var cpvColor: ColorPickerView
+
+    private lateinit var mView: RecordView
+    private lateinit var mShowView: View
+    protected lateinit var llWidth: LinearLayout
+    protected lateinit var tvWidth: TextView
+    protected lateinit var llHeight: LinearLayout
+    protected lateinit var tvHeight: TextView
+    protected lateinit var llMargin: LinearLayout
+    protected lateinit var tvMargin: TextView
+    protected lateinit var llPadding: LinearLayout
+    protected lateinit var tvPadding: TextView
 
     protected var mCurType = 0
 
@@ -51,13 +61,46 @@ abstract class AbstractEditorController : EditorController,
         initDlg()
     }
 
+    internal fun initView(recordView: RecordView, view: View) {
+        mView = recordView
+        mShowView = view
+
+        llWidth.setOnClickListener {
+            mCurType = TYPE_WIDTH
+            showLengthDlg(mView.width)
+        }
+        llHeight.setOnClickListener {
+            mCurType = TYPE_HEIGHT
+            showLengthDlg(mView.height)
+        }
+        llMargin.setOnClickListener {
+            mCurType = TYPE_MARGIN
+            with(mView) {
+                showMarginDlg(marginLeft, marginTop, marginRight, marginBottom)
+            }
+        }
+        llPadding.setOnClickListener {
+            mCurType = TYPE_PADDING
+            with(mView) {
+                showMarginDlg(paddingLeft, paddingTop, paddingRight, paddingBottom)
+            }
+        }
+
+        with(mView) {
+            tvWidth.text = length2String(width)
+            tvHeight.text = length2String(height)
+            tvMargin.text = margin2String(marginLeft, marginTop, marginRight, marginBottom)
+            tvPadding.text = margin2String(paddingLeft, paddingTop, paddingRight, paddingBottom)
+        }
+    }
+
     @SuppressLint("InflateParams")
     private fun initDlg() {
         // margin change view
         val marginView = LayoutInflater.from(mContext)
                 .inflate(R.layout.dlg_margin, null)
         tmv = marginView.findViewById(R.id.tmv_dlg_margin)
-        tvMargin = marginView.findViewById(R.id.tv_dlg_margin)
+        tvDlgMargin = marginView.findViewById(R.id.tv_dlg_margin)
         tmv.setOnMarginChangedListener(this)
 
         dlgMargin = BottomAlertDialog.Builder(mContext)
@@ -132,7 +175,7 @@ abstract class AbstractEditorController : EditorController,
 
     @SuppressLint("SetTextI18n")
     override fun onMarginChanged(left: Int, top: Int, right: Int, bottom: Int) {
-        tvMargin.text = "$left | $top | $right | $bottom"
+        tvDlgMargin.text = "$left | $top | $right | $bottom"
     }
 
     protected fun showMarginDlg(left: Int, top: Int, right: Int, bottom: Int) {
@@ -186,7 +229,30 @@ abstract class AbstractEditorController : EditorController,
                 else DensityUtil.dp2px(mContext, length.toFloat()).toInt()
     }
 
-    protected abstract fun onMarginSubmit(left: Int, top: Int, right: Int, bottom: Int)
+    protected open fun onMarginSubmit(left: Int, top: Int, right: Int, bottom: Int) {
+        when (mCurType) {
+            TYPE_MARGIN -> {
+                mView.marginLeft = left
+                mView.marginTop = top
+                mView.marginRight = right
+                mView.marginBottom = bottom
+                tvMargin.text = margin2String(left, top, right, bottom)
+
+                val lp = mShowView.layoutParams as ViewGroup.MarginLayoutParams
+                lp.setMargins(toPx(left), toPx(top), toPx(right), toPx(bottom))
+                mShowView.layoutParams = lp
+            }
+            TYPE_PADDING -> {
+                mView.paddingLeft = left
+                mView.paddingTop = top
+                mView.paddingRight = right
+                mView.paddingBottom = bottom
+                tvPadding.text = margin2String(left, top, right, bottom)
+
+                mShowView.setPadding(toPx(left), toPx(top), toPx(right), toPx(bottom))
+            }
+        }
+    }
 
     protected open fun onEditSubmit(text: String) {
         when (mCurType) {
@@ -210,9 +276,30 @@ abstract class AbstractEditorController : EditorController,
         }
     }
 
-    protected abstract fun onColorSubmit(color: Int)
+    protected open fun onColorSubmit(color: Int) {
 
-    protected abstract fun onLengthSubmit(length: Int)
+    }
+
+    protected open fun onLengthSubmit(length: Int) {
+        when(mCurType) {
+            TYPE_WIDTH -> {
+                mView.width = length
+                tvWidth.text = length2String(length)
+
+                val lp = mShowView.layoutParams
+                lp.width = lengthToPx(length)
+                mShowView.layoutParams = lp
+            }
+            TYPE_HEIGHT -> {
+                mView.height = length
+                tvHeight.text = length2String(length)
+
+                val lp = mShowView.layoutParams
+                lp.height = lengthToPx(length)
+                mShowView.layoutParams = lp
+            }
+        }
+    }
 
     protected fun length2String(length: Int): String {
         return if (length < 0) {
@@ -246,9 +333,11 @@ abstract class AbstractEditorController : EditorController,
                 Gravity.BOTTOM or Gravity.END)
         val GRAVITY_NAME = arrayOf("上左", "上中", "上右", "中左", "中", "中右", "下左", "下中", "下右")
 
-        val INPUT_TYPE_VALUE = intArrayOf(InputType.TYPE_TEXT_FLAG_MULTI_LINE,
+        val INPUT_TYPE_VALUE = intArrayOf(
+                InputType.TYPE_TEXT_FLAG_MULTI_LINE or InputType.TYPE_CLASS_TEXT,
                 InputType.TYPE_CLASS_NUMBER,
-                InputType.TYPE_CLASS_PHONE, InputType.TYPE_CLASS_DATETIME)
+                InputType.TYPE_CLASS_PHONE,
+                InputType.TYPE_CLASS_DATETIME)
         val INPUT_TYPE_NAME = arrayOf("文本", "数字", "电话", "日期")
 
         const val TEXT_LINE_MIN = 1
@@ -259,6 +348,15 @@ abstract class AbstractEditorController : EditorController,
 
         val ORIENTATION_VALUE = intArrayOf(LinearLayout.VERTICAL, LinearLayout.HORIZONTAL)
         val ORIENTATION_NAME = arrayOf("纵向", "横向")
+
+        val IMG_SCALE_TYPE = arrayOf(ImageView.ScaleType.CENTER_CROP, ImageView.ScaleType.CENTER,
+                ImageView.ScaleType.CENTER_INSIDE, ImageView.ScaleType.FIT_CENTER,
+                ImageView.ScaleType.FIT_START, ImageView.ScaleType.FIT_END,
+                ImageView.ScaleType.FIT_XY, ImageView.ScaleType.MATRIX)
+        val SCALE_TYPE_NAME = arrayOf("", "", "", "", "", "", "", "")
+
+//        val SHAPE_VALUE = arrayOf()
+        val SHAPE_NAME = arrayOf("正方形", "三角形", "星形", "圆形")
 
         const val TYPE_TEXT = 1
         const val TYPE_TEXT_SIZE = 2
@@ -278,5 +376,7 @@ abstract class AbstractEditorController : EditorController,
         const val TYPE_WIDTH = 16
         const val TYPE_HEIGHT = 17
         const val TYPE_ORIENTATION = 18
+        const val TYPE_SCALE_TYPE = 19
+        const val TYPE_SHAPE = 20
     }
 }

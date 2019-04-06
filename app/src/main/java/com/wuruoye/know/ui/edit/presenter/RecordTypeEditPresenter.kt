@@ -17,6 +17,7 @@ class RecordTypeEditPresenter : RecordTypeEditContract.Presenter() {
         get() {
             return listOf(RecordTypeItem(RecordTypeItem.TYPE_TEXT, "标签"),
                     RecordTypeItem(RecordTypeItem.TYPE_EDIT, "编辑框"),
+                    RecordTypeItem(RecordTypeItem.TYPE_IMG, "图片"),
                     RecordTypeItem(RecordTypeItem.TYPE_LAYOUT, "容器"))
         }
 

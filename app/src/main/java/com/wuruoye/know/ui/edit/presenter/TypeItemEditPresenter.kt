@@ -1,14 +1,8 @@
 package com.wuruoye.know.ui.edit.presenter
 
-import com.wuruoye.know.model.beans.RecordLayoutView
-import com.wuruoye.know.model.beans.RecordTextView
-import com.wuruoye.know.model.beans.RecordTypeItem
-import com.wuruoye.know.model.beans.RecordView
+import com.wuruoye.know.model.beans.*
 import com.wuruoye.know.ui.edit.contract.TypeItemEditContract
-import com.wuruoye.know.ui.edit.controller.EditTextController
-import com.wuruoye.know.ui.edit.controller.EditorController
-import com.wuruoye.know.ui.edit.controller.LayoutViewController
-import com.wuruoye.know.ui.edit.controller.TextViewController
+import com.wuruoye.know.ui.edit.controller.*
 
 /**
  * Created at 2019/3/18 16:05 by wuruoye
@@ -32,6 +26,11 @@ class TypeItemEditPresenter : TypeItemEditContract.Presenter() {
                     if (view == null) RecordLayoutView()
                     else view as RecordLayoutView
             )
+        } else if (view is RecordImageView || type == RecordTypeItem.TYPE_IMG) {
+            ImageViewController(
+                    if (view == null) RecordImageView()
+                    else view as RecordImageView
+            ) as EditorController
         }
         else {
             null

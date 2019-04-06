@@ -30,6 +30,8 @@
     <string name="min_line">最少行数</string>
     <string name="max_line">最多行数</string>
     <string name="orientation">方向</string>
+    <string name="scale_type">显示方式</string>
+    <string name="shape">形状</string>
 
     <string name="record_type">记录类型</string>
     <string name="create_time">创建日期</string>

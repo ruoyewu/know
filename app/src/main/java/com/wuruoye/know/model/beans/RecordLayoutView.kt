@@ -12,23 +12,24 @@ import com.wuruoye.know.util.sql.table.LayoutViewTable
  */
 class RecordLayoutView(
         id: Int = -1,
-        var width: Int = -1,
-        var height: Int = -2,
+        width: Int = -1,
+        height: Int = -2,
         var bgColor: Int = 0,
         var orientation: Int = LinearLayout.HORIZONTAL,
         var views: ArrayList<RecordView> = arrayListOf(),
-        var marginTop: Int = 10,
-        var marginBottom: Int = 10,
-        var marginLeft: Int = 0,
-        var marginRight: Int = 0,
-        var paddingTop: Int = 10,
-        var paddingBottom: Int = 10,
-        var paddingLeft: Int = 16,
-        var paddingRight: Int = 16,
+        marginTop: Int = 10,
+        marginBottom: Int = 10,
+        marginLeft: Int = 0,
+        marginRight: Int = 0,
+        paddingTop: Int = 10,
+        paddingBottom: Int = 10,
+        paddingLeft: Int = 16,
+        paddingRight: Int = 16,
         var gravity: Int = Gravity.CENTER,
         createTime: Long = -1,
         updateTime: Long = -1
-) : RecordView(id, createTime, updateTime), Parcelable {
+) : RecordView(id, width, height, marginTop, marginBottom, marginLeft, marginRight, paddingTop,
+        paddingBottom, paddingLeft, paddingRight, createTime, updateTime), Parcelable {
     constructor(table: LayoutViewTable, views: ArrayList<RecordView>) :
             this(table.id, table.width, table.height, table.bgColor, table.orientation,
                     views, table.marginTop, table.marginBottom, table.marginLeft,

@@ -34,10 +34,6 @@ class TextViewController(private val mView: RecordTextView) :
     private lateinit var tvTextSize: TextView
     private lateinit var llTextColor: LinearLayout
     private lateinit var tvTextColor: TextView
-    private lateinit var llMargin: LinearLayout
-    private lateinit var tvMargin: TextView
-    private lateinit var llPadding: LinearLayout
-    private lateinit var tvPadding: TextView
     private lateinit var llTextStyle: LinearLayout
     private lateinit var tvTextStyle: TextView
     private lateinit var llBgColor: LinearLayout
@@ -50,10 +46,6 @@ class TextViewController(private val mView: RecordTextView) :
     private lateinit var tvMinLine: TextView
     private lateinit var llMaxLine: LinearLayout
     private lateinit var tvMaxLine: TextView
-    private lateinit var llWidth: LinearLayout
-    private lateinit var tvWidth: TextView
-    private lateinit var llHeight: LinearLayout
-    private lateinit var tvHeight: TextView
 
     override fun attach(context: Context, fl: FrameLayout, sv: ScrollView) {
         super.attach(context)
@@ -104,14 +96,10 @@ class TextViewController(private val mView: RecordTextView) :
         llTextColor.setOnClickListener(this)
         llBgColor.setOnClickListener(this)
         llFgColor.setOnClickListener(this)
-        llMargin.setOnClickListener(this)
-        llPadding.setOnClickListener(this)
         llTextStyle.setOnClickListener(this)
         llGravity.setOnClickListener(this)
         llMinLine.setOnClickListener(this)
         llMaxLine.setOnClickListener(this)
-        llWidth.setOnClickListener(this)
-        llHeight.setOnClickListener(this)
 
         with(mView) {
             tvText.text = text
@@ -120,49 +108,17 @@ class TextViewController(private val mView: RecordTextView) :
             tvTextColor.setTextColor(textColor)
             tvBgColor.text = ColorUtil.color2hex(bgColor)
             tvFgColor.text = ColorUtil.color2hex(fgColor)
-            tvMargin.text = margin2String(marginLeft, marginTop, marginRight, marginBottom)
-            tvPadding.text = margin2String(paddingLeft, paddingTop, paddingRight, paddingBottom)
             tvTextStyle.text = TEXT_STYLE_NAME[TEXT_STYLE_VALUE.indexOf(textStyle)]
             tvGravity.text = GRAVITY_NAME[GRAVITY_VALUE.indexOf(gravity)]
             tvMinLine.text = minLine.toString()
             tvMaxLine.text = maxLine.toString()
-            tvWidth.text = length2String(width)
-            tvHeight.text = length2String(height)
         }
+
+        super.initView(mView, mShowView)
     }
 
     override val result: RecordView
         get() = mView
-
-    @SuppressLint("SetTextI18n")
-    override fun onMarginSubmit(left: Int, top: Int, right: Int, bottom: Int) {
-        when (mCurType) {
-            TYPE_MARGIN -> {
-                with(mView) {
-                    marginLeft = left
-                    marginRight = right
-                    marginTop = top
-                    marginBottom = bottom
-                }
-                tvMargin.text = "" + left + " | " + top +
-                        " | " + right + " | " + bottom
-                val lp = mShowView.layoutParams as ViewGroup.MarginLayoutParams
-                lp.setMargins(toPx(left), toPx(top), toPx(right), toPx(bottom))
-                mShowView.layoutParams = lp
-            }
-            TYPE_PADDING -> {
-                with(mView) {
-                    paddingLeft = left
-                    paddingRight = right
-                    paddingTop = top
-                    paddingBottom = bottom
-                }
-                tvPadding.text = "" + left + " | " + top +
-                        " | " + right + " | " + bottom
-                mShowView.setPadding(toPx(left), toPx(top), toPx(right), toPx(bottom))
-            }
-        }
-    }
 
     override fun onEditSubmit(text: String) {
         super.onEditSubmit(text)
@@ -234,32 +190,11 @@ class TextViewController(private val mView: RecordTextView) :
         }
     }
 
-    override fun onLengthSubmit(length: Int) {
-        when (mCurType) {
-            TYPE_WIDTH -> {
-                mView.width = length
-                tvWidth.text = length2String(length)
-
-                val lp = mShowView.layoutParams
-                lp.width = lengthToPx(length)
-                mShowView.layoutParams = lp
-            }
-            TYPE_HEIGHT -> {
-                mView.height = length
-                tvHeight.text = length2String(length)
-
-                val lp = mShowView.layoutParams
-                lp.height = lengthToPx(length)
-                mShowView.layoutParams = lp
-            }
-        }
-    }
-
     override fun onClick(v: View) {
         when (v.id) {
             R.id.ll_text_layout_text -> {
                 mCurType = TYPE_TEXT
-                showEditDlg("输入文本内容", -1)
+                showEditDlg("输入文本内容", INPUT_TYPE_VALUE[0])
             }
             R.id.ll_text_size_layout_text -> {
                 mCurType = TYPE_TEXT_SIZE
@@ -277,16 +212,6 @@ class TextViewController(private val mView: RecordTextView) :
                 mCurType = TYPE_FG_COLOR
                 showColorDlg(mView.fgColor)
             }
-            R.id.ll_margin_layout_text -> {
-                mCurType = TYPE_MARGIN
-                showMarginDlg(mView.marginLeft, mView.marginTop,
-                        mView.marginRight, mView.marginBottom)
-            }
-            R.id.ll_padding_layout_text -> {
-                mCurType = TYPE_PADDING
-                showMarginDlg(mView.paddingLeft, mView.paddingTop,
-                        mView.paddingRight, mView.paddingBottom)
-            }
             R.id.ll_text_style_layout_text -> {
                 mCurType = TYPE_TEXT_STYLE
                 showSelectDlg(TEXT_STYLE_NAME, TEXT_STYLE_VALUE.indexOf(mView.textStyle))
@@ -302,14 +227,6 @@ class TextViewController(private val mView: RecordTextView) :
             R.id.ll_max_line_layout_text -> {
                 mCurType = TYPE_LINE_MAX
                 showSelectDlg(Math.max(TEXT_LINE_MIN, mView.minLine), TEXT_LINE_MAX, mView.maxLine)
-            }
-            R.id.ll_width_layout_text -> {
-                mCurType = TYPE_WIDTH
-                showLengthDlg(mView.width)
-            }
-            R.id.ll_height_layout_text -> {
-                mCurType = TYPE_HEIGHT
-                showLengthDlg(mView.height)
             }
         }
     }
