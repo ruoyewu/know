@@ -44,4 +44,5 @@ class MainActivity : ToolbarActivity<MainContract.Presenter>() {
     companion object {
         private val TITLE = arrayOf("复习", "记录", "用户")
     }
+
 }
