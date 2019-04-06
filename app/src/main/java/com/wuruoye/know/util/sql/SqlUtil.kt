@@ -2,15 +2,10 @@ package com.wuruoye.know.util.sql
 
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
-import com.wuruoye.know.model.beans.Record
-import com.wuruoye.know.model.beans.RecordTextView
-import com.wuruoye.know.model.beans.RecordType
-import com.wuruoye.know.model.beans.RecordView
+import com.wuruoye.know.model.beans.*
+import com.wuruoye.know.util.sql.SqlUtil.ViewTableItem.Companion.LAYOUT_VIEW
 import com.wuruoye.know.util.sql.SqlUtil.ViewTableItem.Companion.TEXT_VIEW
-import com.wuruoye.know.util.sql.table.RecordTable
-import com.wuruoye.know.util.sql.table.RecordTypeTable
-import com.wuruoye.know.util.sql.table.TextViewTable
-import com.wuruoye.know.util.sql.table.ViewTable
+import com.wuruoye.know.util.sql.table.*
 
 /**
  * Created at 2019/3/18 12:21 by wuruoye
@@ -20,6 +15,8 @@ class SqlUtil private constructor(context: Context) {
 
     private val sh: SqliteHelper = SqliteHelper(context)
 
+
+    // record type
     fun queryRecordTypeWithoutItems(): List<RecordType> {
         val result = ArrayList<RecordType>()
         val db = sh.readableDatabase
@@ -44,7 +41,7 @@ class SqlUtil private constructor(context: Context) {
             val builder = StringBuilder("[")
             val views = recordType.views
             for (view in views) {
-                val item = generateTable(view)
+                val item = generateTable(view, db)
                 val table = item.table
                 val id = if (view.id >= 0) {
                     table.update(db)
@@ -90,6 +87,8 @@ class SqlUtil private constructor(context: Context) {
         }
     }
 
+
+    // record
     fun queryRecord(id: Int): Record {
         sh.readableDatabase.use {
             return RecordTable.query(it, id)
@@ -125,26 +124,54 @@ class SqlUtil private constructor(context: Context) {
         }
     }
 
-    private fun generateTable(view: RecordView): ViewTableItem {
-//        if (view is RecordTextView) {
-            return ViewTableItem(TEXT_VIEW, TextViewTable(view as RecordTextView))
-//        }
+
+    // util
+    private fun generateTable(view: RecordView, db: SQLiteDatabase): ViewTableItem {
+        if (view is RecordLayoutView) {
+            val views = view.views
+            val builder = StringBuilder("[")
+            for (v in views) {
+                val item = generateTable(v, db)
+                val table = item.table
+                val id = if (v.id >= 0) {
+                    table.update(db)
+                    v.id
+                } else {
+                    table.save(db)
+                }
+                v.id = id
+                builder.append(item.type).append(",").append(id).append(",")
+            }
+            if (builder.length > 1) builder[builder.length-1] = ']'
+            else builder.append(']')
+
+            return ViewTableItem(LAYOUT_VIEW, LayoutViewTable(view, builder.toString()))
+        }
+
+        return ViewTableItem(TEXT_VIEW, TextViewTable(view as RecordTextView))
     }
 
     private fun findRecordView(type: Int, id: Int, db: SQLiteDatabase): RecordView {
-        if (type == TEXT_VIEW) {
-            return RecordTextView(TextViewTable.query(db, id)!!)
-        } else {
-            return RecordTextView(TextViewTable.query(db, id)!!)
+        if (type == LAYOUT_VIEW) {
+            val table = LayoutViewTable.query(db, id)
+            val views = ArrayList<RecordView>()
+            val items = table.items.subSequence(1, table.items.length-1).split(",")
+            if (items.size > 1) {
+                var pos = 0
+                while (pos < items.size) {
+                    val ty = items[pos++].toInt()
+                    val tableId = items[pos++].toInt()
+                    views.add(findRecordView(ty, tableId, db))
+                }
+            }
+            return RecordLayoutView(table, views)
         }
+
+        return RecordTextView(TextViewTable.query(db, id)!!)
     }
 
     private fun findViewTableByType(type: Int, id: Int, db: SQLiteDatabase): ViewTable {
-        if (type == TEXT_VIEW) {
-            return TextViewTable.query(db, id)!!
-        } else {
-            return TextViewTable.query(db, id)!!
-        }
+        return TextViewTable.query(db, id)!!
     }
 
     private class ViewTableItem (
@@ -153,6 +180,7 @@ class SqlUtil private constructor(context: Context) {
     ) {
         companion object {
             val TEXT_VIEW = 1
+            val LAYOUT_VIEW = 2
         }
     }
 

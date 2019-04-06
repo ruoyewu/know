@@ -15,6 +15,7 @@ import android.widget.EditText
 import com.wuruoye.know.R
 import com.wuruoye.know.base.IToolbarView
 import com.wuruoye.know.base.ToolbarActivity
+import com.wuruoye.know.model.ViewFactory
 import com.wuruoye.know.model.beans.RecordType
 import com.wuruoye.know.model.beans.RecordTypeItem
 import com.wuruoye.know.model.beans.RecordView
@@ -28,7 +29,8 @@ import kotlinx.android.synthetic.main.activity_record_type_edit.*
 class RecordTypeEditActivity : ToolbarActivity<RecordTypeEditContract.Presenter>(),
         RecordTypeEditContract.View, IToolbarView.OnToolbarBackListener,
         View.OnClickListener, WBaseRVAdapter.OnItemClickListener<RecordTypeItem>,
-        IToolbarView.OnToolbarTitleListener, IToolbarView.OnToolbarMoreListener {
+        IToolbarView.OnToolbarTitleListener, IToolbarView.OnToolbarMoreListener,
+        ViewFactory.OnLongClickListener {
 
     private lateinit var dlgTitle: BottomAlertDialog
     private lateinit var tilTitle: TextInputLayout
@@ -106,13 +108,8 @@ class RecordTypeEditActivity : ToolbarActivity<RecordTypeEditContract.Presenter>
     private fun initItems() {
         ll_record_type_edit.removeAllViews()
         for (view in mType.views) {
-            val v = mPresenter.generateView(this, view, ll_record_type_edit)
-            if (v is TextInputLayout) v.findViewById<EditText>(R.id.et_view_edit)
-                    .setOnLongClickListener { onViewClick(view)
-                    true }
-            else
-                v?.setOnLongClickListener { onViewClick(view)
-                true }
+            mPresenter.generateView(this, view,
+                    ll_record_type_edit, true, this)
         }
     }
 
@@ -166,13 +163,12 @@ class RecordTypeEditActivity : ToolbarActivity<RecordTypeEditContract.Presenter>
         }
     }
 
-    override fun onViewClick(recordView: RecordView) {
+    override fun onLongClick(recordView: RecordView) {
         mUpdateRecordView = recordView
         val intent = Intent(this, TypeItemEditActivity::class.java)
-        val bundle = Bundle()
-        bundle.putParcelable(TypeItemEditActivity.RECORD_VIEW, recordView)
-        intent.putExtras(bundle)
+        intent.putExtra(TypeItemEditActivity.RECORD_VIEW, recordView)
         startActivityForResult(intent, FOR_UPDATE_RESULT)
+        TODO("修改成弹框选择操作")
     }
 
     override fun onItemClick(recordTypeItem: RecordTypeItem) {
@@ -183,10 +179,11 @@ class RecordTypeEditActivity : ToolbarActivity<RecordTypeEditContract.Presenter>
     }
 
     override fun onViewBack(view: RecordView, type: Int) {
-        var v: View? = null
+        val v: View?
         when (type) {
             FOR_ADD_RESULT -> {
-                v = mPresenter.generateView(this, view, ll_record_type_edit)
+                mPresenter.generateView(this, view, ll_record_type_edit,
+                        true, this)
                 mType.views.add(view)
             }
             FOR_UPDATE_RESULT -> {
@@ -194,11 +191,11 @@ class RecordTypeEditActivity : ToolbarActivity<RecordTypeEditContract.Presenter>
                 mType.views.removeAt(index)
                 ll_record_type_edit.removeViewAt(index)
                 mType.views.add(index, view)
-                v = mPresenter.generateView(this, view, ll_record_type_edit, false)
+                v = mPresenter.generateView(this, view, ll_record_type_edit,
+                        false, this)
                 ll_record_type_edit.addView(v, index)
             }
         }
-        v?.setOnLongClickListener { onViewClick(view); true }
     }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {

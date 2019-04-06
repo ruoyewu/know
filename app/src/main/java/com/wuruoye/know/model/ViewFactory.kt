@@ -9,9 +9,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.TextView
 
 import com.wuruoye.know.R
+import com.wuruoye.know.model.beans.RecordLayoutView
 import com.wuruoye.know.model.beans.RecordTextView
 import com.wuruoye.know.model.beans.RecordView
 import com.wuruoye.library.util.DensityUtil
@@ -21,18 +23,30 @@ import com.wuruoye.library.util.DensityUtil
  * Description:
  */
 object ViewFactory {
-    fun generateView(context: Context, view: RecordView, parent: ViewGroup): View? {
-        return ViewFactory.generateView(context, view, parent, true)
+    interface OnLongClickListener {
+        fun onLongClick(recordView: RecordView)
     }
 
-    fun generateView(context: Context, view: RecordView, parent: ViewGroup, attach: Boolean): View? {
-        return if (view is RecordTextView) {
-            generateTextView(context, view, parent, attach)
-        } else null
+    fun generateView(context: Context, view: RecordView, parent: ViewGroup): View? {
+        return generateView(context, view, parent, true, null)
+    }
+
+    fun generateView(context: Context, view: RecordView,
+                     parent: ViewGroup, attach: Boolean): View? {
+        return generateView(context, view, parent, attach, null)
+    }
+
+    fun generateView(context: Context, view: RecordView, parent: ViewGroup, attach: Boolean,
+                     listener: OnLongClickListener?): View? {
+        return when (view) {
+            is RecordTextView -> generateTextView(context, view, parent, attach, listener)
+            is RecordLayoutView -> generateLayoutView(context, view, parent, attach, listener)
+            else -> null
+        }
     }
 
     private fun generateTextView(context: Context, textView: RecordTextView, parent: ViewGroup,
-                                 attach: Boolean): View {
+                                 attach: Boolean, listener: OnLongClickListener?): View {
         with(textView) {
             if (isEditable) {
                 val viewLayout = LayoutInflater.from(context)
@@ -102,8 +116,47 @@ object ViewFactory {
                 if (attach) {
                     parent.addView(view)
                 }
+                if (listener != null) {
+                    view.setOnLongClickListener {
+                        listener.onLongClick(textView)
+                        true
+                    }
+                }
                 return view
             }
+        }
+    }
+
+    private fun generateLayoutView(context: Context, layoutView: RecordLayoutView,
+                                   parent: ViewGroup, attach: Boolean,
+                                   listener: OnLongClickListener?): View {
+        with(layoutView) {
+            val view = LayoutInflater.from(context).inflate(R.layout.view_layout,
+                    parent, false) as LinearLayout
+            view.orientation = orientation
+            view.gravity = gravity
+            view.setBackgroundColor(bgColor)
+            view.setPadding(paddingLeft, paddingTop, paddingRight, paddingBottom)
+            val lp = view.layoutParams as ViewGroup.MarginLayoutParams
+            lp.height = height
+            lp.width = width
+            lp.setMargins(marginLeft, marginTop, marginRight, marginBottom)
+            view.layoutParams = lp
+
+            for (v in views) {
+                generateView(context, v, view, true, listener)
+            }
+
+            if (attach) {
+                parent.addView(view)
+            }
+            if (listener != null) {
+                view.setOnLongClickListener {
+                    listener.onLongClick(layoutView)
+                    true
+                }
+            }
+            return view
         }
     }
 }

@@ -15,7 +15,8 @@ class RecordTypeEditPresenter : RecordTypeEditContract.Presenter() {
     override val selectItems: List<RecordTypeItem>
         get() {
             return listOf(RecordTypeItem(RecordTypeItem.TYPE_TEXT, "标签"),
-                    RecordTypeItem(RecordTypeItem.TYPE_EDIT, "编辑框"))
+                    RecordTypeItem(RecordTypeItem.TYPE_EDIT, "编辑框"),
+                    RecordTypeItem(RecordTypeItem.TYPE_LAYOUT, "容器"))
         }
 
     override fun getRecordType(context: Context, id: Int): RecordType {
@@ -26,13 +27,10 @@ class RecordTypeEditPresenter : RecordTypeEditContract.Presenter() {
         return RecordType("未设置")
     }
 
-    override fun generateView(context: Context, view: RecordView, parent: ViewGroup): View? {
-        return ViewFactory.generateView(context, view, parent)
-    }
-
     override fun generateView(context: Context, view: RecordView,
-                              parent: ViewGroup, attach: Boolean): View? {
-        return ViewFactory.generateView(context, view, parent, attach)
+                              parent: ViewGroup, attach: Boolean,
+                              listener: ViewFactory.OnLongClickListener): View? {
+        return ViewFactory.generateView(context, view, parent, attach, listener)
     }
 
     override fun saveRecordType(context: Context, recordType: RecordType) {

@@ -23,12 +23,13 @@
     <string name="fg_color">前景颜色</string>
     <string name="margin">外边距</string>
     <string name="padding">内边距</string>
-    <string name="gravity">文本位置</string>
+    <string name="gravity">位置</string>
     <string name="text_style">文本样式</string>
     <string name="input_type">输入格式</string>
     <string name="editable">是否可编辑</string>
     <string name="min_line">最少行数</string>
     <string name="max_line">最多行数</string>
+    <string name="orientation">方向</string>
 
     <string name="record_type">记录类型</string>
     <string name="create_time">创建日期</string>

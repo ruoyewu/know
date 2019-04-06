@@ -3,15 +3,18 @@ package com.wuruoye.know.util.sql
 import android.content.Context
 import android.database.sqlite.SQLiteDatabase
 import android.database.sqlite.SQLiteOpenHelper
+import com.wuruoye.know.util.sql.table.LayoutViewTable
 
 import com.wuruoye.know.util.sql.table.RecordTable
 import com.wuruoye.know.util.sql.table.RecordTypeTable
 import com.wuruoye.know.util.sql.table.TextViewTable
 
-class SqliteHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, VERSION) {
+class SqliteHelper(context: Context) :
+        SQLiteOpenHelper(context, DB_NAME, null, VERSION) {
 
     override fun onCreate(db: SQLiteDatabase) {
         TextViewTable.create(db)
+        LayoutViewTable.create(db)
         RecordTypeTable.create(db)
         RecordTable.create(db)
     }

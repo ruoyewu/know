@@ -56,8 +56,10 @@ class EditTextController(private val mView: RecordTextView) : AbstractEditorCont
     private lateinit var tvMaxLine: TextView
     private lateinit var llInputType: LinearLayout
     private lateinit var tvInputType: TextView
-
-    private var mCurType = 0
+    private lateinit var llWidth: LinearLayout
+    private lateinit var tvWidth: TextView
+    private lateinit var llHeight: LinearLayout
+    private lateinit var tvHeight: TextView
 
     override val result: RecordView
         get() = mView
@@ -77,35 +79,41 @@ class EditTextController(private val mView: RecordTextView) : AbstractEditorCont
         LayoutInflater.from(mContext)
                 .inflate(R.layout.layout_edit_text, svOptions)
 
+        with(svOptions) {
+            llTextSize = findViewById(R.id.ll_text_size_layout_edit)
+            llTextColor = findViewById(R.id.ll_text_color_layout_edit)
+            llHint = findViewById(R.id.ll_hint_layout_edit)
+            llHintSize = findViewById(R.id.ll_hint_size_layout_edit)
+            llHintColor = findViewById(R.id.ll_hint_color_layout_edit)
+            llBgColor = findViewById(R.id.ll_bg_color_layout_edit)
+            llFgColor = findViewById(R.id.ll_fg_color_layout_edit)
+            llMargin = findViewById(R.id.ll_margin_layout_edit)
+            llPadding = findViewById(R.id.ll_padding_layout_edit)
+            llTextStyle = findViewById(R.id.ll_text_style_layout_edit)
+            llGravity = findViewById(R.id.ll_gravity_layout_edit)
+            llInputType = findViewById(R.id.ll_input_type_layout_edit)
+            llMinLine = findViewById(R.id.ll_min_line_layout_edit)
+            llMaxLine = findViewById(R.id.ll_max_line_layout_edit)
+            llWidth = findViewById(R.id.ll_width_layout_text)
+            llHeight = findViewById(R.id.ll_height_layout_text)
 
-        llTextSize = svOptions.findViewById(R.id.ll_text_size_layout_edit)
-        llTextColor = svOptions.findViewById(R.id.ll_text_color_layout_edit)
-        llHint = svOptions.findViewById(R.id.ll_hint_layout_edit)
-        llHintSize = svOptions.findViewById(R.id.ll_hint_size_layout_edit)
-        llHintColor = svOptions.findViewById(R.id.ll_hint_color_layout_edit)
-        llBgColor = svOptions.findViewById(R.id.ll_bg_color_layout_edit)
-        llFgColor = svOptions.findViewById(R.id.ll_fg_color_layout_edit)
-        llMargin = svOptions.findViewById(R.id.ll_margin_layout_edit)
-        llPadding = svOptions.findViewById(R.id.ll_padding_layout_edit)
-        llTextStyle = svOptions.findViewById(R.id.ll_text_style_layout_edit)
-        llGravity = svOptions.findViewById(R.id.ll_gravity_layout_edit)
-        llInputType = svOptions.findViewById(R.id.ll_input_type_layout_edit)
-        llMinLine = svOptions.findViewById(R.id.ll_min_line_layout_edit)
-        llMaxLine = svOptions.findViewById(R.id.ll_max_line_layout_edit)
-        tvTextSize = svOptions.findViewById(R.id.tv_text_size_layout_edit)
-        tvTextColor = svOptions.findViewById(R.id.tv_text_color_layout_edit)
-        tvHint = svOptions.findViewById(R.id.tv_hint_layout_edit)
-        tvHintSize = svOptions.findViewById(R.id.tv_hint_size_layout_edit)
-        tvHintColor = svOptions.findViewById(R.id.tv_hint_color_layout_edit)
-        tvMargin = svOptions.findViewById(R.id.tv_margin_layout_edit)
-        tvPadding = svOptions.findViewById(R.id.tv_padding_layout_edit)
-        tvTextStyle = svOptions.findViewById(R.id.tv_text_style_layout_edit)
-        tvBgColor = svOptions.findViewById(R.id.tv_bg_color_layout_edit)
-        tvFgColor = svOptions.findViewById(R.id.tv_fg_color_layout_edit)
-        tvGravity = svOptions.findViewById(R.id.tv_gravity_layout_edit)
-        tvInputType = svOptions.findViewById(R.id.tv_input_type_layout_edit)
-        tvMinLine = svOptions.findViewById(R.id.tv_min_line_layout_edit)
-        tvMaxLine = svOptions.findViewById(R.id.tv_max_line_layout_edit)
+            tvTextSize = findViewById(R.id.tv_text_size_layout_edit)
+            tvTextColor = findViewById(R.id.tv_text_color_layout_edit)
+            tvHint = findViewById(R.id.tv_hint_layout_edit)
+            tvHintSize = findViewById(R.id.tv_hint_size_layout_edit)
+            tvHintColor = findViewById(R.id.tv_hint_color_layout_edit)
+            tvMargin = findViewById(R.id.tv_margin_layout_edit)
+            tvPadding = findViewById(R.id.tv_padding_layout_edit)
+            tvTextStyle = findViewById(R.id.tv_text_style_layout_edit)
+            tvBgColor = findViewById(R.id.tv_bg_color_layout_edit)
+            tvFgColor = findViewById(R.id.tv_fg_color_layout_edit)
+            tvGravity = findViewById(R.id.tv_gravity_layout_edit)
+            tvInputType = findViewById(R.id.tv_input_type_layout_edit)
+            tvMinLine = findViewById(R.id.tv_min_line_layout_edit)
+            tvMaxLine = findViewById(R.id.tv_max_line_layout_edit)
+            tvWidth = findViewById(R.id.tv_width_layout_text)
+            tvHeight = findViewById(R.id.tv_height_layout_text)
+        }
 
         llTextSize.setOnClickListener(this)
         llTextColor.setOnClickListener(this)
@@ -121,6 +129,8 @@ class EditTextController(private val mView: RecordTextView) : AbstractEditorCont
         llInputType.setOnClickListener(this)
         llMinLine.setOnClickListener(this)
         llMaxLine.setOnClickListener(this)
+        llWidth.setOnClickListener(this)
+        llHeight.setOnClickListener(this)
 
         with(mView) {
             tvTextSize.text = textSize.toString()
@@ -140,6 +150,8 @@ class EditTextController(private val mView: RecordTextView) : AbstractEditorCont
             tvGravity.text = GRAVITY_NAME[GRAVITY_VALUE.indexOf(gravity)]
             tvMinLine.text = minLine.toString()
             tvMaxLine.text = maxLine.toString()
+            tvWidth.text = length2String(width)
+            tvHeight.text = length2String(height)
         }
     }
 
@@ -203,6 +215,14 @@ class EditTextController(private val mView: RecordTextView) : AbstractEditorCont
                 mCurType = TYPE_LINE_MAX
                 showSelectDlg(Math.max(TEXT_LINE_MIN, mView.minLine), TEXT_LINE_MAX, mView.maxLine)
             }
+            R.id.ll_width_layout_text -> {
+                mCurType = TYPE_WIDTH
+                showLengthDlg(mView.width)
+            }
+            R.id.ll_height_layout_text -> {
+                mCurType = TYPE_HEIGHT
+                showLengthDlg(mView.height)
+            }
         }
     }
 
@@ -237,6 +257,7 @@ class EditTextController(private val mView: RecordTextView) : AbstractEditorCont
     }
 
     override fun onEditSubmit(text: String) {
+        super.onEditSubmit(text)
         when (mCurType) {
             TYPE_HINT -> {
                 mView.hint = text
@@ -247,6 +268,7 @@ class EditTextController(private val mView: RecordTextView) : AbstractEditorCont
     }
 
     override fun onItemSelect(value: Int) {
+        super.onItemSelect(value)
         when (mCurType) {
             TYPE_TEXT_SIZE -> {
                 mView.textSize = value
@@ -316,6 +338,25 @@ class EditTextController(private val mView: RecordTextView) : AbstractEditorCont
                 }
                 tvFgColor.setTextColor(color)
                 tvFgColor.text = ColorUtil.color2hex(color)
+            }
+        }
+    }
+
+    override fun onLengthSubmit(length: Int) {
+        when (mCurType) {
+            TYPE_WIDTH -> {
+                mView.width = length
+                tvWidth.text = length2String(length)
+                val lp = mShowView.layoutParams
+                lp.width = length
+                mShowView.layoutParams = lp
+            }
+            TYPE_HEIGHT -> {
+                mView.height = length
+                tvHeight.text = length2String(length)
+                val lp = mShowView.layoutParams
+                lp.height = length
+                mShowView.layoutParams = lp
             }
         }
     }

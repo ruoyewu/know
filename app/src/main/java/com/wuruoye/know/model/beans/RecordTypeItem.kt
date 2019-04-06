@@ -8,6 +8,6 @@ class RecordTypeItem(var type: Int, var title: String) {
     companion object {
         const val TYPE_TEXT = 1
         const val TYPE_EDIT = 2
-        const val TYPE_IMG = 3
+        const val TYPE_LAYOUT = 3
     }
 }

@@ -12,6 +12,7 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.widget.EditText
+import android.widget.LinearLayout
 import android.widget.NumberPicker
 import android.widget.TextView
 import com.wuruoye.know.R
@@ -41,6 +42,8 @@ abstract class AbstractEditorController : EditorController,
 
     private lateinit var dlgColor: Dialog
     private lateinit var cpvColor: ColorPickerView
+
+    protected var mCurType = 0
 
     internal fun attach(context: Context) {
         mContext = context
@@ -88,6 +91,7 @@ abstract class AbstractEditorController : EditorController,
                 .setContentView(tilEdit)
                 .build()
 
+        // select view
         npSelect = LayoutInflater.from(mContext)
                 .inflate(R.layout.dlg_number_picker, null) as NumberPicker
         // change divider color
@@ -168,17 +172,55 @@ abstract class AbstractEditorController : EditorController,
         dlgColor.show()
     }
 
+    protected fun showLengthDlg(length: Int) {
+        mCurType = TYPE_WIDTH
+        showSelectDlg(LENGTH_NAME, if (length < 0) LENGTH_VALUE.indexOf(length)
+                                    else LENGTH_VALUE.size-1)
+    }
+
     protected fun toPx(dp: Int): Int {
         return DensityUtil.dp2px(mContext, dp.toFloat()).toInt()
     }
 
     protected abstract fun onMarginSubmit(left: Int, top: Int, right: Int, bottom: Int)
 
-    protected abstract fun onEditSubmit(text: String)
+    protected open fun onEditSubmit(text: String) {
+        when (mCurType) {
+            TYPE_HEIGHT,
+            TYPE_WIDTH -> {
+                onLengthSubmit(text.toInt())
+            }
+        }
+    }
 
-    protected abstract fun onItemSelect(value: Int)
+    protected open fun onItemSelect(value: Int) {
+        when (mCurType) {
+            TYPE_HEIGHT,
+            TYPE_WIDTH -> {
+                if (value < 2) {
+                    onLengthSubmit(LENGTH_VALUE[value])
+                } else {
+                    showEditDlg("输入数字", InputType.TYPE_CLASS_NUMBER)
+                }
+            }
+        }
+    }
 
     protected abstract fun onColorSubmit(color: Int)
+
+    protected abstract fun onLengthSubmit(length: Int)
+
+    protected fun length2String(length: Int): String {
+        return if (length < 0) {
+            LENGTH_NAME[length]
+        } else {
+            length.toString()
+        }
+    }
+
+    protected fun margin2String(left: Int, top: Int, right: Int, bottom: Int): String {
+        return "$left | $top | $right | $bottom"
+    }
 
     override fun recycler() {
         tmv.recycler()
@@ -200,12 +242,19 @@ abstract class AbstractEditorController : EditorController,
                 Gravity.BOTTOM or Gravity.END)
         val GRAVITY_NAME = arrayOf("上左", "上中", "上右", "中左", "中", "中右", "下左", "下中", "下右")
 
-        val INPUT_TYPE_VALUE = intArrayOf(InputType.TYPE_NULL, InputType.TYPE_CLASS_NUMBER,
+        val INPUT_TYPE_VALUE = intArrayOf(InputType.TYPE_TEXT_FLAG_MULTI_LINE,
+                InputType.TYPE_CLASS_NUMBER,
                 InputType.TYPE_CLASS_PHONE, InputType.TYPE_CLASS_DATETIME)
         val INPUT_TYPE_NAME = arrayOf("文本", "数字", "电话", "日期")
 
         const val TEXT_LINE_MIN = 1
         const val TEXT_LINE_MAX = 5
+
+        val LENGTH_VALUE = intArrayOf(-2, -1, 0)
+        val LENGTH_NAME = arrayOf("自适应", "铺满", "自定义")
+
+        val ORIENTATION_VALUE = intArrayOf(LinearLayout.VERTICAL, LinearLayout.HORIZONTAL)
+        val ORIENTATION_NAME = arrayOf("纵向", "横向")
 
         const val TYPE_TEXT = 1
         const val TYPE_TEXT_SIZE = 2
@@ -222,5 +271,8 @@ abstract class AbstractEditorController : EditorController,
         const val TYPE_HINT_SIZE = 13
         const val TYPE_HINT_COLOR = 14
         const val TYPE_INPUT_TYPE = 15
+        const val TYPE_WIDTH = 16
+        const val TYPE_HEIGHT = 17
+        const val TYPE_ORIENTATION = 18
     }
 }
