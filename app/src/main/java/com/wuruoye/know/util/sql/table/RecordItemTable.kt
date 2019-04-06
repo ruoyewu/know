@@ -69,8 +69,26 @@ class RecordItemTable(
             }
         }
 
+        fun query(db: SQLiteDatabase, recordId: Int, type: Int): RecordItem? {
+            val cursor = db.query(NAME, null, "$RECORD_ID=? and $TYPE=?",
+                    arrayOf(recordId.toString(), type.toString()),
+                    null, null, "id")
+            cursor.use {
+                it.moveToFirst()
+                if (!it.isAfterLast) {
+                    return fromCursor(cursor)
+                }
+                return null
+            }
+        }
+
         fun delete(db: SQLiteDatabase, recordId: Int) {
             db.delete(NAME, "$RECORD_ID=?", arrayOf(recordId.toString()))
+        }
+
+        fun delete(db: SQLiteDatabase, type: Int, typeId: Int) {
+            db.delete(NAME, "$TYPE_ID=? and $TYPE=?",
+                    arrayOf(typeId.toString(), type.toString()))
         }
 
         private fun fromCursor(cursor: Cursor): RecordItem {

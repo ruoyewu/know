@@ -31,7 +31,8 @@ class RecordRVAdapter : WBaseRVAdapter<Record>() {
             val type = sql.queryRecordType(record.type)
             tvTitle.text = type.title
             // TODO 根据记录获得记录内容
-
+            tvContent.text = sql.queryRecordItem(record.id,
+                    SqlUtil.ViewTableItem.TEXT_VIEW)?.content
             tvDate.text = DateUtil.milli2Date(record.createTime)
             itemView.setOnClickListener {
                 onItemClick(record)

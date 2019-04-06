@@ -84,6 +84,20 @@ class SqlUtil private constructor(context: Context) {
         }
     }
 
+    fun deleteRecordTypeItem(type: Int, typeId: Int) {
+        sh.writableDatabase.use {
+            when (type) {
+                ViewTableItem.TEXT_VIEW -> {
+                    TextViewTable.delete(it, typeId)
+                }
+                ViewTableItem.LAYOUT_VIEW -> {
+                    LayoutViewTable.delete(it, typeId)
+                }
+            }
+            RecordItemTable.delete(it, type, typeId)
+        }
+    }
+
 
     // record
     fun queryRecord(id: Int): Record {
@@ -124,6 +138,12 @@ class SqlUtil private constructor(context: Context) {
     fun queryRecordItem(recordId: Int, type: Int, typeId: Int): RecordItem? {
         sh.readableDatabase.use {
             return RecordItemTable.query(it, recordId, type, typeId)
+        }
+    }
+
+    fun queryRecordItem(recordId: Int, type: Int): RecordItem? {
+        sh.readableDatabase.use {
+            return RecordItemTable.query(it, recordId, type)
         }
     }
 
@@ -215,6 +235,14 @@ class SqlUtil private constructor(context: Context) {
         companion object {
             val TEXT_VIEW = 1
             val LAYOUT_VIEW = 2
+
+            fun getType(view: RecordView): Int {
+                return when (view) {
+                    is RecordLayoutView -> LAYOUT_VIEW
+                    is RecordTextView -> TEXT_VIEW
+                    else -> -1
+                }
+            }
         }
     }
 

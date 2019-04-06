@@ -158,6 +158,10 @@ class TextViewTable(id: Int,
             return null
         }
 
+        fun delete(db: SQLiteDatabase, id: Int) {
+            db.delete(NAME, "id=?", arrayOf(id.toString()))
+        }
+
         private fun fromCursor(cursor: Cursor): TextViewTable {
             with(cursor) {
                 val id = getInt(0)

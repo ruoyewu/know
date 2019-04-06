@@ -174,7 +174,6 @@ class RecordTypeEditActivity : ToolbarActivity<RecordTypeEditContract.Presenter>
     override fun onLongClick(recordView: RecordView, view: View,
                              parentView: ArrayList<RecordView>, parent: ViewGroup) {
         AlertDialog.Builder(this)
-                .setTitle("选择操作")
                 .setItems(if (recordView is RecordLayoutView) ITEM_LAYOUT else ITEM_VIEW) {
                     _, which ->
                         when (which) {
@@ -193,7 +192,12 @@ class RecordTypeEditActivity : ToolbarActivity<RecordTypeEditContract.Presenter>
                                 }
                                 startActivityForResult(intent, FOR_UPDATE_RESULT)
                             }
-                            1 -> {      // add
+                            1 -> {      // delete
+                                parent.removeView(view)
+                                parentView.remove(recordView)
+                                mPresenter.removeRecordTypeItem(this, recordView)
+                            }
+                            2 -> {      // add
                                 mParent = view as ViewGroup
                                 mViews = (recordView as RecordLayoutView).views
                                 showSelectDlg()
@@ -248,7 +252,7 @@ class RecordTypeEditActivity : ToolbarActivity<RecordTypeEditContract.Presenter>
         const val FOR_ADD_RESULT = 1
         const val FOR_UPDATE_RESULT = 2
 
-        val ITEM_VIEW = arrayOf("修改控件")
-        val ITEM_LAYOUT = arrayOf("修改控件", "增加子控件")
+        val ITEM_VIEW = arrayOf("修改控件", "删除控件")
+        val ITEM_LAYOUT = arrayOf("修改控件", "删除控件", "增加子控件")
     }
 }

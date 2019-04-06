@@ -169,10 +169,10 @@ object ViewFactory {
             val view = LayoutInflater.from(context)
                     .inflate(R.layout.view_text, parent, false) as TextView
             view.setBackgroundColor(ActivityCompat.getColor(context, R.color.transparent_platinum))
-            view.setPadding(DensityUtil.dp2px(context, paddingLeft.toFloat()).toInt(),
-                    DensityUtil.dp2px(context, paddingTop.toFloat()).toInt(),
-                    DensityUtil.dp2px(context, paddingRight.toFloat()).toInt(),
-                    DensityUtil.dp2px(context, paddingBottom.toFloat()).toInt())
+            view.setPadding(DensityUtil.dp2px(context, (paddingLeft+5).toFloat()).toInt(),
+                    DensityUtil.dp2px(context, (paddingTop+5).toFloat()).toInt(),
+                    DensityUtil.dp2px(context, (paddingRight+5).toFloat()).toInt(),
+                    DensityUtil.dp2px(context, (paddingBottom+5).toFloat()).toInt())
             view.text = if (isEditable) "编辑框" else "标签"
             view.gravity = Gravity.CENTER
 
@@ -208,9 +208,9 @@ object ViewFactory {
                     .inflate(R.layout.view_layout, parent, false) as LinearLayout
             view.setBackgroundColor(ActivityCompat.getColor(context, R.color.transparent_platinum))
             view.setPadding(DensityUtil.dp2px(context, paddingLeft.toFloat()).toInt(),
-                    DensityUtil.dp2px(context, paddingTop.toFloat()).toInt(),
+                    DensityUtil.dp2px(context, (paddingTop+10).toFloat()).toInt(),
                     DensityUtil.dp2px(context, paddingRight.toFloat()).toInt(),
-                    DensityUtil.dp2px(context, paddingBottom.toFloat()).toInt())
+                    DensityUtil.dp2px(context, (paddingBottom+10).toFloat()).toInt())
             view.gravity = gravity
             view.orientation = orientation
 

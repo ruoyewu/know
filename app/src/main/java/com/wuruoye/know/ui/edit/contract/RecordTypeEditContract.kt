@@ -25,5 +25,6 @@ interface RecordTypeEditContract {
                                   attach: Boolean,
                                   listener: ViewFactory.OnLongClickListener): android.view.View?
         abstract fun saveRecordType(context: Context, recordType: RecordType)
+        abstract fun removeRecordTypeItem(context: Context, recordView: RecordView)
     }
 }

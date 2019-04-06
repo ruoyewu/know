@@ -54,7 +54,7 @@ class RecordEditPresenter : RecordEditContract.Presenter() {
             val child = parent.getChildAt(i)
             if (v is RecordTextView && v.isEditable) {
                 val item = SqlUtil.getInstance(context).queryRecordItem(recordId,
-                        getType(v), v.id)
+                        SqlUtil.ViewTableItem.getType(v), v.id)
                 if (item != null) {
                     val et = (child as TextInputLayout).editText!!
                     et.setText(item.content)
@@ -64,14 +64,6 @@ class RecordEditPresenter : RecordEditContract.Presenter() {
             } else if (v is RecordLayoutView) {
                 loadViews(context, v.views, recordId, child as ViewGroup)
             }
-        }
-    }
-
-    private fun getType(recordView: RecordView): Int {
-        return when(recordView) {
-            is RecordTextView -> SqlUtil.ViewTableItem.TEXT_VIEW
-            is RecordLayoutView -> SqlUtil.ViewTableItem.LAYOUT_VIEW
-            else -> -1
         }
     }
 }

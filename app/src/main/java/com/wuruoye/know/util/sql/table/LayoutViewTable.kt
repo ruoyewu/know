@@ -116,6 +116,10 @@ class LayoutViewTable(
             }
         }
 
+        fun delete(db: SQLiteDatabase, id: Int) {
+            db.delete(NAME, "id=?", arrayOf(id.toString()))
+        }
+
         private fun fromCursor(cursor: Cursor): LayoutViewTable {
             val id = cursor.getInt(0)
             val width = cursor.getInt(1)

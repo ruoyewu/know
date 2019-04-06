@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import com.wuruoye.know.model.ViewFactory
+import com.wuruoye.know.model.beans.RecordLayoutView
 import com.wuruoye.know.model.beans.RecordType
 import com.wuruoye.know.model.beans.RecordTypeItem
 import com.wuruoye.know.model.beans.RecordView
@@ -41,5 +42,16 @@ class RecordTypeEditPresenter : RecordTypeEditContract.Presenter() {
             recordType.updateTime = System.currentTimeMillis()
         }
         SqlUtil.getInstance(context).saveRecordType(recordType)
+    }
+
+    override fun removeRecordTypeItem(context: Context, recordView: RecordView) {
+        if (recordView is RecordLayoutView) {
+            for (v in recordView.views) {
+                removeRecordTypeItem(context, v)
+            }
+        } else {
+            SqlUtil.getInstance(context).deleteRecordTypeItem(
+                    SqlUtil.ViewTableItem.getType(recordView), recordView.id)
+        }
     }
 }
