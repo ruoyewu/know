@@ -6,7 +6,6 @@ import android.os.Parcel
 import android.os.Parcelable
 import android.text.InputType
 import android.view.Gravity
-import com.wuruoye.know.util.sql.table.TextViewTable
 
 /**
  * Created at 2019/3/18 13:12 by wuruoye
@@ -42,12 +41,6 @@ class RecordTextView(
         updateTime: Long = -1
 ) : RecordView(id, width, height, marginTop, marginBottom, marginLeft, marginRight, paddingTop,
         paddingBottom, paddingLeft, paddingRight, createTime, updateTime), Parcelable {
-    constructor(table: TextViewTable): this(table.id, table.text, table.textSize, table.textColor,
-            table.hint, table.hintSize, table.hintColor, table.width, table.height, table.bgColor,
-            table.fgColor, table.marginTop, table.marginBottom, table.marginLeft, table.marginRight,
-            table.paddingTop, table.paddingBottom, table.paddingLeft, table.paddingRight,
-            table.gravity, table.textStyle, table.inputType, table.minLine, table.maxLine,
-            table.editable, table.createTime, table.updateTime)
 
     constructor(editable: Boolean): this() {
         isEditable = editable

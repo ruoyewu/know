@@ -2,7 +2,6 @@ package com.wuruoye.know.model.beans
 
 import android.os.Parcel
 import android.os.Parcelable
-import com.wuruoye.know.util.sql.table.ImageViewTable
 
 /**
  * Created at 2019/4/6 20:24 by wuruoye
@@ -12,8 +11,9 @@ class RecordImageView(
         id: Int = -1,
         width: Int = -1,
         height: Int = 100,
-        var scaleType: Int = 0,
         var shape: Int = 0,
+        var blur: Boolean = false,
+        var tint: Int = 0,
         marginTop: Int = 0,
         marginBottom: Int = 0,
         marginLeft: Int = 0,
@@ -26,16 +26,13 @@ class RecordImageView(
         updateTime: Long = -1
 ) : RecordView(id, width, height, marginTop, marginBottom, marginLeft, marginRight, paddingTop,
         paddingBottom, paddingLeft, paddingRight, createTime, updateTime), Parcelable {
-    constructor(table: ImageViewTable): this(table.id, table.width, table.height, table.scaleType,
-            table.shape, table.marginTop, table.marginBottom, table.marginLeft, table.marginRight,
-            table.paddingTop, table.paddingBottom, table.paddingLeft, table.paddingRight,
-            table.createTime, table.updateTime)
 
     constructor(source: Parcel) : this(
             source.readInt(),
             source.readInt(),
             source.readInt(),
             source.readInt(),
+            1 == source.readInt(),
             source.readInt(),
             source.readInt(),
             source.readInt(),
@@ -55,8 +52,9 @@ class RecordImageView(
         writeInt(id)
         writeInt(width)
         writeInt(height)
-        writeInt(scaleType)
         writeInt(shape)
+        writeInt((if (blur) 1 else 0))
+        writeInt(tint)
         writeInt(marginTop)
         writeInt(marginBottom)
         writeInt(marginLeft)

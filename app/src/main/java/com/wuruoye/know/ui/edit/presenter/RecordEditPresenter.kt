@@ -1,14 +1,20 @@
 package com.wuruoye.know.ui.edit.presenter
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.support.design.widget.TextInputLayout
 import android.view.ViewGroup
 import android.widget.ImageView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
+import com.bumptech.glide.load.MultiTransformation
 import com.bumptech.glide.load.engine.GlideException
+import com.bumptech.glide.load.resource.bitmap.CenterCrop
+import com.bumptech.glide.load.resource.bitmap.CircleCrop
+import com.bumptech.glide.request.BaseRequestOptions
 import com.bumptech.glide.request.RequestListener
+import com.bumptech.glide.request.RequestOptions.bitmapTransform
 import com.bumptech.glide.request.target.Target
 import com.wuruoye.know.R
 import com.wuruoye.know.model.GsonFactory
@@ -17,6 +23,9 @@ import com.wuruoye.know.ui.edit.contract.RecordEditContract
 import com.wuruoye.know.util.sql.SqlUtil
 import com.wuruoye.library.model.WConfig
 import com.wuruoye.library.util.FileUtil
+import jp.wasabeef.glide.transformations.BlurTransformation
+import jp.wasabeef.glide.transformations.ColorFilterTransformation
+import jp.wasabeef.glide.transformations.RoundedCornersTransformation
 
 /**
  * Created at 2019/4/1 10:04 by wuruoye
@@ -43,9 +52,10 @@ class RecordEditPresenter : RecordEditContract.Presenter() {
         return path
     }
 
-    override fun loadImg(path: String, view: ImageView) {
+    override fun loadImg(path: String, view: ImageView, recordView: RecordImageView) {
         Glide.with(view)
                 .load(path)
+                .apply(generateOption(recordView, view))
                 .into(view)
         var item = view.getTag(R.id.tag_image)
         if (item != null) {
@@ -104,33 +114,21 @@ class RecordEditPresenter : RecordEditContract.Presenter() {
                     val path = gson.fromJson<RecordImgPath>(item.content, RecordImgPath::class.java)
                     Glide.with(iv)
                             .load(path.localPath)
+                            .apply(generateOption(v, iv))
                             .listener(object : RequestListener<Drawable> {
-                                override fun onLoadFailed(e: GlideException?, model: Any?,
-                                                          target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                                    path.localPath = ""
+                                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
                                     Glide.with(iv)
                                             .load(path.remotePath)
-                                            .listener(object : RequestListener<Drawable> {
-                                                override fun onLoadFailed(e: GlideException?, model: Any?, target: Target<Drawable>?, isFirstResource: Boolean): Boolean {
-                                                    path.remotePath = ""
-                                                    return true
-                                                }
-
-                                                override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                                                    iv.setImageDrawable(resource)
-                                                    return true
-                                                }
-
-                                            }).submit()
+                                            .apply(generateOption(v, iv))
+                                            .into(iv)
                                     return true
                                 }
 
                                 override fun onResourceReady(resource: Drawable?, model: Any?, target: Target<Drawable>?, dataSource: DataSource?, isFirstResource: Boolean): Boolean {
-                                    iv.setImageDrawable(resource)
-                                    return true
+                                    return false
                                 }
-
-                            }).submit()
+                            })
+                            .into(iv)
                     iv.setTag(R.id.tag_image, item)
                 }
             }
@@ -138,5 +136,20 @@ class RecordEditPresenter : RecordEditContract.Presenter() {
                 loadViews(context, v.views, recordId, child as ViewGroup)
             }
         }
+    }
+
+    private fun generateOption(view: RecordImageView, iv: ImageView): BaseRequestOptions<*> {
+        val default = RoundedCornersTransformation(0, 0)
+        return bitmapTransform(MultiTransformation<Bitmap>(
+                if (view.blur) BlurTransformation(25) else default,
+                if (view.tint != 0) ColorFilterTransformation(view.tint) else default,
+                when (view.shape) {
+                    0 -> CenterCrop()
+                    1 -> MultiTransformation<Bitmap>(CenterCrop(),
+                            RoundedCornersTransformation(25, 0))
+                    2 -> CircleCrop()
+                    else -> default
+                })
+        )
     }
 }

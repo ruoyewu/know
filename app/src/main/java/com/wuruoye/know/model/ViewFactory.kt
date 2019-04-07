@@ -14,13 +14,11 @@ import android.widget.EditText
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-
 import com.wuruoye.know.R
 import com.wuruoye.know.model.beans.RecordImageView
 import com.wuruoye.know.model.beans.RecordLayoutView
 import com.wuruoye.know.model.beans.RecordTextView
 import com.wuruoye.know.model.beans.RecordView
-import com.wuruoye.know.ui.edit.controller.AbstractEditorController
 import com.wuruoye.library.util.DensityUtil
 
 /**
@@ -137,7 +135,6 @@ object ViewFactory {
         with(imageView) {
             val view = LayoutInflater.from(context)
                     .inflate(R.layout.view_img, parent, false) as ImageView
-            view.scaleType = AbstractEditorController.IMG_SCALE_TYPE[scaleType]
             view.setPadding(DensityUtil.dp2px(context, paddingLeft.toFloat()).toInt(),
                     DensityUtil.dp2px(context, paddingTop.toFloat()).toInt(),
                     DensityUtil.dp2px(context, paddingRight.toFloat()).toInt(),

@@ -12,7 +12,10 @@ import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.EditText
+import android.widget.LinearLayout
+import android.widget.NumberPicker
+import android.widget.TextView
 import com.wuruoye.know.R
 import com.wuruoye.know.model.beans.RecordView
 import com.wuruoye.know.widget.BottomAlertDialog
@@ -350,15 +353,7 @@ abstract class AbstractEditorController : EditorController,
         val ORIENTATION_VALUE = intArrayOf(LinearLayout.VERTICAL, LinearLayout.HORIZONTAL)
         val ORIENTATION_NAME = arrayOf("纵向", "横向")
 
-        val IMG_SCALE_TYPE = arrayOf(
-                ImageView.ScaleType.CENTER_CROP,ImageView.ScaleType.FIT_CENTER,
-                ImageView.ScaleType.CENTER_INSIDE,
-                ImageView.ScaleType.FIT_START, ImageView.ScaleType.FIT_END,
-                ImageView.ScaleType.FIT_XY)
-        val SCALE_TYPE_NAME = arrayOf("剪裁居中", "适应居中", "原始居中",
-                "适应居左", "适应居右", "拉伸宽高")
-
-        val SHAPE_NAME = arrayOf("正方形", "三角形", "星形", "圆形")
+        val SHAPE_NAME = arrayOf("方形", "圆角", "圆形")
 
         const val TYPE_TEXT = 1
         const val TYPE_TEXT_SIZE = 2
@@ -378,7 +373,7 @@ abstract class AbstractEditorController : EditorController,
         const val TYPE_WIDTH = 16
         const val TYPE_HEIGHT = 17
         const val TYPE_ORIENTATION = 18
-        const val TYPE_SCALE_TYPE = 19
+        const val TYPE_TINT = 19
         const val TYPE_SHAPE = 20
     }
 }

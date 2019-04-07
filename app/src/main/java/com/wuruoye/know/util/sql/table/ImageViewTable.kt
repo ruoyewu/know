@@ -13,8 +13,9 @@ class ImageViewTable(
         id: Int,
         val width: Int,
         val height: Int,
-        val scaleType: Int,
         val shape: Int,
+        val blur: Boolean,
+        val tint: Int,
         val marginLeft: Int,
         val marginRight: Int,
         val marginTop: Int,
@@ -26,10 +27,10 @@ class ImageViewTable(
         val createTime: Long,
         val updateTime: Long
 ) : ViewTable(id){
-    constructor(view: RecordImageView): this(view.id, view.width, view.height, view.scaleType,
-            view.shape, view.marginLeft, view.marginRight, view.marginTop, view.marginBottom,
-            view.paddingLeft, view.paddingRight, view.paddingTop, view.paddingBottom,
-            view.createTime, view.updateTime)
+    constructor(view: RecordImageView): this(view.id, view.width, view.height, view.shape,
+            view.blur, view.tint, view.marginLeft, view.marginRight, view.marginTop,
+            view.marginBottom, view.paddingLeft, view.paddingRight, view.paddingTop,
+            view.paddingBottom, view.createTime, view.updateTime)
 
     override fun save(db: SQLiteDatabase): Int {
         return if (id < 0) {
@@ -48,7 +49,8 @@ class ImageViewTable(
         val values = ContentValues()
         values.put(WIDTH, width)
         values.put(HEIGHT, height)
-        values.put(SCALE_TYPE, scaleType)
+        values.put(BLUR, blur)
+        values.put(TINT, tint)
         values.put(SHAPE, shape)
         values.put(MARGIN_LEFT, marginLeft)
         values.put(MARGIN_RIGHT, marginRight)
@@ -67,8 +69,9 @@ class ImageViewTable(
         val NAME = "image_view"
         val WIDTH = "width"
         val HEIGHT = "height"
-        val SCALE_TYPE = "scale_type"
         val SHAPE = "shape"
+        val BLUR = "blut"
+        val TINT = "tint"
         const val MARGIN_LEFT = "margin_left"
         const val MARGIN_RIGHT = "margin_right"
         const val MARGIN_TOP = "margin_top"
@@ -85,8 +88,9 @@ class ImageViewTable(
                     "id integer primary key autoincrement, " +
                     "$WIDTH integer, " +
                     "$HEIGHT integer, " +
-                    "$SCALE_TYPE integer, " +
                     "$SHAPE integer, " +
+                    "$BLUR integer, " +
+                    "$TINT integer, " +
                     "$MARGIN_TOP integer, " +
                     "$MARGIN_BOTTOM integer, " +
                     "$MARGIN_LEFT integer, " +
@@ -119,19 +123,20 @@ class ImageViewTable(
             val id = cursor.getInt(0)
             val width = cursor.getInt(1)
             val height = cursor.getInt(2)
-            val scaleType = cursor.getInt(3)
-            val shape = cursor.getInt(4)
-            val marginTop = cursor.getInt(5)
-            val marginBottom = cursor.getInt(6)
-            val marginLeft = cursor.getInt(7)
-            val marginRight = cursor.getInt(8)
-            val paddingTop = cursor.getInt(9)
-            val paddingBottom = cursor.getInt(10)
-            val paddingLeft = cursor.getInt(11)
-            val paddingRight = cursor.getInt(12)
-            val createTime = cursor.getLong(13)
-            val updateTime = cursor.getLong(14)
-            return RecordImageView(id, width, height, scaleType, shape, marginTop, marginBottom,
+            val shape = cursor.getInt(3)
+            val blur = cursor.getInt(4) == 1
+            val tint = cursor.getInt(5)
+            val marginTop = cursor.getInt(6)
+            val marginBottom = cursor.getInt(7)
+            val marginLeft = cursor.getInt(8)
+            val marginRight = cursor.getInt(9)
+            val paddingTop = cursor.getInt(10)
+            val paddingBottom = cursor.getInt(11)
+            val paddingLeft = cursor.getInt(12)
+            val paddingRight = cursor.getInt(13)
+            val createTime = cursor.getLong(14)
+            val updateTime = cursor.getLong(15)
+            return RecordImageView(id, width, height, shape, blur, tint, marginTop, marginBottom,
                     marginLeft, marginRight, paddingTop, paddingBottom, paddingLeft,
                     paddingRight, createTime, updateTime)
         }

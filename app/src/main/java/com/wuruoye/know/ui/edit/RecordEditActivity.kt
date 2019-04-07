@@ -34,6 +34,7 @@ class RecordEditActivity : ToolbarActivity<RecordEditContract.Presenter>(),
     private lateinit var llContent: LinearLayout
 
     private lateinit var mPhotoGet: WPhoto
+    private lateinit var mView: RecordView
     private lateinit var mImageView: ImageView
 
     override fun getContentView(): Int {
@@ -82,6 +83,7 @@ class RecordEditActivity : ToolbarActivity<RecordEditContract.Presenter>(),
     override fun onClick(recordView: RecordView, view: View) {
         if (recordView is RecordImageView) {
             mImageView = view as ImageView
+            mView = recordView
             AlertDialog.Builder(this)
                     .setTitle("选择图片")
                     .setItems(ITEM_PHOTO) { _, which ->
@@ -120,7 +122,7 @@ class RecordEditActivity : ToolbarActivity<RecordEditContract.Presenter>(),
     }
 
     override fun onPhotoResult(path: String?) {
-        mPresenter.loadImg(path!!, mImageView)
+        mPresenter.loadImg(path!!, mImageView, mView as RecordImageView)
     }
 
     override fun onPhotoError(error: String?) {
