@@ -11,6 +11,7 @@ class SqliteHelper(context: Context) :
     override fun onCreate(db: SQLiteDatabase) {
         TextViewTable.create(db)
         LayoutViewTable.create(db)
+        ImageViewTable.create(db)
         RecordTypeTable.create(db)
         RecordTable.create(db)
         RecordItemTable.create(db)

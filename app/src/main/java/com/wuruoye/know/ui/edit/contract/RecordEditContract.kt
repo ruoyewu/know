@@ -2,6 +2,7 @@ package com.wuruoye.know.ui.edit.contract
 
 import android.content.Context
 import android.view.ViewGroup
+import android.widget.ImageView
 import com.wuruoye.know.model.beans.Record
 import com.wuruoye.know.model.beans.RecordType
 import com.wuruoye.know.model.beans.RecordView
@@ -26,5 +27,7 @@ interface RecordEditContract {
                                 recordType: RecordType, view: ViewGroup): Boolean
         abstract fun loadRecord(context: Context, record: Record,
                                 recordType: RecordType, view: ViewGroup)
+        abstract fun generateImgPath(): String
+        abstract fun loadImg(path: String, view: ImageView)
     }
 }

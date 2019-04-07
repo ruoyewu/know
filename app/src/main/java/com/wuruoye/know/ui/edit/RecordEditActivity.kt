@@ -3,18 +3,20 @@ package com.wuruoye.know.ui.edit
 import android.app.Activity
 import android.os.Bundle
 import android.support.design.widget.TextInputLayout
+import android.support.v7.app.AlertDialog
 import android.view.View
 import android.widget.EditText
+import android.widget.ImageView
 import android.widget.LinearLayout
 import com.wuruoye.know.R
 import com.wuruoye.know.base.IToolbarView
 import com.wuruoye.know.base.ToolbarActivity
-import com.wuruoye.know.model.beans.Record
-import com.wuruoye.know.model.beans.RecordTextView
-import com.wuruoye.know.model.beans.RecordType
-import com.wuruoye.know.model.beans.RecordView
+import com.wuruoye.know.model.ViewFactory
+import com.wuruoye.know.model.beans.*
 import com.wuruoye.know.ui.edit.contract.RecordEditContract
 import com.wuruoye.know.ui.edit.presenter.RecordEditPresenter
+import com.wuruoye.library.util.media.IWPhoto
+import com.wuruoye.library.util.media.WPhoto
 import kotlinx.android.synthetic.main.activity_record_edit.*
 
 /**
@@ -25,10 +27,14 @@ import kotlinx.android.synthetic.main.activity_record_edit.*
 
 class RecordEditActivity : ToolbarActivity<RecordEditContract.Presenter>(),
         RecordEditContract.View,
-        IToolbarView.OnToolbarBackListener, IToolbarView.OnToolbarMoreListener {
+        IToolbarView.OnToolbarBackListener, IToolbarView.OnToolbarMoreListener,
+        ViewFactory.OnClickListener, IWPhoto.OnWPhotoListener<String> {
     private lateinit var mRecordType: RecordType
     private lateinit var mRecord: Record
     private lateinit var llContent: LinearLayout
+
+    private lateinit var mPhotoGet: WPhoto
+    private lateinit var mImageView: ImageView
 
     override fun getContentView(): Int {
         return R.layout.activity_record_edit
@@ -36,6 +42,7 @@ class RecordEditActivity : ToolbarActivity<RecordEditContract.Presenter>(),
 
     override fun initData(bundle: Bundle) {
         setPresenter(RecordEditPresenter())
+        mPhotoGet = WPhoto(this)
 
         try {
             mRecord = bundle.getParcelable<Record>(RECORD)!!
@@ -53,6 +60,10 @@ class RecordEditActivity : ToolbarActivity<RecordEditContract.Presenter>(),
         initToolbar()
 
         llContent = ll_record_edit
+
+        for (v in mRecordType.views) {
+            ViewFactory.generateView(this, v, llContent, true, this)
+        }
         mPresenter.loadRecord(this, mRecord, mRecordType, llContent)
     }
 
@@ -68,6 +79,33 @@ class RecordEditActivity : ToolbarActivity<RecordEditContract.Presenter>(),
 
     }
 
+    override fun onClick(recordView: RecordView, view: View) {
+        if (recordView is RecordImageView) {
+            mImageView = view as ImageView
+            AlertDialog.Builder(this)
+                    .setTitle("选择图片")
+                    .setItems(ITEM_PHOTO) { _, which ->
+                        when (which) {
+                            0 -> {      // choose
+                                mPhotoGet.choosePhoto(this)
+                            }
+                            1 -> {      // take
+                                mPhotoGet.takePhoto(mPresenter.generateImgPath(), this)
+                            }
+                            2 -> {      // choose and crop
+                                mPhotoGet.choosePhoto(mPresenter.generateImgPath(),
+                                        1, 1, 500, 500, this)
+                            }
+                            3 -> {      // take and crop
+                                mPhotoGet.takePhoto(mPresenter.generateImgPath(),
+                                        1, 1, 500, 500, this)
+                            }
+                        }
+                    }
+                    .show()
+        }
+    }
+
     override fun onBackClick() {
         onBackPressed()
     }
@@ -79,6 +117,14 @@ class RecordEditActivity : ToolbarActivity<RecordEditContract.Presenter>(),
         } else {
 
         }
+    }
+
+    override fun onPhotoResult(path: String?) {
+        mPresenter.loadImg(path!!, mImageView)
+    }
+
+    override fun onPhotoError(error: String?) {
+
     }
 
     override fun getViewInfo(recordView: RecordView, view: View): String {
@@ -100,5 +146,7 @@ class RecordEditActivity : ToolbarActivity<RecordEditContract.Presenter>(),
     companion object {
         const val RECORD_TYPE = "type"
         const val RECORD = "record"
+
+        val ITEM_PHOTO = arrayOf("相册选择", "相机拍照", "相册选择&剪裁", "相机拍照&剪裁")
     }
 }

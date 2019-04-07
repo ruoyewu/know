@@ -57,6 +57,8 @@ class ImageViewController (private val mView: RecordImageView)
         llShape.setOnClickListener(this)
 
         with(mView) {
+            tvScaleType.text = SCALE_TYPE_NAME[scaleType]
+            tvShape.text = SHAPE_NAME[shape]
             mShowView.scaleType = IMG_SCALE_TYPE[scaleType]
             // TODO set shape
         }

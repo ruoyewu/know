@@ -39,7 +39,7 @@ class TypeItemEditActivity : ToolbarActivity<TypeItemEditContract.Presenter>(),
         super.initView()
 
         mController = mPresenter.generateController(mType, mView)
-        mController?.attach(this, fl_type_item_edit, sv_type_item_edit)
+        mController!!.attach(this, fl_type_item_edit, sv_type_item_edit)
 
         setToolbarMoreListener(this)
         setToolbarBackListener(this)

@@ -5,7 +5,9 @@ import android.database.sqlite.SQLiteDatabase
 import android.support.design.widget.TextInputLayout
 import android.view.View
 import android.view.ViewGroup
+import com.wuruoye.know.R
 import com.wuruoye.know.model.beans.*
+import com.wuruoye.know.util.sql.SqlUtil.ViewTableItem.Companion.IMAGE_VIEW
 import com.wuruoye.know.util.sql.SqlUtil.ViewTableItem.Companion.LAYOUT_VIEW
 import com.wuruoye.know.util.sql.SqlUtil.ViewTableItem.Companion.TEXT_VIEW
 import com.wuruoye.know.util.sql.table.*
@@ -176,7 +178,7 @@ class SqlUtil private constructor(context: Context) {
             val v = views[i]
             val child = parent.getChildAt(i)
             if (v is RecordTextView && v.isEditable) {
-                val item = child.tag
+                val item = child.getTag(R.id.tag_text)
                 val itemTable = if (item != null) {
                     RecordItemTable(item as RecordItem)
                 } else {
@@ -184,7 +186,19 @@ class SqlUtil private constructor(context: Context) {
                 }
                 itemTable.content = (child as TextInputLayout).editText!!.text.toString()
                 itemTable.save(db)
-            } else if (v is RecordLayoutView) {
+            } else if (v is RecordImageView) {
+                val item = child.getTag(R.id.tag_image)
+                if (item != null) {
+                    val item = item as RecordItem
+                    val itemTable = if (item.id < 0) {
+                        RecordItemTable(-1, recordId, ViewTableItem.IMAGE_VIEW, v.id, item.content)
+                    } else {
+                        RecordItemTable(item)
+                    }
+                    itemTable.save(db)
+                }
+            }
+            else if (v is RecordLayoutView) {
                 saveRecordItem(recordId, v.views, child as ViewGroup, db)
             }
         }
@@ -204,6 +218,8 @@ class SqlUtil private constructor(context: Context) {
             else builder.append(']')
 
             return ViewTableItem(LAYOUT_VIEW, LayoutViewTable(view, builder.toString()))
+        } else if (view is RecordImageView) {
+            return ViewTableItem(IMAGE_VIEW, ImageViewTable(view))
         }
 
         return ViewTableItem(TEXT_VIEW, TextViewTable(view as RecordTextView))
@@ -223,9 +239,11 @@ class SqlUtil private constructor(context: Context) {
                 }
             }
             return RecordLayoutView(table, views)
+        } else if (type == IMAGE_VIEW) {
+            return ImageViewTable.query(db, id)!!
         }
 
-        return RecordTextView(TextViewTable.query(db, id)!!)
+        return TextViewTable.query(db, id)!!
     }
 
     class ViewTableItem (
@@ -235,11 +253,13 @@ class SqlUtil private constructor(context: Context) {
         companion object {
             val TEXT_VIEW = 1
             val LAYOUT_VIEW = 2
+            val IMAGE_VIEW = 3
 
             fun getType(view: RecordView): Int {
                 return when (view) {
                     is RecordLayoutView -> LAYOUT_VIEW
                     is RecordTextView -> TEXT_VIEW
+                    is RecordImageView -> IMAGE_VIEW
                     else -> -1
                 }
             }

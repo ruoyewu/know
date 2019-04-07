@@ -149,7 +149,7 @@ class EditTextController(private val mView: RecordTextView) : AbstractEditorCont
             }
             R.id.ll_hint_layout_edit -> {
                 mCurType = TYPE_HINT
-                showEditDlg("输入提示内容", INPUT_TYPE_VALUE[0])
+                showEditDlg("输入提示内容", INPUT_TYPE_VALUE[4])
             }
             R.id.ll_hint_size_layout_edit -> {
                 mCurType = TYPE_HINT_SIZE

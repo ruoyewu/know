@@ -145,7 +145,7 @@ class TextViewTable(id: Int,
                     ")")
         }
 
-        fun query(db: SQLiteDatabase, id: Int): TextViewTable? {
+        fun query(db: SQLiteDatabase, id: Int): RecordTextView? {
             val cursor = db.query(NAME, null, "id=?", arrayOf(id.toString()),
                     null, null, null, null)
             try {
@@ -162,7 +162,7 @@ class TextViewTable(id: Int,
             db.delete(NAME, "id=?", arrayOf(id.toString()))
         }
 
-        private fun fromCursor(cursor: Cursor): TextViewTable {
+        private fun fromCursor(cursor: Cursor): RecordTextView? {
             with(cursor) {
                 val id = getInt(0)
                 val text = getString(1)
@@ -191,7 +191,7 @@ class TextViewTable(id: Int,
                 val editable = getInt(24) == 1
                 val createTime = getLong(25)
                 val updateTime = getLong(26)
-                return TextViewTable(id, text, textSize, textColor, hint,
+                return RecordTextView(id, text, textSize, textColor, hint,
                         hintSize, hintColor, width, height, bgColor, fgColor,
                         marginTop, marginBottom, marginLeft, marginRight,
                         paddingTop, paddingBottom, paddingLeft, paddingRight,

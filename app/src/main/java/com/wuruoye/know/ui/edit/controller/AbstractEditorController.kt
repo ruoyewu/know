@@ -334,14 +334,15 @@ abstract class AbstractEditorController : EditorController,
         val GRAVITY_NAME = arrayOf("上左", "上中", "上右", "中左", "中", "中右", "下左", "下中", "下右")
 
         val INPUT_TYPE_VALUE = intArrayOf(
-                InputType.TYPE_TEXT_FLAG_MULTI_LINE or InputType.TYPE_CLASS_TEXT,
+                InputType.TYPE_CLASS_TEXT,
                 InputType.TYPE_CLASS_NUMBER,
                 InputType.TYPE_CLASS_PHONE,
-                InputType.TYPE_CLASS_DATETIME)
-        val INPUT_TYPE_NAME = arrayOf("文本", "数字", "电话", "日期")
+                InputType.TYPE_CLASS_DATETIME,
+                InputType.TYPE_CLASS_TEXT or InputType.TYPE_TEXT_FLAG_MULTI_LINE)
+        val INPUT_TYPE_NAME = arrayOf("文本", "数字", "电话", "日期", "多行")
 
         const val TEXT_LINE_MIN = 1
-        const val TEXT_LINE_MAX = 5
+        const val TEXT_LINE_MAX = 10
 
         val LENGTH_VALUE = intArrayOf(-2, -1, 0)
         val LENGTH_NAME = arrayOf("自适应", "铺满", "自定义")
@@ -349,13 +350,14 @@ abstract class AbstractEditorController : EditorController,
         val ORIENTATION_VALUE = intArrayOf(LinearLayout.VERTICAL, LinearLayout.HORIZONTAL)
         val ORIENTATION_NAME = arrayOf("纵向", "横向")
 
-        val IMG_SCALE_TYPE = arrayOf(ImageView.ScaleType.CENTER_CROP, ImageView.ScaleType.CENTER,
-                ImageView.ScaleType.CENTER_INSIDE, ImageView.ScaleType.FIT_CENTER,
+        val IMG_SCALE_TYPE = arrayOf(
+                ImageView.ScaleType.CENTER_CROP,ImageView.ScaleType.FIT_CENTER,
+                ImageView.ScaleType.CENTER_INSIDE,
                 ImageView.ScaleType.FIT_START, ImageView.ScaleType.FIT_END,
-                ImageView.ScaleType.FIT_XY, ImageView.ScaleType.MATRIX)
-        val SCALE_TYPE_NAME = arrayOf("", "", "", "", "", "", "", "")
+                ImageView.ScaleType.FIT_XY)
+        val SCALE_TYPE_NAME = arrayOf("剪裁居中", "适应居中", "原始居中",
+                "适应居左", "适应居右", "拉伸宽高")
 
-//        val SHAPE_VALUE = arrayOf()
         val SHAPE_NAME = arrayOf("正方形", "三角形", "星形", "圆形")
 
         const val TYPE_TEXT = 1

@@ -9,5 +9,5 @@ class RecordItem (
         val recordId: Int,
         val type: Int,
         val typeId: Int,
-        val content: String
+        var content: String
 )

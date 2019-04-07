@@ -50,7 +50,7 @@ object ViewFactory {
                      attach: Boolean, listener: OnClickListener?): View? {
         return when (view) {
             is RecordTextView -> generateTextView(context, view, parent, attach)
-            is RecordLayoutView -> generateLayoutView(context, view, parent, attach)
+            is RecordLayoutView -> generateLayoutView(context, view, parent, attach, listener)
             is RecordImageView -> generateImageView(context, view, parent, attach, listener)
             else -> null
         }
@@ -167,7 +167,8 @@ object ViewFactory {
     }
 
     private fun generateLayoutView(context: Context, layoutView: RecordLayoutView,
-                                   parent: ViewGroup, attach: Boolean): View {
+                                   parent: ViewGroup, attach: Boolean,
+                                   listener: OnClickListener?): View {
         with(layoutView) {
             val view = LayoutInflater.from(context).inflate(R.layout.view_layout,
                     parent, false) as LinearLayout
@@ -188,7 +189,7 @@ object ViewFactory {
             view.layoutParams = lp
 
             for (v in views) {
-                generateView(context, v, view, true)
+                generateView(context, v, view, true, listener)
             }
 
             if (attach) {

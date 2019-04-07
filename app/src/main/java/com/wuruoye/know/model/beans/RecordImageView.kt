@@ -2,6 +2,7 @@ package com.wuruoye.know.model.beans
 
 import android.os.Parcel
 import android.os.Parcelable
+import com.wuruoye.know.util.sql.table.ImageViewTable
 
 /**
  * Created at 2019/4/6 20:24 by wuruoye
@@ -25,6 +26,11 @@ class RecordImageView(
         updateTime: Long = -1
 ) : RecordView(id, width, height, marginTop, marginBottom, marginLeft, marginRight, paddingTop,
         paddingBottom, paddingLeft, paddingRight, createTime, updateTime), Parcelable {
+    constructor(table: ImageViewTable): this(table.id, table.width, table.height, table.scaleType,
+            table.shape, table.marginTop, table.marginBottom, table.marginLeft, table.marginRight,
+            table.paddingTop, table.paddingBottom, table.paddingLeft, table.paddingRight,
+            table.createTime, table.updateTime)
+
     constructor(source: Parcel) : this(
             source.readInt(),
             source.readInt(),

@@ -26,6 +26,11 @@ class ImageViewTable(
         val createTime: Long,
         val updateTime: Long
 ) : ViewTable(id){
+    constructor(view: RecordImageView): this(view.id, view.width, view.height, view.scaleType,
+            view.shape, view.marginLeft, view.marginRight, view.marginTop, view.marginBottom,
+            view.paddingLeft, view.paddingRight, view.paddingTop, view.paddingBottom,
+            view.createTime, view.updateTime)
+
     override fun save(db: SQLiteDatabase): Int {
         return if (id < 0) {
             db.insert(NAME, null, contentValues()).toInt()
@@ -82,14 +87,14 @@ class ImageViewTable(
                     "$HEIGHT integer, " +
                     "$SCALE_TYPE integer, " +
                     "$SHAPE integer, " +
-                    "$MARGIN_LEFT integer, " +
-                    "$MARGIN_RIGHT integer, " +
                     "$MARGIN_TOP integer, " +
                     "$MARGIN_BOTTOM integer, " +
-                    "$PADDING_LEFT integer, " +
-                    "$PADDING_RIGHT integer, " +
+                    "$MARGIN_LEFT integer, " +
+                    "$MARGIN_RIGHT integer, " +
                     "$PADDING_TOP integer, " +
                     "$PADDING_BOTTOM integer, " +
+                    "$PADDING_LEFT integer, " +
+                    "$PADDING_RIGHT integer, " +
                     "$CREATE_TIME integer, " +
                     "$UPDATE_TIME integer)")
         }

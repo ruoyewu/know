@@ -194,7 +194,7 @@ class TextViewController(private val mView: RecordTextView) :
         when (v.id) {
             R.id.ll_text_layout_text -> {
                 mCurType = TYPE_TEXT
-                showEditDlg("输入文本内容", INPUT_TYPE_VALUE[0])
+                showEditDlg("输入文本内容", INPUT_TYPE_VALUE[4])
             }
             R.id.ll_text_size_layout_text -> {
                 mCurType = TYPE_TEXT_SIZE
