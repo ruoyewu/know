@@ -238,12 +238,12 @@ class RecordFragment : WBaseFragment<RecordContract.Presenter>(),
         const val FOR_UPDATE_RECORD_RESULT = 3
 
         val ITEM_TIME_LIMIT = arrayListOf<TimeLimitItem>(
+                TimeLimitItem(0, "不限"),
                 TimeLimitItem(1, "一天内"),
                 TimeLimitItem(2, "两天内"),
                 TimeLimitItem(3, "三天内"),
                 TimeLimitItem(4, "一周内"),
                 TimeLimitItem(5, "一月内"),
-                TimeLimitItem(6, "一年内"),
-                TimeLimitItem(0, "不限"))
+                TimeLimitItem(6, "一年内"))
     }
 }

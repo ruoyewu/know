@@ -4,6 +4,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.drawable.Drawable
 import android.support.design.widget.TextInputLayout
+import android.support.v4.util.ArrayMap
 import android.view.ViewGroup
 import android.widget.ImageView
 import com.bumptech.glide.Glide
@@ -59,7 +60,7 @@ class RecordEditPresenter : RecordEditContract.Presenter() {
                 .into(view)
         var item = view.getTag(R.id.tag_image)
         if (item != null) {
-            val item = item as RecordItem
+            item = item as RecordItem
             val imgPath = gson.fromJson<RecordImgPath>(item.content, RecordImgPath::class.java)
             imgPath.localPath = path
             imgPath.remotePath = ""
@@ -75,31 +76,42 @@ class RecordEditPresenter : RecordEditContract.Presenter() {
     }
 
     override fun loadRecord(context: Context, record: Record,
-                            recordType: RecordType, view: ViewGroup) {
+                            recordType: RecordType, parent: ViewGroup) {
         val recordId = record.id
         if (recordId >= 0) {
-            loadViews(context, recordType.views, recordId, view)
+            val items = SqlUtil.getInstance(context).queryRecordItemsWithRecord(recordId)
+            val map = revertItems(items)
+            loadViews(recordType.views, recordId, parent, map)
         }
     }
 
     override fun saveRecord(context: Context, record: Record,
-                            recordType: RecordType, view: ViewGroup): Boolean {
+                            recordType: RecordType, parent: ViewGroup): Boolean {
         if (record.createTime > 0) {
             record.updateTime = System.currentTimeMillis()
         } else {
             record.createTime = System.currentTimeMillis()
         }
-        return SqlUtil.getInstance(context).saveRecordWithItems(record, recordType, view)
+        val items: ArrayList<RecordItem> = ArrayList()
+        saveViews(items, recordType.views, parent)
+        return SqlUtil.getInstance(context).saveRecordWithItems(record, items)
     }
 
-    private fun loadViews(context: Context, views: ArrayList<RecordView>,
-                          recordId: Int, parent: ViewGroup) {
+    private fun revertItems(items: ArrayList<RecordItem>): ArrayMap<String, RecordItem> {
+        val map = ArrayMap<String, RecordItem>()
+        for (item in items) {
+            map[generateKey(item.type, item.typeId)] = item
+        }
+        return map
+    }
+
+    private fun loadViews(views: ArrayList<RecordView>, recordId: Int,
+                          parent: ViewGroup, map: ArrayMap<String, RecordItem>) {
         for (i in 0 until views.size) {
             val v = views[i]
             val child = parent.getChildAt(i)
             if (v is RecordTextView && v.isEditable) {
-                val item = SqlUtil.getInstance(context).queryRecordItem(recordId,
-                        SqlUtil.ViewTableItem.getType(v), v.id)
+                val item = map[generateKey(SqlUtil.ViewTableItem.getType(v), v.id)]
                 if (item != null) {
                     val et = (child as TextInputLayout).editText!!
                     et.setText(item.content)
@@ -107,8 +119,7 @@ class RecordEditPresenter : RecordEditContract.Presenter() {
                     child.setTag(R.id.tag_text, item)
                 }
             } else if (v is RecordImageView) {
-                val item = SqlUtil.getInstance(context).queryRecordItem(recordId,
-                        SqlUtil.ViewTableItem.getType(v), v.id)
+                val item = map[generateKey(SqlUtil.ViewTableItem.getType(v), v.id)]
                 if (item != null) {
                     val iv = child as ImageView
                     val path = gson.fromJson<RecordImgPath>(item.content, RecordImgPath::class.java)
@@ -133,9 +144,39 @@ class RecordEditPresenter : RecordEditContract.Presenter() {
                 }
             }
             else if (v is RecordLayoutView) {
-                loadViews(context, v.views, recordId, child as ViewGroup)
+                loadViews(v.views, recordId, child as ViewGroup, map)
             }
         }
+    }
+
+    private fun saveViews(items: ArrayList<RecordItem>, views: ArrayList<RecordView>,
+                          parent: ViewGroup) {
+        for (i in 0 until views.size) {
+            val v = views[i]
+            val child = parent.getChildAt(i)
+
+            if (v is RecordTextView && v.isEditable) {
+                val item = (child.getTag(R.id.tag_text) ?: RecordItem(-1, -1,
+                        SqlUtil.ViewTableItem.TEXT_VIEW, v.id, "")) as RecordItem
+                item.content = (child as TextInputLayout).editText!!.text.toString()
+                items.add(item)
+            } else if (v is RecordImageView) {
+                val item = child.getTag(R.id.tag_image)
+                if (item != null && item is RecordItem) {
+                    if (item.id < 0) {
+                        item.type = SqlUtil.ViewTableItem.IMAGE_VIEW
+                        item.typeId = v.id
+                    }
+                    items.add(item)
+                }
+            } else if (v is RecordLayoutView) {
+                saveViews(items, v.views, child as ViewGroup)
+            }
+        }
+    }
+
+    private fun generateKey(type: Int, typeId: Int): String {
+        return "${type}_$typeId"
     }
 
     private fun generateOption(view: RecordImageView, iv: ImageView): BaseRequestOptions<*> {

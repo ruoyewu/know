@@ -130,6 +130,7 @@ class EditTextController(private val mView: RecordTextView) : AbstractEditorCont
             tvFgColor.text = ColorUtil.color2hex(fgColor)
             tvTextStyle.text = TEXT_STYLE_NAME[TEXT_STYLE_VALUE.indexOf(textStyle)]
             tvGravity.text = GRAVITY_NAME[GRAVITY_VALUE.indexOf(gravity)]
+            tvInputType.text = INPUT_TYPE_NAME[INPUT_TYPE_VALUE.indexOf(inputType)]
             tvMinLine.text = minLine.toString()
             tvMaxLine.text = maxLine.toString()
         }

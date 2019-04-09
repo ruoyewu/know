@@ -18,7 +18,8 @@ class RecordTypeRVAdapter : WBaseRVAdapter<RecordType>() {
     }
 
     override fun onBindViewHolder(viewHolder: RecyclerView.ViewHolder, i: Int) {
-        val type = if (i < super.getItemCount()) getData(i) else RecordType("不限")
+//        val type = if (i < super.getItemCount()) getData(i) else RecordType("不限")
+        val type = if (i == 0) RecordType("不限") else getData(i-1)
         val vh = viewHolder as ViewHolder
         vh.tv.text = type.title
         vh.tv.setOnClickListener { onItemClick(type) }

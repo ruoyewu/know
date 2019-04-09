@@ -82,6 +82,20 @@ class RecordItemTable(
             }
         }
 
+        fun queryByRecord(db: SQLiteDatabase, recordId: Int): ArrayList<RecordItem> {
+            val cursor = db.query(NAME, null, "$RECORD_ID=?",
+                    arrayOf(recordId.toString()), null, null, null)
+            val items = ArrayList<RecordItem>()
+            cursor.use {
+                it.moveToFirst()
+                while (!it.isAfterLast) {
+                    items.add(fromCursor(it))
+                    it.moveToNext()
+                }
+            }
+            return items
+        }
+
         fun delete(db: SQLiteDatabase, recordId: Int) {
             db.delete(NAME, "$RECORD_ID=?", arrayOf(recordId.toString()))
         }

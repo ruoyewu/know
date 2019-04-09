@@ -6,8 +6,10 @@ package com.wuruoye.know.model.beans
  */
 class RecordItem (
         val id: Int,
-        val recordId: Int,
-        val type: Int,
-        val typeId: Int,
+        var recordId: Int,
+        var type: Int,
+        var typeId: Int,
         var content: String
-)
+) {
+
+}
